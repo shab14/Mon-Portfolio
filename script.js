@@ -1,132 +1,15 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Portfolio | Accueil</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo">Portfolio</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="epreuve.html">Épreuves</a></li>
-                <li><a href="projet.html">Projets</a></li>
-                <li><a href="veille.html">Veille</a></li>
-                <li><a href="certifs.html">Certifications</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <main>
-        <section class="hero">
-            <h1>Bonjour, je suis Shabdpreet Singh</h1>
-            <p>18 ans — Étudiant en BTS SIO option SISR, en alternance chez ALLIANC3. Bienvenue sur mon portfolio professionnel.</p>
-            <p class="infos-rapides">📍 Paris, France &nbsp;|&nbsp; 🏫 IAAG &nbsp;|&nbsp; Spécialité : SISR &nbsp;|&nbsp; Alternance : ALLIANC3</p>
-            <div class="cta-buttons">
-                <a href="epreuve.html" class="btn btn-primary">Voir mes épreuves</a>
-                <a href="projet.html" class="btn btn-outline">Mes projets</a>
-                <a href="veille.html" class="btn btn-outline">Ma veille IT</a>
-                <a href="certifs.html" class="btn btn-outline">Certifications</a>
-            </div>
-            <div class="cta-buttons downloads">
-                <a href="fichiers/CV_Shabdpreet_Singh.pdf" class="btn btn-outline" download>📄 Télécharger mon CV</a>
-                <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" class="btn btn-outline" target="_blank" rel="noopener">🔗 LinkedIn</a>
-                <a href="https://github.com/shab14" class="btn btn-outline" target="_blank" rel="noopener">💻 GitHub</a>
-            </div>
-        </section>
-
-        <section>
-            <h2>À propos</h2>
-            <p>Je m'appelle Shabdpreet Singh, 18 ans, actuellement en 1ère année de BTS SIO option SISR à l'IAAG (Institut Aéronautique Amaury de la Grange), en alternance chez ALLIANC3 (rythme école/entreprise). Passionné par l'aéronautique et les nouvelles technologies, je suis curieux, rigoureux et motivé à développer mes compétences techniques. J'apprécie l'analyse, la compréhension des systèmes et la résolution de problèmes concrets.</p>
-            <p>Ce site présente mon parcours, mes projets réalisés durant ma formation, ainsi que ma veille technologique. Explorez les différentes sections pour en savoir plus sur mes compétences et mes réalisations.</p>
-
-            <div class="apropos-bloc">
-                <h3>Présentation du BTS SIO</h3>
-                <p>Le BTS Services Informatiques aux Organisations (SIO) forme aux métiers de l'informatique avec deux options possibles : SISR (Solutions d'Infrastructure, Systèmes et Réseaux) et SLAM (Solutions Logicielles et Applications Métiers). J'ai choisi l'option <strong>SISR</strong>, centrée sur l'administration des systèmes, des réseaux et la sécurité informatique. La formation se déroule en alternance, alternant périodes en entreprise et en école, sur deux ans.</p>
-            </div>
-
-            <div class="apropos-bloc">
-                <h3>Présentation de l'entreprise</h3>
-                <p>J'effectue mon alternance chez <strong>ALLIANC3</strong>, une Entreprise de Services du Numérique (ESN) spécialisée dans la Data, l'IA et Salesforce, dédiée à l'accélération numérique de ses clients. L'entreprise accompagne des organisations de tous secteurs dans leur transformation digitale, à travers du conseil, de l'assistance technique et de la formation.</p>
-            </div>
-
-            <div class="apropos-bloc">
-                <h3>Mon rôle dans l'entreprise</h3>
-                <p>Au sein d'ALLIANC3, je fais du <strong>support informatique</strong> : j'aide les collaborateurs au quotidien sur leurs problématiques techniques, je participe à la résolution d'incidents et j'apporte mon aide sur diverses tâches numériques (sites internet, supports de communication, etc.). C'est une bonne occasion de mettre en pratique mes compétences SISR dans un contexte professionnel réel.</p>
-            </div>
-        </section>
-
-        <section>
-            <h2>Contact</h2>
-            <ul class="contact-list">
-                <li>✉️ Shabdpreetsingh2@gmail.com</li>
-                <li>📞 +33 6 16 88 17 10</li>
-                <li>📍 24 Rue Henri Martin, 94200</li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>Compétences</h2>
-            <div class="competences-grid">
-                <div class="competence-bloc">
-                    <h3>Hard skills</h3>
-                    <p><strong>Langages :</strong> Python, C, HTML/CSS</p>
-                    <p><strong>Embarqué :</strong> Arduino (IDE Arduino)</p>
-                    <p><strong>Logiciels :</strong> Pack Office, Canva, SolidWorks</p>
-                    <p><strong>OS :</strong> Windows 10/11, macOS</p>
-                </div>
-                <div class="competence-bloc">
-                    <h3>Soft skills</h3>
-                    <p>Vif d'esprit, Travail en équipe, Curiosité, Rigueur</p>
-                </div>
-                <div class="competence-bloc">
-                    <h3>Langues</h3>
-                    <p>Français : langue maternelle<br>Anglais : Bilingue<br>Punjabi/Hindi : langue maternelle</p>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2>Parcours</h2>
-            <ul class="parcours-list">
-                <li>
-                    <strong>2022 — ★</strong> Diplôme National du Brevet — Collège Pasteur, Villejuif — Mention Très Bien
-                </li>
-                <li>
-                    <strong>2022 — 2025 — ★</strong> Baccalauréat STI2D, spécialité SIN — Lycée Polyvalent Adolphe Chérioux, Vitry-sur-Seine — Mention Assez Bien
-                </li>
-                <li>
-                    <strong>2025</strong> Certifications PIX — Lycée Polyvalent Adolphe Chérioux
-                </li>
-                <li>
-                    <strong>2025 — 2027 — ▶</strong> BTS SIO option SISR, 1ère année — IAAG, Paris — Alternance chez ALLIANC3 — <em>en cours</em>
-                </li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>Expériences</h2>
-            <ul class="parcours-list">
-                <li>
-                    <strong>2024 — ALLIANC3</strong> — Stage d'observation. Allianc3 est une ESN dédiée à l'accélération numérique des entreprises. Aide pour la DA des sites internet, plaquettes commerciales, etc.
-                </li>
-                <li>
-                    <strong>2022 — Oracom</strong> — Stage d'observation. Société d'édition de presse. Assistance à la rédactrice en chef, logistique des stocks de magazines, lecture avant publication.
-                </li>
-                <li>
-                    <strong>2024 — 2025 — Just Faces</strong> — Mannequin. Shootings photo, travail avec stylistes, maquilleurs et photographes professionnels.
-                </li>
-            </ul>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Shabdpreet Singh - Portfolio créé pour GitHub Pages</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+// Script pour ajouter des fonctionnalités simples si besoin
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Portfolio chargé avec succès !');
+    
+    // Exemple : Animation simple au survol des cartes
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.borderColor = 'var(--primary-color)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.borderColor = 'transparent';
+        });
+    });
+});
