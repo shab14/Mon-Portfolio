@@ -290,3 +290,38 @@ footer {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
 }
+
+/* Project card with badge */
+.project-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    transition-property: transform;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+}
+
+.project-card:hover .project-badge {
+    transform: scale(1.08) rotate(-3deg);
+}
+
+.centreon-badge {
+    background: linear-gradient(135deg, #ff6600, #ff8c33);
+    box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+}
+
+.badge-letter {
+    color: var(--white);
+    font-weight: 800;
+    font-size: 1.75rem;
+    font-family: Arial, sans-serif;
+}
