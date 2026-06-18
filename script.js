@@ -1,69 +1,120 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Projets | Shabdpreet Singh</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="read-progress"></div>
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <span class="logo-mark">S</span>
-                <span class="logo-text">Shabdpreet Singh</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="epreuve.html">Épreuves</a></li>
-                <li><a href="projet.html">Projets</a></li>
-                <li><a href="veille.html">Veille</a></li>
-                <li><a href="certifs.html">Certifications</a></li>
-            </ul>
-        </div>
-    </nav>
+/* Portfolio — interactions
+   Bleu léger, épuré, vivant. Respecte prefers-reduced-motion. */
 
-    <main>
-        <h1>Mes Projets</h1>
-        <p class="page-intro">Les réalisations techniques menées durant ma formation et mon alternance.</p>
+(function () {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        <div class="grid">
-            <div class="card project-card reveal" data-i="1">
-                <span class="project-tag">Projet scolaire</span>
-                <div class="project-badge centreon-badge"><span class="badge-letter">C</span></div>
-                <h3>Supervision avec Centreon</h3>
-                <p>Mise en place d'une solution de supervision informatique avec Centreon : installation sur AlmaLinux, configuration des composants (Engine, Broker, MariaDB) et surveillance d'une infrastructure réseau.</p>
-                <a href="fichiers/Projet_Centreon.docx" class="btn btn-outline" download>📄 Télécharger la documentation</a>
-            </div>
+  /* ---- Barre de progression de lecture ---- */
+  const bar = document.querySelector('.read-progress');
+  if (bar) {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+      bar.style.width = (scrolled * 100).toFixed(2) + '%';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
 
-            <div class="card project-card is-placeholder reveal" data-i="2">
-                <span class="project-tag">À venir</span>
-                <div class="project-badge soon-badge"><span class="badge-letter">2</span></div>
-                <h3>Prochain projet</h3>
-                <p>Un nouveau projet technique sera bientôt ajouté ici au fil de ma formation.</p>
-            </div>
+  /* ---- Nav active selon la page ---- */
+  const here = (location.pathname.split('/').pop() || 'index.html');
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === here || (here === '' && href === 'index.html')) a.classList.add('active');
+  });
 
-            <div class="card project-card is-placeholder reveal" data-i="3">
-                <span class="project-tag">À venir</span>
-                <div class="project-badge soon-badge"><span class="badge-letter">3</span></div>
-                <h3>Prochain projet</h3>
-                <p>Cet emplacement accueillera une future réalisation pour illustrer la diversité de mes compétences.</p>
-            </div>
-        </div>
-    </main>
+  /* ---- Reveal au scroll (avec filets de sécurité) ---- */
+  const revealables = document.querySelectorAll('.reveal');
+  if (revealables.length) {
+    if (reduced || !('IntersectionObserver' in window)) {
+      revealables.forEach(el => el.classList.add('in'));
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+      revealables.forEach(el => io.observe(el));
 
-    <footer>
-        <div class="footer-links">
-            <a href="https://github.com/shab14" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
-        </div>
-        <p>© 2026 Shabdpreet Singh — Portfolio</p>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+      // Filet 1 : tout élément déjà dans le viewport au chargement s'affiche
+      const showIfVisible = () => {
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        revealables.forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (r.top < vh && r.bottom > 0) el.classList.add('in');
+        });
+      };
+      showIfVisible();
+      // Filet 2 : au cas où, tout devient visible après 3s (jamais de contenu caché)
+      setTimeout(() => revealables.forEach(el => el.classList.add('in')), 3000);
+    }
+  }
+
+  /* ---- Réseau animé dans le hero (canvas) ---- */
+  const net = document.querySelector('.hero-net');
+  if (net && !reduced) {
+    const canvas = document.createElement('canvas');
+    net.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let w, h, nodes, raf;
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+    function size() {
+      w = net.clientWidth; h = net.clientHeight;
+      canvas.width = w * DPR; canvas.height = h * DPR;
+      canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const count = Math.max(18, Math.min(46, Math.round(w / 28)));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.8 + 1.2
+      }));
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, w, h);
+      // liens
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        a.x += a.vx; a.y += a.vy;
+        if (a.x < 0 || a.x > w) a.vx *= -1;
+        if (a.y < 0 || a.y > h) a.vy *= -1;
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          if (d < 120) {
+            ctx.strokeStyle = `rgba(37, 99, 235, ${0.16 * (1 - d / 120)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      // nœuds
+      for (const n of nodes) {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    size();
+    tick();
+    let to;
+    window.addEventListener('resize', () => {
+      clearTimeout(to);
+      to = setTimeout(() => { cancelAnimationFrame(raf); size(); tick(); }, 200);
+    });
+    // pause hors écran
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else tick();
+    });
+  }
+})();
