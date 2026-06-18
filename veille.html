@@ -1,82 +1,15 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veille Technologique | Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo">Portfolio</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="epreuve.html">Épreuves</a></li>
-                <li><a href="projet.html">Projets</a></li>
-                <li><a href="veille.html">Veille</a></li>
-                <li><a href="certifs.html">Certifications</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <main>
-        <h1>Veille Technologique</h1>
-
-        <section class="card">
-            <h2>Sujet 1 : Intelligence Artificielle générative</h2>
-            <p>Suivi des évolutions des modèles de langage (LLM), de leurs usages en entreprise et des outils IA pour les métiers du SISR (assistants de code, automatisation, MCP).</p>
-            <hr style="margin: 1rem 0; opacity: 0.2;">
-            <h3>Axes suivis :</h3>
-            <ul>
-                <li>Nouveaux modèles de langage et leurs capacités (2026)</li>
-                <li>Intégration de l'IA dans les outils d'administration système</li>
-                <li>Protocole MCP (Model Context Protocol) et agents IA</li>
-                <li>Éthique et régulation de l'IA en Europe</li>
-            </ul>
-        </section>
-
-        <section class="card">
-            <h2>Sujet 2 : Cybersécurité</h2>
-            <p>Veille sur les menaces, vulnérabilités et bonnes pratiques de sécurisation des systèmes et réseaux, en lien direct avec les compétences SISR.</p>
-            <hr style="margin: 1rem 0; opacity: 0.2;">
-            <h3>Axes suivis :</h3>
-            <ul>
-                <li>Alertes et bulletins de sécurité (CERT-FR, ANSSI)</li>
-                <li>Failles et vulnérabilités critiques récentes (CVE)</li>
-                <li>Bonnes pratiques de durcissement (hardening) des systèmes</li>
-                <li>Sensibilisation aux risques (phishing, ransomware)</li>
-            </ul>
-        </section>
-
-        <section class="card">
-            <h2>Sujet 3 : Réseaux et infrastructures</h2>
-            <p>Suivi des évolutions des technologies réseau, protocoles et solutions d'infrastructure utilisées en entreprise.</p>
-            <hr style="margin: 1rem 0; opacity: 0.2;">
-            <h3>Axes suivis :</h3>
-            <ul>
-                <li>Évolutions des protocoles réseau et normes</li>
-                <li>Virtualisation et infrastructures hybrides</li>
-                <li>Supervision et administration réseau</li>
-            </ul>
-        </section>
-
-        <section class="card">
-            <h2>Outils de veille</h2>
-            <p>Outils et sources utilisés au quotidien pour ma veille informatique :</p>
-            <ul>
-                <li><strong>Agrégateurs RSS :</strong> Feedly</li>
-                <li><strong>Alertes :</strong> Google Alerts</li>
-                <li><strong>Sources spécialisées :</strong> CERT-FR, ANSSI</li>
-                <li><strong>Réseaux sociaux :</strong> LinkedIn, X (Twitter)</li>
-                <li><strong>Communautés :</strong> Reddit (r/sysadmin, r/cybersecurity)</li>
-            </ul>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Shabdpreet Singh - Portfolio créé pour GitHub Pages</p>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+// Script pour ajouter des fonctionnalités simples si besoin
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Portfolio chargé avec succès !');
+    
+    // Exemple : Animation simple au survol des cartes
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.borderColor = 'var(--primary-color)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.borderColor = 'transparent';
+        });
+    });
+});
