@@ -17,10 +17,15 @@
   }
 
   /* ---- Nav active selon la page ---- */
-  const here = (location.pathname.split('/').pop() || 'index.html');
+  const pathParts = location.pathname.split('/');
+  const here = pathParts[pathParts.length - 1] || 'index.html';
+  // Sur GitHub Pages le nom du repo est dans le path, on compare juste le dernier segment
   document.querySelectorAll('.nav-links a').forEach(a => {
     const href = a.getAttribute('href');
-    if (href === here || (here === '' && href === 'index.html')) a.classList.add('active');
+    const hrefFile = (href || '').split('/').pop() || 'index.html';
+    if (hrefFile === here || (here === '' && hrefFile === 'index.html')) {
+      a.classList.add('active');
+    }
   });
 
   /* ---- Reveal au scroll (avec filets de sécurité) ---- */
