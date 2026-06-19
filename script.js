@@ -12,6 +12,54 @@
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
+  /* ---- Spotlight qui suit la souris sur les cartes ---- */
+  if (!reduced && window.matchMedia('(hover: hover)').matches) {
+    $$('.card, .apropos-bloc, .competence-bloc').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
+    });
+  }
+
+  /* ---- Horloge Paris (footer) ---- */
+  const clock = $('#clock');
+  if (clock) {
+    const render = () => {
+      try {
+        const t = new Date().toLocaleTimeString('fr-FR', {
+          timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit'
+        });
+        clock.textContent = '🕑 ' + t + ' — Paris';
+      } catch (e) {
+        clock.textContent = '🕑 ' + new Date().toLocaleTimeString('fr-FR');
+      }
+    };
+    render();
+    setInterval(render, 1000);
+  }
+
+  /* ---- Easter egg : code Konami → mode incident ---- */
+  (function konami() {
+    const seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let pos = 0;
+    const toast = $('#incidentToast');
+    window.addEventListener('keydown', (e) => {
+      const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      pos = (k === seq[pos]) ? pos + 1 : (k === seq[0] ? 1 : 0);
+      if (pos === seq.length) {
+        pos = 0;
+        document.body.classList.add('incident');
+        if (toast) { toast.classList.add('show'); }
+        setTimeout(() => {
+          document.body.classList.remove('incident');
+          if (toast) toast.classList.remove('show');
+        }, 2600);
+      }
+    });
+  })();
+
   /* ---- Thème clair/sombre (persisté) ---- */
   (function theme() {
     const root = document.documentElement;
@@ -83,6 +131,36 @@
       a.classList.add('active');
       a.setAttribute('aria-current', 'page');
     }
+  });
+
+  /* ---- Flux terminal générique (data-feed) ---- */
+  $$('[data-feed]').forEach(feed => {
+    const lines = [
+      '[CVE-2026-3148] severity HIGH — patch dispo',
+      '[ANSSI] nouveau bulletin de sécurité',
+      '[RSS] LLM : nouveau modèle annoncé',
+      '[r/sysadmin] retour d\u2019xp supervision',
+      '[CERT-FR] alerte ransomware en cours',
+      '[RSS] protocole MCP : mise à jour'
+    ];
+    const caret = '<span class="caret" aria-hidden="true"></span>';
+    if (reduced) { feed.innerHTML = lines[0] + caret; return; }
+    let li = 0, ci = 0, deleting = false;
+    const tick = () => {
+      const full = lines[li];
+      if (!deleting) {
+        ci++;
+        feed.innerHTML = full.slice(0, ci) + caret;
+        if (ci >= full.length) { deleting = true; setTimeout(tick, 1600); return; }
+        setTimeout(tick, 26);
+      } else {
+        ci--;
+        feed.innerHTML = full.slice(0, ci) + caret;
+        if (ci <= 0) { deleting = false; li = (li + 1) % lines.length; setTimeout(tick, 260); return; }
+        setTimeout(tick, 11);
+      }
+    };
+    setTimeout(tick, 400);
   });
 
   /* ---- Reveal au scroll (avec filets de sécurité) ---- */

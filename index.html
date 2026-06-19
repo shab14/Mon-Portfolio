@@ -90,7 +90,25 @@
 
         <section>
             <h2 class="section-title">À propos</h2>
-            <p class="lead-paragraph reveal">Je m'appelle Shabdpreet Singh, 18 ans, en 1ère année de BTS SIO option SISR à l'IAAG (Institut Aéronautique Amaury de la Grange), en alternance chez ALLIANC3. Ce qui m'a amené ici, c'est une curiosité assez simple : comprendre ce qu'il y a derrière un écran qui marche — un serveur, un réseau, une chaîne de services qui tient parce que quelqu'un l'a pensée comme il faut. Je suis curieux, rigoureux, et j'apprends vite quand le problème est concret.</p>
+            <div class="about-term-grid">
+                <p class="lead-paragraph reveal">Je m'appelle Shabdpreet Singh, 18 ans, en 1ère année de BTS SIO option SISR à l'IAAG (Institut Aéronautique Amaury de la Grange), en alternance chez ALLIANC3. Ce qui m'a amené ici, c'est une curiosité assez simple : comprendre ce qu'il y a derrière un écran qui marche — un serveur, un réseau, une chaîne de services qui tient parce que quelqu'un l'a pensée comme il faut. Je suis curieux, rigoureux, et j'apprends vite quand le problème est concret.</p>
+                <div class="term reveal" aria-hidden="true">
+                    <div class="term-head">
+                        <span class="term-dots"><i></i><i></i><i></i></span>
+                        <span class="term-title">shab@portfolio: ~</span>
+                    </div>
+                    <div class="term-body">
+                        <p class="term-line"><span class="prompt">$</span>whoami</p>
+                        <p class="term-line out">shabdpreet singh — 18 ans</p>
+                        <p class="term-line"><span class="prompt">$</span>cat profil.txt</p>
+                        <p class="term-line out">BTS SIO SISR @ IAAG</p>
+                        <p class="term-line out">alternance @ <span class="accent2">ALLIANC3</span></p>
+                        <p class="term-line out">support IT · réseaux · supervision</p>
+                        <p class="term-line"><span class="prompt">$</span>status</p>
+                        <p class="term-line out"><span class="ok2">curieux · rigoureux · apprend vite</span></p>
+                    </div>
+                </div>
+            </div>
 
             <div class="about-grid">
                 <div class="apropos-bloc reveal" data-i="1">
@@ -110,6 +128,38 @@
 
         <section>
             <h2 class="section-title">Compétences</h2>
+
+            <div class="radar-wrap reveal" aria-hidden="true">
+                <svg class="radar" viewBox="0 0 200 200" role="img" aria-label="Radar des domaines SISR">
+                    <polygon class="grid-line" points="100,20 176.1,75.3 147,164.7 53,164.7 23.9,75.3"/>
+                    <polygon class="grid-line" points="100,46.7 150.7,83.5 131.3,143.1 68.7,143.1 49.3,83.5"/>
+                    <polygon class="grid-line" points="100,73.3 125.4,91.8 115.7,121.6 84.3,121.6 74.6,91.8"/>
+                    <line class="axis" x1="100" y1="100" x2="100" y2="20"/>
+                    <line class="axis" x1="100" y1="100" x2="176.1" y2="75.3"/>
+                    <line class="axis" x1="100" y1="100" x2="147" y2="164.7"/>
+                    <line class="axis" x1="100" y1="100" x2="53" y2="164.7"/>
+                    <line class="axis" x1="100" y1="100" x2="23.9" y2="75.3"/>
+                    <polygon class="data" points="100,40 151.7,83.2 125.9,135.6 62.4,151.8 54.3,85.2"/>
+                    <circle class="dot" cx="100" cy="40" r="2.5"/>
+                    <circle class="dot" cx="151.7" cy="83.2" r="2.5"/>
+                    <circle class="dot" cx="125.9" cy="135.6" r="2.5"/>
+                    <circle class="dot" cx="62.4" cy="151.8" r="2.5"/>
+                    <circle class="dot" cx="54.3" cy="85.2" r="2.5"/>
+                    <text class="axis-label" x="100" y="13" text-anchor="middle">Réseau</text>
+                    <text class="axis-label" x="180" y="73" text-anchor="start">Systèmes</text>
+                    <text class="axis-label" x="150" y="178" text-anchor="middle">Sécurité</text>
+                    <text class="axis-label" x="50" y="178" text-anchor="middle">Support</text>
+                    <text class="axis-label" x="20" y="73" text-anchor="end">Scripting</text>
+                </svg>
+                <div class="radar-legend">
+                    <div class="row"><span class="lbl">Réseau <b>75%</b></span><span class="track"><i style="--w:75%"></i></span></div>
+                    <div class="row"><span class="lbl">Systèmes (Win/Linux) <b>68%</b></span><span class="track"><i style="--w:68%"></i></span></div>
+                    <div class="row"><span class="lbl">Sécurité <b>55%</b></span><span class="track"><i style="--w:55%"></i></span></div>
+                    <div class="row"><span class="lbl">Support / incident <b>80%</b></span><span class="track"><i style="--w:80%"></i></span></div>
+                    <div class="row"><span class="lbl">Scripting <b>60%</b></span><span class="track"><i style="--w:60%"></i></span></div>
+                </div>
+            </div>
+
             <div class="competences-grid">
                 <div class="competence-bloc reveal" data-i="1">
                     <h3>💻 Hard skills</h3>
@@ -195,8 +245,10 @@
         </div>
         <p>© 2026 Shabdpreet Singh — Portfolio</p>
         <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
+        <p class="footer-clock" id="clock"></p>
     </footer>
 
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>
     <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
     <script src="./script.js"></script>
 </body>

@@ -40,6 +40,39 @@
         <h1>Veille Technologique</h1>
         <p class="page-intro">Les sujets que je suis pour rester à jour en cybersécurité, réseaux et IA — pas pour cocher une case, mais parce qu'un SISR qui ne suit plus les CVE de la semaine est déjà en retard.</p>
 
+        <div class="term reveal" aria-hidden="true" style="margin-bottom:2.5rem">
+            <div class="term-head">
+                <span class="term-dots"><i></i><i></i><i></i></span>
+                <span class="term-title">veille — flux live</span>
+            </div>
+            <div class="term-body">
+                <p class="term-line"><span class="prompt">$</span>tail -f /var/log/veille.log</p>
+                <p class="term-feed" data-feed></p>
+            </div>
+        </div>
+
+        <div class="gauge-card reveal">
+            <svg class="gauge" viewBox="0 0 200 120" role="img" aria-label="Jauge de vigilance" style="--circ:251; --off:70; --deg:40deg">
+                <defs>
+                    <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#22c55e"/>
+                        <stop offset="0.6" stop-color="#f59e0b"/>
+                        <stop offset="1" stop-color="#ef4444"/>
+                    </linearGradient>
+                </defs>
+                <path class="bg" d="M20,100 A80,80 0 0 1 180,100"/>
+                <path class="fill" d="M20,100 A80,80 0 0 1 180,100"/>
+                <line class="needle" x1="100" y1="100" x2="100" y2="34"/>
+                <circle cx="100" cy="100" r="6" fill="var(--ink)"/>
+                <text class="gauge-val" x="100" y="92">élevé</text>
+            </svg>
+            <div class="gauge-label">
+                <h3>Niveau de vigilance</h3>
+                <span class="level"><span class="status-led warn"></span>ÉLEVÉ — surveillance active</span>
+                <p>Le rythme des CVE et bulletins ANSSI reste soutenu. Je garde un œil quotidien sur les alertes critiques touchant les systèmes et réseaux.</p>
+            </div>
+        </div>
+
         <div class="grid">
             <section class="card reveal" data-i="1">
                 <span class="cert-pill">Sujet 1</span>
@@ -105,7 +138,9 @@
         </div>
         <p>© 2026 Shabdpreet Singh — Portfolio</p>
         <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
+        <p class="footer-clock" id="clock"></p>
     </footer>
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>
     <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
     <script src="./script.js"></script>
 </body>

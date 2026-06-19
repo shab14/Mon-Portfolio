@@ -52,6 +52,7 @@
                 <div class="project-stack">
                     <span>AlmaLinux</span><span>Centreon Engine</span><span>Broker</span><span>MariaDB</span>
                 </div>
+                <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>systemctl status centreon &nbsp;<span class="ok2">● active (running)</span></div>
                 <a href="./fichiers/Projet_Centreon.docx" class="btn btn-outline" download>📄 Télécharger la documentation</a>
             </div>
 
@@ -69,6 +70,27 @@
                 <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
             </div>
         </div>
+
+        <h2 class="section-title" style="margin-top:3rem">Zoom — architecture Centreon</h2>
+        <p class="page-intro" style="margin-bottom:1.5rem">Comment les composants s'enchaînent, de la collecte sur l'hôte jusqu'à l'affichage dans l'interface web. Les pointillés montrent le flux de données.</p>
+        <div class="archi reveal" aria-hidden="true">
+            <svg viewBox="0 0 760 140" role="img" aria-label="Schéma d'architecture Centreon">
+                <defs>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                        <path class="flow-head" d="M0,0 L6,3 L0,6 Z"/>
+                    </marker>
+                </defs>
+                <g class="node"><rect x="10" y="38" width="120" height="64" rx="10"/><text class="t" x="70" y="66">AlmaLinux</text><text class="s" x="70" y="84">hôte</text></g>
+                <g class="node"><rect x="170" y="38" width="120" height="64" rx="10"/><text class="t" x="230" y="66">Engine</text><text class="s" x="230" y="84">collecte</text></g>
+                <g class="node"><rect x="330" y="38" width="120" height="64" rx="10"/><text class="t" x="390" y="66">Broker</text><text class="s" x="390" y="84">transport</text></g>
+                <g class="node"><rect x="490" y="38" width="120" height="64" rx="10"/><text class="t" x="550" y="66">MariaDB</text><text class="s" x="550" y="84">stockage</text></g>
+                <g class="node"><rect x="650" y="38" width="100" height="64" rx="10"/><text class="t" x="700" y="66">Web UI</text><text class="s" x="700" y="84">supervision</text></g>
+                <path class="flow" d="M130,70 L170,70" marker-end="url(#arrow)"/>
+                <path class="flow" d="M290,70 L330,70" marker-end="url(#arrow)"/>
+                <path class="flow" d="M450,70 L490,70" marker-end="url(#arrow)"/>
+                <path class="flow" d="M610,70 L650,70" marker-end="url(#arrow)"/>
+            </svg>
+        </div>
     </main>
 
     <footer>
@@ -79,7 +101,9 @@
         </div>
         <p>© 2026 Shabdpreet Singh — Portfolio</p>
         <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
+        <p class="footer-clock" id="clock"></p>
     </footer>
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>
     <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
     <script src="./script.js"></script>
 </body>
