@@ -6,7 +6,7 @@
     <title>Mes Projets | Shabdpreet Singh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -28,30 +28,37 @@
     </nav>
 
     <main>
+        <span class="page-eyebrow"><span class="dot"></span> 1 projet livré · 2 en préparation</span>
         <h1>Mes Projets</h1>
-        <p class="page-intro">Les réalisations techniques menées durant ma formation et mon alternance.</p>
+        <p class="page-intro">Les réalisations techniques menées durant ma formation et mon alternance. Chaque projet est documenté comme s'il devait être repris par quelqu'un d'autre.</p>
 
         <div class="grid">
             <div class="card project-card reveal" data-i="1">
+                <div class="project-card-head">
+                    <div class="project-badge centreon-badge"><span class="badge-letter">C</span></div>
+                    <span class="project-status"><span class="status-led"></span>Opérationnel</span>
+                </div>
                 <span class="project-tag">Projet scolaire</span>
-                <div class="project-badge centreon-badge"><span class="badge-letter">C</span></div>
                 <h3>Supervision avec Centreon</h3>
                 <p>Mise en place d'une solution de supervision informatique avec Centreon : installation sur AlmaLinux, configuration des composants (Engine, Broker, MariaDB) et surveillance d'une infrastructure réseau.</p>
+                <div class="project-stack">
+                    <span>AlmaLinux</span><span>Centreon Engine</span><span>Broker</span><span>MariaDB</span>
+                </div>
                 <a href="./fichiers/Projet_Centreon.docx" class="btn btn-outline" download>📄 Télécharger la documentation</a>
             </div>
 
-            <div class="card project-card is-placeholder reveal" data-i="2">
-                <span class="project-tag">À venir</span>
-                <div class="project-badge soon-badge"><span class="badge-letter">2</span></div>
+            <div class="card is-placeholder reveal" data-i="2">
+                <div class="placeholder-icon">···</div>
                 <h3>Prochain projet</h3>
-                <p>Un nouveau projet technique sera bientôt ajouté ici au fil de ma formation.</p>
+                <p>Un nouveau projet technique arrive au fil de ma formation — probablement autour des réseaux ou de la sécurité.</p>
+                <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
             </div>
 
-            <div class="card project-card is-placeholder reveal" data-i="3">
-                <span class="project-tag">À venir</span>
-                <div class="project-badge soon-badge"><span class="badge-letter">3</span></div>
+            <div class="card is-placeholder reveal" data-i="3">
+                <div class="placeholder-icon">···</div>
                 <h3>Prochain projet</h3>
                 <p>Cet emplacement accueillera une future réalisation pour illustrer la diversité de mes compétences.</p>
+                <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
             </div>
         </div>
     </main>
@@ -63,6 +70,7 @@
             <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
         </div>
         <p>© 2026 Shabdpreet Singh — Portfolio</p>
+        <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
     </footer>
     <script src="./script.js"></script>
 </body>

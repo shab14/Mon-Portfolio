@@ -1,6 +1,9 @@
 /* ============================================
    Portfolio — Shabdpreet Singh
-   Charte : bleu léger, épuré, vivant
+   Direction : supervision réseau / SISR — sobre,
+   technique, mais vivant. Le vocabulaire visuel
+   vient du monde de la supervision (statuts,
+   logs, uptime) plutôt que d'un template générique.
    ============================================ */
 
 :root {
@@ -11,23 +14,30 @@
     --blue-300: #93c5fd;
     --blue-400: #60a5fa;
     --blue-500: #3b82f6;
-    --blue-600: #2563eb;   /* primaire historique */
+    --blue-600: #2563eb;
     --blue-700: #1d4ed8;
     --blue-900: #1e3a8a;
-    --ink:      #0f172a;    /* bleu nuit profond */
+
+    --ink:      #0b1220;   /* fond profond du hero / textes forts */
+    --ink-soft: #16213a;
 
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
-    --accent: #38bdf8;      /* cyan léger, touche tech */
+    --accent: #38bdf8;      /* cyan, touche supervision */
+    --ok: #22c55e;          /* statut "UP" */
+    --ok-soft: #86efac;
+    --warn: #f59e0b;
 
     --text: #1e293b;
     --text-soft: #475569;
     --text-mute: #94a3b8;
 
-    --bg: #f7faff;          /* fond bleuté très clair */
+    --bg: #f7faff;
     --surface: #ffffff;
     --surface-2: #f1f6fe;
     --border: #e3edf9;
+
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
 
     --shadow-sm: 0 1px 2px rgba(37, 99, 235, 0.06);
     --shadow: 0 6px 20px -8px rgba(37, 99, 235, 0.18);
@@ -37,7 +47,25 @@
     --radius-sm: 10px;
     --maxw: 1080px;
 
-    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    /* Tokens de motion (portés de motion-foundations, adaptés CSS) */
+    --dur-instant: 0.08s;
+    --dur-fast:    0.18s;
+    --dur-normal:  0.35s;
+    --dur-slow:    0.6s;
+    --ease:        cubic-bezier(0.22, 1, 0.36, 1);   /* smooth */
+    --ease-sharp:  cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Chiffres qui changent / s'alignent : chasse fixe */
+.certs-summary .stat strong,
+.cert-meta .score,
+.svc-meta,
+.status-pill,
+.footer-uptime,
+.placeholder-progress,
+.timeline .when {
+    font-variant-numeric: tabular-nums;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,7 +84,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Fond ambiant : halos bleus très doux */
 body::before {
     content: "";
     position: fixed;
@@ -195,13 +222,34 @@ main > h1 {
     margin: 3rem 0 0.5rem;
     text-wrap: balance;
 }
-/* éyebrow sous les titres de page */
 .page-intro {
     color: var(--text-soft);
     font-size: 1.05rem;
     margin-bottom: 2.5rem;
     max-width: 60ch;
     text-wrap: pretty;
+}
+.page-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--primary);
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-top: 2.6rem;
+}
+.page-eyebrow .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: pulse-ok 2s infinite;
 }
 
 section { margin-bottom: 3.5rem; }
@@ -217,7 +265,6 @@ h2 {
     align-items: center;
     gap: 0.7rem;
 }
-/* petit trait accent devant les h2 de section */
 .section-title::before {
     content: "";
     width: 22px; height: 3px;
@@ -237,16 +284,14 @@ h3 {
 p, li { text-wrap: pretty; }
 
 /* ============================================
-   HERO
+   HERO — panneau de supervision
    ============================================ */
 .hero {
     position: relative;
-    text-align: center;
-    padding: 5rem 1rem 4rem;
+    padding: 4.5rem 1rem 3.5rem;
     overflow: hidden;
 }
 
-/* grille de nœuds animée = réseau (monde SISR / supervision) */
 .hero-net {
     position: absolute;
     inset: 0;
@@ -257,14 +302,26 @@ p, li { text-wrap: pretty; }
     mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, #000 40%, transparent 75%);
 }
 
-.hero-inner { position: relative; z-index: 1; }
+.hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 2.5rem;
+    align-items: center;
+    text-align: left;
+}
+.hero-text { min-width: 0; }
 
 .hero-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 500;
     color: var(--primary);
     background: var(--blue-50);
     border: 1px solid var(--blue-100);
@@ -275,24 +332,23 @@ p, li { text-wrap: pretty; }
 .hero-eyebrow .dot {
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6);
-    animation: pulse 2s infinite;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: pulse-ok 2s infinite;
 }
-@keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.55); }
-    70%  { box-shadow: 0 0 0 9px rgba(56, 189, 248, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+@keyframes pulse-ok {
+    0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+    70%  { box-shadow: 0 0 0 9px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 
 .hero h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2.4rem, 6vw, 4rem);
-    line-height: 1.05;
-    letter-spacing: -0.04em;
+    font-size: clamp(2.2rem, 4.6vw, 3.4rem);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
     color: var(--ink);
-    margin: 0 auto 1.2rem;
-    max-width: 16ch;
+    margin: 0 0 1.1rem;
     text-wrap: balance;
 }
 .hero h1 .grad {
@@ -303,34 +359,176 @@ p, li { text-wrap: pretty; }
 }
 
 .hero .lede {
-    font-size: 1.15rem;
+    font-size: 1.08rem;
     color: var(--text-soft);
-    max-width: 54ch;
-    margin: 0 auto 1.4rem;
+    max-width: 50ch;
+    margin: 0 0 1.4rem;
 }
 
 .infos-rapides {
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 0.5rem 1.1rem;
     font-size: 0.92rem;
     color: var(--text-mute);
-    margin-bottom: 2.2rem;
+    margin-bottom: 2rem;
 }
 .infos-rapides span { white-space: nowrap; }
 
-/* ============================================
-   Boutons
-   ============================================ */
 .cta-buttons {
     display: flex;
     gap: 0.8rem;
-    justify-content: center;
     flex-wrap: wrap;
 }
 .cta-buttons.downloads { margin-top: 1rem; }
 
+/* ---- Panneau de supervision (signature) ---- */
+.status-panel {
+    position: relative;
+    background: var(--ink);
+    border-radius: var(--radius);
+    padding: 1.3rem 1.3rem 1.1rem;
+    box-shadow: 0 25px 60px -20px rgba(11, 18, 32, 0.55);
+    font-family: var(--mono);
+    overflow: hidden;
+}
+.status-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 100% at 100% 0%, rgba(56, 189, 248, 0.16), transparent 60%);
+    pointer-events: none;
+}
+.status-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.status-uptime {
+    font-size: 0.7rem;
+    color: rgba(56, 189, 248, 0.75);
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+}
+.status-panel-title {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.03em;
+}
+.status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 0.5rem 0.1rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.status-row:last-of-type { border-bottom: none; }
+.status-row .svc { display: flex; align-items: center; gap: 0.55rem; }
+.status-row .svc-name { color: rgba(255,255,255,0.92); }
+.status-row .svc-meta { color: rgba(255,255,255,0.4); font-size: 0.74rem; }
+.status-led {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex: none;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: pulse-ok 2.4s infinite;
+}
+.status-led.warn { background: var(--warn); animation: pulse-warn 2.4s infinite; }
+@keyframes pulse-warn {
+    0%   { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
+    70%  { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+.status-pill {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--ok-soft);
+}
+.status-pill.warn { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
+
+.status-log {
+    margin-top: 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.74rem;
+    color: rgba(255,255,255,0.45);
+    min-height: 1.4em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.status-log .caret {
+    display: inline-block;
+    width: 6px; height: 1em;
+    background: var(--accent);
+    vertical-align: -2px;
+    margin-left: 2px;
+    animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---- Séquence de boot : les services "s'allument" un par un ---- */
+.boot .status-row {
+    opacity: 0;
+    transform: translateY(6px);
+}
+.boot .status-row.online {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity var(--dur-normal) var(--ease), transform var(--dur-normal) var(--ease);
+}
+/* avant d'être online, la LED est éteinte (grise) et la pastille masquée */
+.boot .status-row:not(.online) .status-led { background: rgba(255,255,255,0.18); animation: none; box-shadow: none; }
+.boot .status-row:not(.online) .status-pill { opacity: 0; }
+.status-row .status-pill { transition: opacity var(--dur-fast) var(--ease); }
+
+/* ---- Staging du hero au chargement (un seul moment orchestré) ---- */
+.hero-stage .hero-eyebrow,
+.hero-stage .hero h1,
+.hero-stage .hero .lede,
+.hero-stage .infos-rapides,
+.hero-stage .cta-buttons {
+    opacity: 0;
+    transform: translateY(12px);
+}
+.hero-stage.played .hero-eyebrow,
+.hero-stage.played .hero h1,
+.hero-stage.played .hero .lede,
+.hero-stage.played .infos-rapides,
+.hero-stage.played .cta-buttons {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+}
+.hero-stage.played .hero h1        { transition-delay: 0.08s; }
+.hero-stage.played .hero .lede     { transition-delay: 0.16s; }
+.hero-stage.played .infos-rapides  { transition-delay: 0.24s; }
+.hero-stage.played .cta-buttons    { transition-delay: 0.32s; }
+.hero-stage.played .cta-buttons.downloads { transition-delay: 0.40s; }
+.status-panel {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+}
+.hero-stage.played .status-panel {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+    transition-delay: 0.12s;
+}
+
+/* ============================================
+   Boutons
+   ============================================ */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -372,6 +570,18 @@ p, li { text-wrap: pretty; }
     box-shadow: var(--shadow);
 }
 
+.btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-mute);
+}
+.btn-ghost:hover { color: var(--primary); background: var(--blue-50); }
+.btn[disabled], .btn.is-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* ============================================
    Cartes génériques
    ============================================ */
@@ -391,7 +601,6 @@ p, li { text-wrap: pretty; }
     transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
     overflow: hidden;
 }
-/* liseré haut animé au survol */
 .card::before {
     content: "";
     position: absolute;
@@ -413,7 +622,7 @@ p, li { text-wrap: pretty; }
 .card .btn { margin-top: 1.1rem; }
 
 /* ============================================
-   Cartes certifications (badge initiales)
+   Cartes certifications
    ============================================ */
 .cert-card { display: flex; flex-direction: column; }
 .cert-top {
@@ -462,11 +671,39 @@ p, li { text-wrap: pretty; }
     border-radius: 999px;
     margin-bottom: 0.7rem;
 }
+.certs-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin: 1.2rem 0 2.2rem;
+    padding: 1.1rem 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+.certs-summary .stat { display: flex; flex-direction: column; }
+.certs-summary .stat strong {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    color: var(--primary);
+    line-height: 1.1;
+}
+.certs-summary .stat span {
+    font-size: 0.82rem;
+    color: var(--text-mute);
+}
 
 /* ============================================
-   Projet — badge type Centreon
+   Projets
    ============================================ */
 .project-card { display: flex; flex-direction: column; }
+.project-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+}
 .project-badge {
     width: 58px; height: 58px;
     border-radius: 14px;
@@ -487,11 +724,6 @@ p, li { text-wrap: pretty; }
     background: linear-gradient(135deg, #ff6600, #ff9248);
     box-shadow: 0 8px 18px -6px rgba(255, 102, 0, 0.5);
 }
-/* badge "à venir" pour projets vides */
-.soon-badge {
-    background: linear-gradient(135deg, var(--blue-300), var(--blue-400));
-    box-shadow: 0 8px 18px -6px rgba(96, 165, 250, 0.45);
-}
 .project-tag {
     display: inline-block;
     align-self: flex-start;
@@ -506,7 +738,99 @@ p, li { text-wrap: pretty; }
     border-radius: 999px;
     margin-bottom: 0.8rem;
 }
-.card.is-placeholder { opacity: 0.85; }
+.project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.9rem 0 0.3rem;
+}
+.project-stack span {
+    font-size: 0.76rem;
+    font-family: var(--mono);
+    color: var(--text-soft);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 0.18rem 0.55rem;
+    border-radius: 6px;
+}
+.project-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--ok);
+}
+.project-status .status-led { animation: pulse-ok 2.4s infinite; }
+.btn-note {
+    margin-top: 0.7rem;
+    font-size: 0.82rem;
+    color: var(--text-mute);
+}
+
+/* ---- Carte projet "à venir" : slot vivant, pas un trou vide ---- */
+.card.is-placeholder {
+    background: var(--surface-2);
+    border: 1.5px dashed var(--blue-200);
+    box-shadow: none;
+}
+.card.is-placeholder::before { display: none; }
+.card.is-placeholder:hover {
+    border-color: var(--primary);
+    transform: none;
+    box-shadow: none;
+}
+.project-card.is-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 220px;
+}
+.placeholder-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--blue-200);
+    color: var(--blue-400);
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+.card.is-placeholder h3 { color: var(--text-mute); }
+.card.is-placeholder p { color: var(--text-mute); font-size: 0.92rem; }
+.placeholder-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--blue-300);
+}
+.placeholder-progress .bar {
+    flex: 1;
+    height: 4px;
+    background: var(--blue-100);
+    border-radius: 999px;
+    overflow: hidden;
+    max-width: 90px;
+}
+.placeholder-progress .bar i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-300), var(--accent));
+    border-radius: 999px;
+    animation: indeterminate 2.2s ease-in-out infinite;
+}
+@keyframes indeterminate {
+    0%   { width: 10%; margin-left: 0%; }
+    50%  { width: 55%; margin-left: 30%; }
+    100% { width: 10%; margin-left: 90%; }
+}
 
 /* ============================================
    À propos — blocs
@@ -573,6 +897,11 @@ p, li { text-wrap: pretty; }
     word-break: break-word;
 }
 .contact-list li:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.contact-list a {
+    color: var(--text-soft);
+    text-decoration: none;
+}
+.contact-list a:hover { color: var(--primary); }
 .contact-list .ico {
     flex: none;
     width: 34px; height: 34px;
@@ -582,6 +911,11 @@ p, li { text-wrap: pretty; }
     align-items: center;
     justify-content: center;
     font-size: 1rem;
+}
+.contact-note {
+    margin-top: 1.2rem;
+    color: var(--text-mute);
+    font-size: 0.92rem;
 }
 
 /* ============================================
@@ -608,7 +942,6 @@ p, li { text-wrap: pretty; }
     display: flex; align-items: center; gap: 0.5rem;
 }
 .competence-bloc p { color: var(--text-soft); font-size: 0.95rem; margin-bottom: 0.3rem; }
-/* tags compétences */
 .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.3rem; }
 .skill-tags span {
     font-size: 0.8rem;
@@ -617,6 +950,16 @@ p, li { text-wrap: pretty; }
     border: 1px solid var(--blue-100);
     padding: 0.22rem 0.6rem;
     border-radius: 999px;
+}
+.skill-tags span[data-level] { position: relative; padding-right: 1.6rem; }
+.skill-tags span[data-level]::after {
+    content: attr(data-level);
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.62rem;
+    opacity: 0.7;
 }
 
 /* ============================================
@@ -659,11 +1002,16 @@ p, li { text-wrap: pretty; }
     transition: background 0.25s var(--ease);
 }
 .timeline li:hover::before { background: var(--primary); }
+.timeline li.current::before {
+    background: var(--ok);
+    border-color: var(--ok);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+}
 .timeline .when {
     display: inline-block;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: 0.82rem;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 0.78rem;
     color: var(--primary);
     background: var(--blue-50);
     padding: 0.1rem 0.55rem;
@@ -676,7 +1024,7 @@ p, li { text-wrap: pretty; }
 .timeline li.future::before { border-color: var(--blue-300); }
 
 /* ============================================
-   Cartes épreuve / veille (déjà .card mais titrage)
+   Cartes épreuve / veille
    ============================================ */
 .card h2 {
     font-size: 1.25rem;
@@ -707,6 +1055,22 @@ p, li { text-wrap: pretty; }
     margin: 1rem 0;
     border: 0;
 }
+.veille-source {
+    margin-top: 0.7rem;
+    font-size: 0.82rem;
+    color: var(--text-mute);
+    font-style: italic;
+}
+.epreuve-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    margin-bottom: 0.9rem;
+}
+.epreuve-status.pending { color: var(--warn); }
+.epreuve-status.done { color: var(--ok); }
 
 /* ============================================
    Footer
@@ -732,6 +1096,13 @@ footer {
     transition: color 0.2s var(--ease);
 }
 .footer-links a:hover { color: var(--primary); }
+.footer-uptime {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--text-mute);
+    margin-top: 0.4rem;
+}
+.footer-uptime .status-led { display: inline-block; margin-right: 0.3rem; }
 
 /* ============================================
    Animations au scroll (reveal)
@@ -745,7 +1116,6 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
-/* stagger via index */
 .reveal[data-i="1"]  { transition-delay: 0.05s; }
 .reveal[data-i="2"]  { transition-delay: 0.10s; }
 .reveal[data-i="3"]  { transition-delay: 0.15s; }
@@ -763,6 +1133,13 @@ footer {
 /* ============================================
    Responsive
    ============================================ */
+@media (max-width: 860px) {
+    .hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .hero .lede { margin-left: auto; margin-right: auto; }
+    .infos-rapides, .cta-buttons { justify-content: center; }
+    .status-panel { max-width: 420px; margin: 0 auto; width: 100%; }
+}
+
 @media (max-width: 768px) {
     .nav-container { padding: 0.8rem 1.2rem; }
     .nav-links { gap: 0.1rem; }
