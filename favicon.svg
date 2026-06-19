@@ -1,85 +1,11 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes Épreuves | Shabdpreet Singh</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Mes Epreuves | Shabdpreet Singh">
-    <meta property="og:description" content="Les epreuves professionnelles du BTS SIO de Shabdpreet Singh.">
-    <meta name="theme-color" content="#2563eb">
-</head>
-<body>
-    <div class="read-progress"></div>
-    <nav>
-        <div class="nav-container">
-            <a href="./index.html" class="logo">
-                <span class="logo-mark">S</span>
-                <span class="logo-text">Shabdpreet Singh</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="./index.html">Accueil</a></li>
-                <li><a href="./epreuve.html">Épreuves</a></li>
-                <li><a href="./projet.html">Projets</a></li>
-                <li><a href="./veille.html">Veille</a></li>
-                <li><a href="./certifs.html">Certifications</a></li>
-            </ul>
-                <div class="nav-actions">
-                    <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le theme clair/sombre" title="Theme clair/sombre"><span class="moon">◐</span><span class="sun">☀</span></button>
-                </div>
-            </div>
-    </nav>
-
-    <main>
-        <span class="page-eyebrow"><span class="dot"></span> BTS SIO — épreuves professionnelles</span>
-        <h1>Mes Épreuves</h1>
-        <p class="page-intro">Les épreuves professionnelles du BTS SIO et les documents associés, au fil de ma progression sur les deux ans de formation.</p>
-
-        <div class="term reveal" aria-hidden="true" style="margin-bottom:2.5rem">
-            <div class="term-head">
-                <span class="term-dots"><i></i><i></i><i></i></span>
-                <span class="term-title">bts-sio — état des épreuves</span>
-            </div>
-            <div class="term-body">
-                <p class="term-line"><span class="prompt">$</span>epreuves --status</p>
-                <p class="term-line out">[<span class="ok2">UP</span>]      E4 — support et services informatiques</p>
-                <p class="term-line out">[<span class="warn2">PENDING</span>] E6 — cybersécurité des services</p>
-                <p class="term-line comment"># 1 / 2 livrées · suite au fil de la formation</p>
-            </div>
-        </div>
-
-        <section class="card reveal" data-i="1">
-            <span class="epreuve-status done"><span class="status-led"></span>Document disponible</span>
-            <h2>E4 — Support et mise à disposition de services informatiques</h2>
-            <p>Épreuve s'appuyant sur le tableau de synthèse des réalisations professionnelles menées en formation et en entreprise : incidents traités, services déployés, compétences mobilisées.</p>
-            <a href="./fichiers/Tableau_synthese_E4_BTS_SIO.xlsx" class="btn btn-outline" download>📊 Télécharger le tableau de synthèse E4</a>
-        </section>
-
-        <section class="card is-placeholder reveal" data-i="2">
-            <span class="epreuve-status pending"><span class="status-led warn"></span>À venir</span>
-            <h2>E6 — Cybersécurité des services informatiques</h2>
-            <p>Présentation des compétences validées lors de l'épreuve E6, autour des situations professionnelles rencontrées en sécurité informatique. Les documents seront mis en ligne au fur et à mesure de l'avancée de ma formation.</p>
-            <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-links">
-            <a href="https://github.com/shab14" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
-        </div>
-        <p>© 2026 Shabdpreet Singh — Portfolio</p>
-        <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
-        <p class="footer-clock" id="clock"></p>
-    </footer>
-    <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>
-    <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
-    <script src="./script.js"></script>
-</body>
-</html>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <text x="32" y="44" font-family="Space Grotesk, Arial, sans-serif" font-size="38" font-weight="700" fill="#fff" text-anchor="middle">S</text>
+  <circle cx="50" cy="16" r="5" fill="#22c55e" stroke="#0b1220" stroke-width="2"/>
+</svg>

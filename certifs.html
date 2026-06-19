@@ -3,71 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 — Service introuvable | Shabdpreet Singh</title>
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-    <meta name="theme-color" content="#2563eb">
+    <title>Mes Certifications | Shabdpreet Singh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-    <style>
-        .err-wrap {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-        .err-panel {
-            background: var(--panel-bg);
-            border-radius: var(--radius);
-            padding: 2.2rem;
-            max-width: 460px;
-            width: 100%;
-            font-family: var(--mono);
-            box-shadow: 0 25px 60px -20px rgba(11, 18, 32, 0.55);
-            border: 1px solid rgba(148, 197, 255, 0.12);
-        }
-        .err-panel .head {
-            display: flex; align-items: center; justify-content: space-between;
-            padding-bottom: 0.8rem; margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-size: 0.72rem; color: rgba(255,255,255,0.55); letter-spacing: 0.03em;
-        }
-        .err-panel .code {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 4rem; font-weight: 700; color: #fff; line-height: 1; margin: 0.4rem 0;
-        }
-        .err-panel .code .x { color: var(--warn); }
-        .err-line { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0.3rem 0; }
-        .err-line .ok2 { color: var(--ok); }
-        .err-line .warn2 { color: var(--warn); }
-        .err-panel .btn { margin-top: 1.4rem; width: 100%; }
-        .err-led {
-            width: 8px; height: 8px; border-radius: 50%; background: var(--warn);
-            display: inline-block; margin-right: 0.4rem;
-            box-shadow: 0 0 0 0 rgba(245,158,11,0.6); animation: pulse-warn 2s infinite;
-        }
-    </style>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Certifications | Shabdpreet Singh">
+    <meta property="og:description" content="Certifications IA et numeriques de Shabdpreet Singh.">
+    <meta name="theme-color" content="#2563eb">
 </head>
 <body>
-    <div class="err-wrap">
-        <div class="err-panel">
-            <div class="head">
-                <span><span class="err-led"></span>SUPERVISION — INCIDENT</span>
-                <span>HTTP 404</span>
+    <div class="read-progress"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <span class="logo-mark">S</span>
+                <span class="logo-text">Shabdpreet Singh</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Accueil</a></li>
+                <li><a href="./epreuve.html">Épreuves</a></li>
+                <li><a href="./projet.html">Projets</a></li>
+                <li><a href="./veille.html">Veille</a></li>
+                <li><a href="./certifs.html">Certifications</a></li>
+            </ul>
+                <div class="nav-actions">
+                    <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le theme clair/sombre" title="Theme clair/sombre"><span class="moon">◐</span><span class="sun">☀</span></button>
+                </div>
             </div>
-            <div class="code">4<span class="x">0</span>4</div>
-            <p class="err-line">$ curl page demandée</p>
-            <p class="err-line"><span class="warn2">&gt; statut : NOT FOUND</span></p>
-            <p class="err-line">La ressource n'existe pas ou a été déplacée.</p>
-            <p class="err-line"><span class="ok2">&gt; reste des services : OK</span></p>
-            <a href="./index.html" class="btn btn-primary">↩ Retour à l'accueil</a>
+    </nav>
+
+    <main>
+        <span class="page-eyebrow"><span class="dot"></span> 13 certifications obtenues</span>
+        <h1>Certifications</h1>
+        <p class="page-intro">Mes certifications numériques et IA, dont le parcours complet de certifications Anthropic — suivi en parallèle de ma formation, sur les sujets qui recoupent directement le SISR : automatisation, agents et administration assistée par IA.</p>
+        <div class="certs-summary">
+            <div class="stat"><strong data-count="13">13</strong><span>certifications</span></div>
+            <div class="stat"><strong data-count="11">11</strong><span>Anthropic / IA</span></div>
+            <div class="stat"><strong>10/10</strong><span>score AI Fluency</span></div>
+            <div class="stat"><strong>2025—26</strong><span>période</span></div>
         </div>
-    </div>
-    <script>
-        // Applique le thème sauvegardé pour cohérence
-        (function(){ try { var t = localStorage.getItem('theme'); if(t) document.documentElement.setAttribute('data-theme', t); } catch(e){} })();
-    </script>
+
+        <div class="term reveal" aria-hidden="true" style="margin:0 0 2.5rem">
+            <div class="term-head">
+                <span class="term-dots"><i></i><i></i><i></i></span>
+                <span class="term-title">certs — registre</span>
+            </div>
+            <div class="term-body">
+                <p class="term-line"><span class="prompt">$</span>certs --count</p>
+                <p class="term-line out"><span class="ok2">13 validées</span></p>
+                <p class="term-line"><span class="prompt">$</span>certs --provider anthropic</p>
+                <p class="term-line out">11 / 13 &nbsp;<span class="accent2">(parcours IA complet)</span></p>
+                <p class="term-line"><span class="prompt">$</span>certs --best</p>
+                <p class="term-line out">AI Fluency — score <span class="ok2">10/10</span></p>
+            </div>
+        </div>
+
+        <div class="rings reveal">
+            <div class="ring-item">
+                <svg class="ring" viewBox="0 0 72 72" style="--c:201; --off:0">
+                    <circle class="bg" cx="36" cy="36" r="32"/>
+                    <circle class="fg" cx="36" cy="36" r="32"/>
+                    <text class="ring-text" x="36" y="40">100%</text>
+                </svg>
+                <div class="meta"><strong>AI Fluency</strong><span>score 10/10</span></div>
+            </div>
+            <div class="ring-item">
+                <svg class="ring" viewBox="0 0 72 72" style="--c:201; --off:31">
+                    <circle class="bg" cx="36" cy="36" r="32"/>
+                    <circle class="fg" cx="36" cy="36" r="32"/>
+                    <text class="ring-text" x="36" y="40">85%</text>
+                </svg>
+                <div class="meta"><strong>Parcours Anthropic</strong><span>11 / 13 certifications</span></div>
+            </div>
+            <div class="ring-item">
+                <svg class="ring" viewBox="0 0 72 72" style="--c:201; --off:10">
+                    <circle class="bg" cx="36" cy="36" r="32"/>
+                    <circle class="fg" cx="36" cy="36" r="32"/>
+                    <text class="ring-text" x="36" y="40">95%</text>
+                </svg>
+                <div class="meta"><strong>Régularité</strong><span>suivi en parallèle du BTS</span></div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card cert-card reveal" data-i="1">
+                <span class="cert-pill">PIX</span>
+                <div class="cert-top">
+                    <div class="cert-badge">PIX</div>
+                    <h3>Certifications PIX</h3>
+                </div>
+                <p>Validation des compétences numériques fondamentales.</p>
+                <div class="cert-meta"><strong>Date :</strong> 2025</div>
+            </div>
+            <div class="card cert-card reveal" data-i="2">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">AF</div>
+                    <h3>AI Fluency: Framework & Foundations</h3>
+                </div>
+                <p>Bases de la maîtrise des IA.</p>
+                <div class="cert-meta"><strong>Date :</strong> 21 avril 2026 &nbsp;|&nbsp; <span class="score">Score : 10/10</span></div>
+            </div>
+            <div class="card cert-card reveal" data-i="3">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">C</div>
+                    <h3>Claude 101</h3>
+                </div>
+                <p>Fondamentaux de Claude.</p>
+                <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="4">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">CC</div>
+                    <h3>Claude Code 101</h3>
+                </div>
+                <p>Bases de Claude Code.</p>
+                <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="5">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">CA</div>
+                    <h3>Claude Code in Action</h3>
+                </div>
+                <p>Usage pratique de Claude Code.</p>
+                <div class="cert-meta"><strong>Date :</strong> 21 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="6">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">CW</div>
+                    <h3>Introduction to Claude Cowork</h3>
+                </div>
+                <p>Introduction à Claude Cowork.</p>
+                <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="7">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">SA</div>
+                    <h3>Introduction to subagents</h3>
+                </div>
+                <p>Introduction aux subagents.</p>
+                <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="8">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">API</div>
+                    <h3>Building with the Claude API</h3>
+                </div>
+                <p>Développement avec l'API Claude.</p>
+                <div class="cert-meta"><strong>Date :</strong> 27 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="9">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">MCP</div>
+                    <h3>Introduction to Model Context Protocol</h3>
+                </div>
+                <p>Introduction au protocole MCP.</p>
+                <div class="cert-meta"><strong>Date :</strong> 28 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="10">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">MCP</div>
+                    <h3>Model Context Protocol: Advanced Topics</h3>
+                </div>
+                <p>Sujets avancés du protocole MCP.</p>
+                <div class="cert-meta"><strong>Date :</strong> 5 mai 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="11">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">AI</div>
+                    <h3>AI Capabilities and Limitations</h3>
+                </div>
+                <p>Capacités et limites de l'IA.</p>
+                <div class="cert-meta"><strong>Date :</strong> 28 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="12">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">ST</div>
+                    <h3>AI Fluency for students</h3>
+                </div>
+                <p>Maîtrise de l'IA pour étudiants.</p>
+                <div class="cert-meta"><strong>Date :</strong> 28 avril 2026</div>
+            </div>
+            <div class="card cert-card reveal" data-i="13">
+                <span class="cert-pill">Anthropic</span>
+                <div class="cert-top">
+                    <div class="cert-badge">ED</div>
+                    <h3>AI Fluency for educators</h3>
+                </div>
+                <p>Maîtrise de l'IA pour formateurs.</p>
+                <div class="cert-meta"><strong>Date :</strong> 11 mai 2026</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/shab14" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
+        </div>
+        <p>© 2026 Shabdpreet Singh — Portfolio</p>
+        <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
+        <p class="footer-clock" id="clock"></p>
+    </footer>
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>
+    <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
+    <script src="./script.js"></script>
 </body>
 </html>
