@@ -12,6 +12,53 @@
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
+  /* ---- Thème clair/sombre (persisté) ---- */
+  (function theme() {
+    const root = document.documentElement;
+    let saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (e) {}
+    if (!saved) {
+      saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    root.setAttribute('data-theme', saved);
+    const btn = $('#themeToggle');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+      });
+    }
+  })();
+
+  /* ---- Copier au clic (email / tel) ---- */
+  $$('.copyable').forEach(el => {
+    el.addEventListener('click', (ev) => {
+      if (ev.target.tagName === 'A') return; // laisser mailto/tel marcher
+      const txt = el.dataset.copy || '';
+      const done = () => { el.classList.add('copied'); setTimeout(() => el.classList.remove('copied'), 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done).catch(() => {});
+      }
+    });
+  });
+
+  /* ---- Scroll-to-top ---- */
+  const topBtn = $('#scrollTop');
+  if (topBtn) {
+    let t = false;
+    const onScroll = () => {
+      if (!t) { t = true; requestAnimationFrame(() => {
+        topBtn.classList.toggle('show', window.scrollY > 500);
+        t = false;
+      }); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    topBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    });
+  }
+
   /* ---- Barre de progression de lecture ---- */
   const bar = $('.read-progress');
   if (bar) {

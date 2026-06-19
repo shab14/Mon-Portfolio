@@ -8,6 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Veille Technologique | Shabdpreet Singh">
+    <meta property="og:description" content="Veille IT de Shabdpreet Singh : cybersecurite, reseaux, IA.">
+    <meta name="theme-color" content="#2563eb">
 </head>
 <body>
     <div class="read-progress"></div>
@@ -24,7 +29,10 @@
                 <li><a href="./veille.html">Veille</a></li>
                 <li><a href="./certifs.html">Certifications</a></li>
             </ul>
-        </div>
+                <div class="nav-actions">
+                    <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le theme clair/sombre" title="Theme clair/sombre"><span class="moon">◐</span><span class="sun">☀</span></button>
+                </div>
+            </div>
     </nav>
 
     <main>
@@ -98,6 +106,7 @@
         <p>© 2026 Shabdpreet Singh — Portfolio</p>
         <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
     </footer>
+    <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
     <script src="./script.js"></script>
 </body>
 </html>

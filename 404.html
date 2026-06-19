@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Service introuvable | Shabdpreet Singh</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .err-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .err-panel {
+            background: var(--panel-bg);
+            border-radius: var(--radius);
+            padding: 2.2rem;
+            max-width: 460px;
+            width: 100%;
+            font-family: var(--mono);
+            box-shadow: 0 25px 60px -20px rgba(11, 18, 32, 0.55);
+            border: 1px solid rgba(148, 197, 255, 0.12);
+        }
+        .err-panel .head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-bottom: 0.8rem; margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.72rem; color: rgba(255,255,255,0.55); letter-spacing: 0.03em;
+        }
+        .err-panel .code {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem; font-weight: 700; color: #fff; line-height: 1; margin: 0.4rem 0;
+        }
+        .err-panel .code .x { color: var(--warn); }
+        .err-line { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0.3rem 0; }
+        .err-line .ok2 { color: var(--ok); }
+        .err-line .warn2 { color: var(--warn); }
+        .err-panel .btn { margin-top: 1.4rem; width: 100%; }
+        .err-led {
+            width: 8px; height: 8px; border-radius: 50%; background: var(--warn);
+            display: inline-block; margin-right: 0.4rem;
+            box-shadow: 0 0 0 0 rgba(245,158,11,0.6); animation: pulse-warn 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="err-wrap">
+        <div class="err-panel">
+            <div class="head">
+                <span><span class="err-led"></span>SUPERVISION — INCIDENT</span>
+                <span>HTTP 404</span>
+            </div>
+            <div class="code">4<span class="x">0</span>4</div>
+            <p class="err-line">$ curl page demandée</p>
+            <p class="err-line"><span class="warn2">&gt; statut : NOT FOUND</span></p>
+            <p class="err-line">La ressource n'existe pas ou a été déplacée.</p>
+            <p class="err-line"><span class="ok2">&gt; reste des services : OK</span></p>
+            <a href="./index.html" class="btn btn-primary">↩ Retour à l'accueil</a>
+        </div>
+    </div>
+    <script>
+        // Applique le thème sauvegardé pour cohérence
+        (function(){ try { var t = localStorage.getItem('theme'); if(t) document.documentElement.setAttribute('data-theme', t); } catch(e){} })();
+    </script>
+</body>
+</html>
