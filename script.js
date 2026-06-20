@@ -12,14 +12,44 @@
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-  /* ---- Spotlight qui suit la souris sur les cartes ---- */
+  /* ---- Spotlight + tilt 3D qui suivent la souris sur les cartes ---- */
   if (!reduced && window.matchMedia('(hover: hover)').matches) {
+    const MAXT = 5; // amplitude du tilt en degrés
     $$('.card, .apropos-bloc, .competence-bloc').forEach(card => {
+      const tiltable = card.classList.contains('card');
       card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
-        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
-        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--mx', (px * 100) + '%');
+        card.style.setProperty('--my', (py * 100) + '%');
+        if (tiltable) {
+          const ry = (px - 0.5) * 2 * MAXT;
+          const rx = (0.5 - py) * 2 * MAXT;
+          // inline-style → prime sur les règles :hover, donc pas de conflit
+          card.style.transform =
+            `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-4px)`;
+        }
       });
+      if (tiltable) {
+        card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+      }
+    });
+  }
+
+  /* ---- Boutons magnétiques (CTA principal) ---- */
+  if (!reduced && window.matchMedia('(hover: hover)').matches) {
+    const STR = 0.28, MAX = 10;
+    $$('.btn-primary').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        let dx = (e.clientX - (r.left + r.width / 2)) * STR;
+        let dy = (e.clientY - (r.top + r.height / 2)) * STR;
+        dx = Math.max(-MAX, Math.min(MAX, dx));
+        dy = Math.max(-MAX, Math.min(MAX, dy));
+        btn.style.transform = `translate(${dx.toFixed(1)}px, ${(dy - 2).toFixed(1)}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
     });
   }
 
@@ -353,4 +383,301 @@
       if (document.hidden) stop(); else start();
     });
   }
+
+  /* ---- Hero : rôles qui tournent ---- */
+  (function roles() {
+    const el = $('.role-word');
+    if (!el) return;
+    const words = (el.dataset.roles || '').split(',').map(w => w.trim()).filter(Boolean);
+    if (words.length < 2 || reduced) return;
+    let i = 0;
+    setInterval(() => {
+      el.style.opacity = '0';
+      setTimeout(() => {
+        i = (i + 1) % words.length;
+        el.textContent = words[i];
+        el.style.opacity = '1';
+      }, 200);
+    }, 2300);
+  })();
+
+  /* ============================================================
+     Timeline qui se dessine au scroll
+     ============================================================ */
+  (function timelineDraw() {
+    const timelines = $$('.timeline');
+    if (!timelines.length) return;
+    if (reduced) {
+      timelines.forEach(t => {
+        t.style.setProperty('--tp', 1);
+        $$('li', t).forEach(li => li.classList.add('lit'));
+      });
+      return;
+    }
+    const update = () => {
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const trigger = vh * 0.62;
+      timelines.forEach(t => {
+        const r = t.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, (trigger - r.top) / (r.height || 1)));
+        t.style.setProperty('--tp', p.toFixed(3));
+        $$('li', t).forEach(li => {
+          li.classList.toggle('lit', li.getBoundingClientRect().top < trigger);
+        });
+      });
+    };
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(() => { update(); ticking = false; }); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+
+  /* ============================================================
+     Transitions entre pages — fade out avant navigation interne
+     ============================================================ */
+  (function pageTransition() {
+    if (reduced) return; // pas de fade sous mouvement réduit
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest('a');
+      if (!a) return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+      const href = a.getAttribute('href') || '';
+      if (!href || href.charAt(0) === '#' || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      if (a.origin !== location.origin) return;      // liens externes : navigation normale
+      if (a.href === location.href) return;          // même page
+      e.preventDefault();
+      document.documentElement.classList.add('is-leaving');
+      setTimeout(() => { location.href = a.href; }, 200);
+    });
+    // retour arrière (bfcache) : on enlève l'état "leaving"
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) document.documentElement.classList.remove('is-leaving');
+    });
+  })();
+
+  /* ============================================================
+     Filtre certifications (chips provider + recherche live)
+     Progressive enhancement : sans JS, toutes les cartes restent.
+     ============================================================ */
+  (function certFilter() {
+    const bar = $('.cert-filter');
+    if (!bar) return;
+    const grid = bar.nextElementSibling;
+    const cards = $$('.cert-card', grid);
+    const chips = $$('.chip:not(.cert-sort)', bar);
+    const sortBtn = $('.cert-sort', bar);
+    const search = $('.cert-search', bar);
+    const count = $('.cert-count', bar);
+    let prov = 'all';
+
+    let noRes = grid.querySelector('.certs-no-result');
+    if (!noRes) {
+      noRes = document.createElement('div');
+      noRes.className = 'certs-no-result';
+      noRes.hidden = true;
+      noRes.textContent = 'Aucune certification ne correspond.';
+      grid.appendChild(noRes);
+    }
+
+    const apply = () => {
+      const q = (search.value || '').trim().toLowerCase();
+      let shown = 0;
+      cards.forEach(card => {
+        const okProv = prov === 'all' || card.dataset.provider === prov;
+        const okText = !q || card.textContent.toLowerCase().includes(q);
+        const show = okProv && okText;
+        card.classList.toggle('is-hidden', !show);
+        if (show) { card.classList.add('in'); shown++; }
+      });
+      noRes.hidden = shown !== 0;
+      count.textContent = shown + ' / ' + cards.length + ' affichées';
+    };
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('is-active'));
+        chip.classList.add('is-active');
+        prov = chip.dataset.filter;
+        apply();
+      });
+    });
+    if (search) search.addEventListener('input', apply);
+
+    if (sortBtn) {
+      sortBtn.addEventListener('click', () => {
+        const dir = sortBtn.dataset.dir === 'desc' ? 'asc' : 'desc';
+        sortBtn.dataset.dir = dir;
+        sortBtn.classList.add('is-active');
+        sortBtn.textContent = dir === 'desc' ? '↓ Plus récent' : '↑ Plus ancien';
+        const sorted = cards.slice().sort((a, b) => {
+          const da = a.dataset.date || '', db = b.dataset.date || '';
+          return dir === 'desc' ? db.localeCompare(da) : da.localeCompare(db);
+        });
+        sorted.forEach(c => grid.insertBefore(c, noRes));
+        apply();
+      });
+    }
+
+    apply();
+  })();
+
+  /* ============================================================
+     Palette de commandes (⌘K / Ctrl+K / "/") + skip-link
+     ============================================================ */
+  (function commandPalette() {
+    // --- Skip-link accessibilité (1er élément focusable) ---
+    const main = document.querySelector('main');
+    if (main) {
+      if (!main.id) main.id = 'contenu';
+      const skip = document.createElement('a');
+      skip.className = 'skip-link';
+      skip.href = '#' + main.id;
+      skip.textContent = 'Aller au contenu';
+      document.body.insertBefore(skip, document.body.firstChild);
+    }
+
+    // --- Actions disponibles ---
+    const go   = (rel) => { location.href = './' + rel; };
+    const ext  = (url) => { window.open(url, '_blank', 'noopener'); };
+    const copy = (txt) => { if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => {}); };
+    const toggleTheme = () => {
+      const root = document.documentElement;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    };
+    const actions = [
+      { icon: '🏠', label: 'Accueil',               hint: 'page',   run: () => go('index.html') },
+      { icon: '📋', label: 'Épreuves',              hint: 'page',   run: () => go('epreuve.html') },
+      { icon: '🗂️', label: 'Projets',               hint: 'page',   run: () => go('projet.html') },
+      { icon: '📡', label: 'Veille technologique',  hint: 'page',   run: () => go('veille.html') },
+      { icon: '🎓', label: 'Certifications',        hint: 'page',   run: () => go('certifs.html') },
+      { icon: '◐',  label: 'Basculer le thème clair / sombre', hint: 'action', run: toggleTheme },
+      { icon: '✉️', label: 'Copier mon email',      hint: 'action', run: () => copy('Shabdpreetsingh2@gmail.com') },
+      { icon: '📄', label: 'Télécharger mon CV',    hint: 'fichier', run: () => go('fichiers/CV_Shabdpreet_Singh.pdf') },
+      { icon: '💻', label: 'GitHub',                hint: 'lien',   run: () => ext('https://github.com/shab14') },
+      { icon: '🔗', label: 'LinkedIn',              hint: 'lien',   run: () => ext('https://www.linkedin.com/in/shabdpreet-singh-401012376/') }
+    ];
+
+    // --- Construction du DOM de la palette ---
+    const wrap = document.createElement('div');
+    wrap.className = 'cmdk';
+    wrap.id = 'cmdk';
+    wrap.hidden = true;
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-label', 'Palette de commandes');
+    wrap.innerHTML =
+      '<div class="cmdk-backdrop" data-close></div>' +
+      '<div class="cmdk-panel">' +
+        '<div class="cmdk-input-row">' +
+          '<span class="cmdk-prompt" aria-hidden="true">›</span>' +
+          '<input type="text" class="cmdk-input" placeholder="Rechercher une page, une action…" aria-label="Rechercher" autocomplete="off" spellcheck="false">' +
+          '<kbd class="cmdk-esc">esc</kbd>' +
+        '</div>' +
+        '<ul class="cmdk-list" role="listbox" aria-label="Résultats"></ul>' +
+        '<div class="cmdk-foot"><span>↑↓ naviguer</span><span>⏎ ouvrir</span><span>esc fermer</span></div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+
+    const input = wrap.querySelector('.cmdk-input');
+    const list  = wrap.querySelector('.cmdk-list');
+    let filtered = actions.slice();
+    let sel = 0;
+    let lastFocus = null;
+
+    const render = () => {
+      const q = input.value.trim().toLowerCase();
+      filtered = q
+        ? actions.filter(a => a.label.toLowerCase().includes(q) || a.hint.includes(q))
+        : actions.slice();
+      if (sel >= filtered.length) sel = Math.max(0, filtered.length - 1);
+      if (!filtered.length) {
+        list.innerHTML = '<li class="cmdk-empty">Aucun résultat</li>';
+        return;
+      }
+      list.innerHTML = filtered.map((a, i) =>
+        `<li class="cmdk-item" role="option" data-i="${i}" aria-selected="${i === sel}">` +
+          `<span class="cmdk-ico" aria-hidden="true">${a.icon}</span>` +
+          `<span class="cmdk-label">${a.label}</span>` +
+          `<span class="cmdk-hint">${a.hint}</span>` +
+        `</li>`
+      ).join('');
+    };
+
+    const move = (d) => {
+      if (!filtered.length) return;
+      sel = (sel + d + filtered.length) % filtered.length;
+      render();
+      const el = list.querySelector('[aria-selected="true"]');
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    };
+
+    const open = () => {
+      lastFocus = document.activeElement;
+      wrap.hidden = false;
+      input.value = '';
+      sel = 0;
+      render();
+      input.focus();
+    };
+    const close = () => {
+      wrap.hidden = true;
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    };
+    const exec = () => {
+      const a = filtered[sel];
+      if (!a) return;
+      close();
+      a.run();
+    };
+
+    input.addEventListener('input', () => { sel = 0; render(); });
+    list.addEventListener('mousemove', (e) => {
+      const li = e.target.closest('.cmdk-item');
+      if (li) { sel = +li.dataset.i; render(); }
+    });
+    list.addEventListener('click', (e) => {
+      const li = e.target.closest('.cmdk-item');
+      if (li) { sel = +li.dataset.i; exec(); }
+    });
+    wrap.addEventListener('click', (e) => { if (e.target.dataset.close !== undefined) close(); });
+    wrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+      else if (e.key === 'ArrowUp')   { e.preventDefault(); move(-1); }
+      else if (e.key === 'Enter')     { e.preventDefault(); exec(); }
+    });
+
+    // --- Raccourcis globaux : Ctrl/Cmd+K et "/" ---
+    window.addEventListener('keydown', (e) => {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || '')) || e.target.isContentEditable;
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        wrap.hidden ? open() : close();
+      } else if (e.key === '/' && !typing && wrap.hidden) {
+        e.preventDefault();
+        open();
+      }
+    });
+
+    // --- Bouton déclencheur dans la nav (discoverable) ---
+    const navActions = document.querySelector('.nav-actions');
+    if (navActions) {
+      const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cmdk-trigger';
+      btn.setAttribute('aria-label', 'Ouvrir la palette de commandes');
+      btn.title = 'Palette de commandes';
+      btn.innerHTML = '<span class="cmdk-trigger-label">Recherche</span>' +
+                      `<kbd>${isMac ? '⌘' : 'Ctrl'} K</kbd>`;
+      btn.addEventListener('click', open);
+      navActions.insertBefore(btn, navActions.firstChild);
+    }
+  })();
 })();

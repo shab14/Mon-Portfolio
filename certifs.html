@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Certifications | Shabdpreet Singh</title>
+    <meta name="description" content="Certifications de Shabdpreet Singh : parcours Anthropic Academy autour de l'IA et de Claude, et formations en cours.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -13,6 +14,16 @@
     <meta property="og:title" content="Certifications | Shabdpreet Singh">
     <meta property="og:description" content="Certifications IA et numeriques de Shabdpreet Singh.">
     <meta name="theme-color" content="#2563eb">
+
+    <meta property="og:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
+    <meta property="og:url" content="https://shab14.github.io/Mon-Portfolio/certifs.html">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
+    <meta name="twitter:title" content="Shabdpreet Singh | Portfolio">
+    <meta name="twitter:description" content="BTS SIO SISR en alternance chez ALLIANC3 — supervision, réseaux, infrastructure.">
+    <link rel="manifest" href="./site.webmanifest">
 </head>
 <body>
     <div class="read-progress"></div>
@@ -88,8 +99,19 @@
             </div>
         </div>
 
+        <div class="cert-filter reveal" role="region" aria-label="Filtrer les certifications">
+            <div class="cert-filter-chips">
+                <button class="chip is-active" data-filter="all" type="button">Toutes</button>
+                <button class="chip" data-filter="anthropic" type="button">Anthropic</button>
+                <button class="chip" data-filter="pix" type="button">PIX</button>
+            </div>
+            <button class="chip cert-sort" data-dir="none" type="button" aria-label="Trier par date">⇅ Trier par date</button>
+            <input type="text" class="cert-search" placeholder="filtrer par nom…" aria-label="Filtrer par nom" autocomplete="off" spellcheck="false">
+            <span class="cert-count" aria-live="polite"></span>
+        </div>
+
         <div class="grid">
-            <div class="card cert-card reveal" data-i="1">
+            <div class="card cert-card reveal" data-i="1" data-provider="pix" data-date="2025-01-01">
                 <span class="cert-pill">PIX</span>
                 <div class="cert-top">
                     <div class="cert-badge">PIX</div>
@@ -98,7 +120,7 @@
                 <p>Validation des compétences numériques fondamentales.</p>
                 <div class="cert-meta"><strong>Date :</strong> 2025</div>
             </div>
-            <div class="card cert-card reveal" data-i="2">
+            <div class="card cert-card reveal" data-i="2" data-provider="anthropic" data-date="2026-04-21">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">AF</div>
@@ -107,7 +129,7 @@
                 <p>Bases de la maîtrise des IA.</p>
                 <div class="cert-meta"><strong>Date :</strong> 21 avril 2026 &nbsp;|&nbsp; <span class="score">Score : 10/10</span></div>
             </div>
-            <div class="card cert-card reveal" data-i="3">
+            <div class="card cert-card reveal" data-i="3" data-provider="anthropic" data-date="2026-04-20">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">C</div>
@@ -116,7 +138,7 @@
                 <p>Fondamentaux de Claude.</p>
                 <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="4">
+            <div class="card cert-card reveal" data-i="4" data-provider="anthropic" data-date="2026-04-20">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">CC</div>
@@ -125,7 +147,7 @@
                 <p>Bases de Claude Code.</p>
                 <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="5">
+            <div class="card cert-card reveal" data-i="5" data-provider="anthropic" data-date="2026-04-21">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">CA</div>
@@ -134,7 +156,7 @@
                 <p>Usage pratique de Claude Code.</p>
                 <div class="cert-meta"><strong>Date :</strong> 21 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="6">
+            <div class="card cert-card reveal" data-i="6" data-provider="anthropic" data-date="2026-04-20">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">CW</div>
@@ -143,7 +165,7 @@
                 <p>Introduction à Claude Cowork.</p>
                 <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="7">
+            <div class="card cert-card reveal" data-i="7" data-provider="anthropic" data-date="2026-04-20">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">SA</div>
@@ -152,7 +174,7 @@
                 <p>Introduction aux subagents.</p>
                 <div class="cert-meta"><strong>Date :</strong> 20 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="8">
+            <div class="card cert-card reveal" data-i="8" data-provider="anthropic" data-date="2026-04-27">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">API</div>
@@ -161,7 +183,7 @@
                 <p>Développement avec l'API Claude.</p>
                 <div class="cert-meta"><strong>Date :</strong> 27 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="9">
+            <div class="card cert-card reveal" data-i="9" data-provider="anthropic" data-date="2026-04-28">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">MCP</div>
@@ -170,7 +192,7 @@
                 <p>Introduction au protocole MCP.</p>
                 <div class="cert-meta"><strong>Date :</strong> 28 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="10">
+            <div class="card cert-card reveal" data-i="10" data-provider="anthropic" data-date="2026-05-05">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">MCP</div>
@@ -179,7 +201,7 @@
                 <p>Sujets avancés du protocole MCP.</p>
                 <div class="cert-meta"><strong>Date :</strong> 5 mai 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="11">
+            <div class="card cert-card reveal" data-i="11" data-provider="anthropic" data-date="2026-04-28">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">AI</div>
@@ -188,7 +210,7 @@
                 <p>Capacités et limites de l'IA.</p>
                 <div class="cert-meta"><strong>Date :</strong> 28 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="12">
+            <div class="card cert-card reveal" data-i="12" data-provider="anthropic" data-date="2026-04-28">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">ST</div>
@@ -197,7 +219,7 @@
                 <p>Maîtrise de l'IA pour étudiants.</p>
                 <div class="cert-meta"><strong>Date :</strong> 28 avril 2026</div>
             </div>
-            <div class="card cert-card reveal" data-i="13">
+            <div class="card cert-card reveal" data-i="13" data-provider="anthropic" data-date="2026-05-11">
                 <span class="cert-pill">Anthropic</span>
                 <div class="cert-top">
                     <div class="cert-badge">ED</div>
@@ -217,6 +239,7 @@
         </div>
         <p>© 2026 Shabdpreet Singh — Portfolio</p>
         <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels</p>
+        <p class="footer-alt">En alternance chez <img class="footer-brand" src="./fichiers/allianc3-mark.png" alt="" width="18" height="18" loading="lazy"> <strong>Allianc3</strong></p>
         <p class="footer-clock" id="clock"></p>
     </footer>
     <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>

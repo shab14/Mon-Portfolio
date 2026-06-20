@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shab14.github.io/Mon-Portfolio/sitemap.xml
