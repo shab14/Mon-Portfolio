@@ -550,6 +550,237 @@
       root.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch (e) {}
     };
+    /* ============================================================
+       SECRETS — accessibles uniquement en tapant le mot exact
+       dans la recherche : "jeux" → dino runner, "easter egg" → crédits
+       ============================================================ */
+    const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // --- Helper overlay générique ---
+    const buildOverlay = (cls) => {
+      const ov = document.createElement('div');
+      ov.className = 'secret-overlay ' + cls;
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      document.body.appendChild(ov);
+      requestAnimationFrame(() => ov.classList.add('is-on'));
+      document.body.style.overflow = 'hidden';
+      const kill = () => {
+        ov.classList.remove('is-on');
+        document.body.style.overflow = '';
+        setTimeout(() => ov.remove(), 320);
+        window.removeEventListener('keydown', onKey, true);
+      };
+      const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); kill(); } };
+      window.addEventListener('keydown', onKey, true);
+      return { ov, kill };
+    };
+
+    /* ---------------- Easter egg : page crédits ---------------- */
+    function launchEgg() {
+      const { ov, kill } = buildOverlay('egg-overlay');
+      ov.innerHTML =
+        '<button class="secret-close" type="button" aria-label="Fermer">✕</button>' +
+        '<div class="egg-stars" aria-hidden="true"></div>' +
+        '<div class="egg-card">' +
+          '<div class="term egg-term">' +
+            '<div class="term-head"><span class="term-dots"><i></i><i></i><i></i></span>' +
+            '<span class="term-title">secret — credits.sh</span></div>' +
+            '<div class="term-body egg-body"></div>' +
+          '</div>' +
+          '<p class="egg-big">100% fait par <span class="grad">moi</span> &amp; <span class="accent2">Claude</span></p>' +
+          '<p class="egg-sub">Conçu, codé, cassé puis réparé à la main. Aucune template, aucun builder — du HTML, du CSS et du JS écrits ligne par ligne.</p>' +
+          '<div class="egg-badges">' +
+            '<span class="egg-badge">⚡ Vanilla JS</span>' +
+            '<span class="egg-badge">🎨 CSS maison</span>' +
+            '<span class="egg-badge">🤖 Claude (Anthropic)</span>' +
+            '<span class="egg-badge">🚀 GitHub Pages</span>' +
+          '</div>' +
+          '<p class="egg-foot">Tu as trouvé un secret. Il y en a un autre — tape <kbd>jeux</kbd> dans la recherche 🦕</p>' +
+        '</div>';
+      ov.querySelector('.secret-close').addEventListener('click', kill);
+      ov.addEventListener('click', (e) => { if (e.target === ov) kill(); });
+
+      // étoiles
+      const stars = ov.querySelector('.egg-stars');
+      let sh = '';
+      for (let i = 0; i < 40; i++) {
+        sh += `<span style="left:${Math.random()*100}%;top:${Math.random()*100}%;` +
+              `animation-delay:${(Math.random()*3).toFixed(2)}s;` +
+              `transform:scale(${(0.5+Math.random()).toFixed(2)})"></span>`;
+      }
+      stars.innerHTML = sh;
+
+      // typewriter terminal
+      const body = ov.querySelector('.egg-body');
+      const lines = [
+        { t: '$ git log --author="shab" --oneline | wc -l', cls: '' },
+        { t: 'beaucoup de commits, quelques nuits blanches', cls: 'out' },
+        { t: '$ whoami', cls: '' },
+        { t: 'shabdpreet singh — créateur de ce site', cls: 'out ok2' },
+        { t: '$ credits', cls: '' },
+        { t: '100% fait par moi & Claude ✓', cls: 'out ok2' }
+      ];
+      if (motionReduced) {
+        body.innerHTML = lines.map(l => `<p class="term-line ${l.cls}">${l.t}</p>`).join('');
+        return;
+      }
+      let li = 0;
+      const typeLine = () => {
+        if (li >= lines.length || !document.body.contains(ov)) return;
+        const l = lines[li];
+        const p = document.createElement('p');
+        p.className = 'term-line ' + l.cls;
+        body.appendChild(p);
+        let ci = 0;
+        const tick = () => {
+          if (!document.body.contains(ov)) return;
+          p.textContent = l.t.slice(0, ++ci);
+          if (ci < l.t.length) setTimeout(tick, 18);
+          else { li++; setTimeout(typeLine, 260); }
+        };
+        tick();
+      };
+      setTimeout(typeLine, 350);
+    }
+
+    /* ---------------- Mini-jeu : dino runner ---------------- */
+    function launchDino() {
+      const { ov, kill } = buildOverlay('dino-overlay');
+      ov.innerHTML =
+        '<button class="secret-close" type="button" aria-label="Fermer">✕</button>' +
+        '<div class="dino-wrap">' +
+          '<div class="dino-hud"><span class="dino-title">🦕 dino://no-signal</span>' +
+          '<span class="dino-score">score <b id="dinoScore">0</b> · record <b id="dinoBest">0</b></span></div>' +
+          '<canvas id="dinoCanvas" width="720" height="220" aria-label="Mini-jeu dino runner"></canvas>' +
+          '<p class="dino-hint"><kbd>espace</kbd> / <kbd>↑</kbd> / clic pour sauter · <kbd>esc</kbd> pour quitter</p>' +
+        '</div>';
+      ov.querySelector('.secret-close').addEventListener('click', kill);
+
+      const cvs = ov.querySelector('#dinoCanvas');
+      const ctx = cvs.getContext('2d');
+      const scoreEl = ov.querySelector('#dinoScore');
+      const bestEl  = ov.querySelector('#dinoBest');
+
+      // couleurs liées au thème
+      const styles = getComputedStyle(document.documentElement);
+      const ink    = (styles.getPropertyValue('--ink') || '#0f172a').trim();
+      const accent = (styles.getPropertyValue('--accent') || '#2563eb').trim();
+      const muted  = (styles.getPropertyValue('--text-mute') || '#64748b').trim();
+
+      const W = cvs.width, H = cvs.height, GROUND = H - 40;
+      let best = 0;
+      try { best = parseInt(localStorage.getItem('dinoBest') || '0', 10) || 0; } catch (e) {}
+      bestEl.textContent = best;
+
+      const dino = { x: 60, y: GROUND, w: 38, h: 42, vy: 0, jumping: false };
+      const G = 0.9, JUMP = -15;
+      let obstacles = [], speed = 6, score = 0, frame = 0, over = false, started = false, raf = 0;
+
+      const reset = () => {
+        obstacles = []; speed = 6; score = 0; frame = 0; over = false;
+        dino.y = GROUND; dino.vy = 0; dino.jumping = false;
+      };
+      const jump = () => {
+        if (over) { reset(); started = true; loop(); return; }
+        if (!started) { started = true; loop(); }
+        if (!dino.jumping) { dino.vy = JUMP; dino.jumping = true; }
+      };
+
+      const spawn = () => {
+        const h = 26 + Math.random() * 24;
+        const w = 14 + Math.random() * 16;
+        obstacles.push({ x: W + 10, y: GROUND - h + 42, w, h });
+      };
+
+      const draw = () => {
+        ctx.clearRect(0, 0, W, H);
+        // sol
+        ctx.strokeStyle = muted; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, GROUND + 42); ctx.lineTo(W, GROUND + 42); ctx.stroke();
+        // dino (bloc stylisé + œil)
+        ctx.fillStyle = accent;
+        ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(dino.x + dino.w - 12, dino.y + 8, 6, 6);
+        // obstacles (cactus = barres)
+        ctx.fillStyle = ink;
+        obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+        // texte état
+        ctx.fillStyle = muted;
+        ctx.font = '600 14px ui-monospace, monospace';
+        if (!started) {
+          ctx.textAlign = 'center';
+          ctx.fillText('appuie sur espace pour démarrer', W / 2, H / 2 - 6);
+          ctx.textAlign = 'left';
+        } else if (over) {
+          ctx.textAlign = 'center';
+          ctx.fillStyle = ink;
+          ctx.font = '700 22px ui-monospace, monospace';
+          ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
+          ctx.fillStyle = muted;
+          ctx.font = '600 13px ui-monospace, monospace';
+          ctx.fillText('espace pour rejouer', W / 2, H / 2 + 14);
+          ctx.textAlign = 'left';
+        }
+      };
+
+      const loop = () => {
+        if (!document.body.contains(ov)) { cancelAnimationFrame(raf); return; }
+        if (over) { draw(); return; }
+        frame++;
+        // physique dino
+        dino.vy += G; dino.y += dino.vy;
+        if (dino.y >= GROUND) { dino.y = GROUND; dino.vy = 0; dino.jumping = false; }
+        // spawn
+        if (frame % Math.max(55, 95 - Math.floor(score / 100)) === 0) spawn();
+        // déplacement + collision
+        obstacles.forEach(o => o.x -= speed);
+        obstacles = obstacles.filter(o => o.x + o.w > -10);
+        for (const o of obstacles) {
+          if (dino.x < o.x + o.w && dino.x + dino.w > o.x &&
+              dino.y < o.y + o.h && dino.y + dino.h > o.y) {
+            over = true;
+            if (score > best) { best = score; bestEl.textContent = best;
+              try { localStorage.setItem('dinoBest', String(best)); } catch (e) {} }
+          }
+        }
+        score++; if (score % 6 === 0) scoreEl.textContent = Math.floor(score / 1);
+        if (frame % 600 === 0) speed += 0.6;
+        draw();
+        raf = requestAnimationFrame(loop);
+      };
+
+      const onJump = (e) => {
+        if (e.type === 'keydown') {
+          if (e.code === 'Space' || e.key === 'ArrowUp' || e.key === ' ') { e.preventDefault(); jump(); }
+        } else { jump(); }
+      };
+      window.addEventListener('keydown', onJump);
+      cvs.addEventListener('mousedown', onJump);
+      cvs.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, { passive: false });
+
+      // nettoyage quand l'overlay disparaît
+      const obs = new MutationObserver(() => {
+        if (!document.body.contains(ov)) {
+          window.removeEventListener('keydown', onJump);
+          cancelAnimationFrame(raf);
+          obs.disconnect();
+        }
+      });
+      obs.observe(document.body, { childList: true });
+
+      draw();
+    }
+
+    // commandes secrètes (n'apparaissent QUE si on tape le bon mot)
+    const secrets = [
+      { triggers: ['jeux', 'jeu', 'dino', 'game', 'runner', 'play', 'no wifi', 'no signal'],
+        icon: '🦕', label: 'Lancer le dino runner', hint: 'secret', run: launchDino },
+      { triggers: ['easter egg', 'easteregg', 'egg', 'oeuf', 'œuf', 'credits', 'crédits', 'secret', 'made by'],
+        icon: '🥚', label: 'Page secrète — crédits', hint: 'secret', run: launchEgg }
+    ];
+
     const actions = [
       { icon: '🏠', label: 'Accueil',               hint: 'page',   run: () => go('index.html') },
       { icon: '📋', label: 'Épreuves',              hint: 'page',   run: () => go('epreuve.html') },
@@ -595,6 +826,14 @@
       filtered = q
         ? actions.filter(a => a.label.toLowerCase().includes(q) || a.hint.includes(q))
         : actions.slice();
+      // secrets : on les ajoute uniquement si la saisie correspond à un déclencheur
+      if (q.length >= 2) {
+        secrets.forEach(s => {
+          if (s.triggers.some(t => t.startsWith(q) || q.startsWith(t) || t.includes(q))) {
+            if (!filtered.includes(s)) filtered.push(s);
+          }
+        });
+      }
       if (sel >= filtered.length) sel = Math.max(0, filtered.length - 1);
       if (!filtered.length) {
         list.innerHTML = '<li class="cmdk-empty">Aucun résultat</li>';
