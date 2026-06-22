@@ -2497,3 +2497,102 @@ a.contact-card:hover {
     .contact-form .form-row { grid-template-columns: 1fr; }
     .contact-net { height: 360px; }
 }
+
+/* ============================================
+   Add-ons : typewriter, confetti, skeleton,
+   icônes animées, scroll-snap, transitions
+   ============================================ */
+
+/* --- Typewriter titres --- */
+.tw-caret {
+    display: inline-block;
+    width: 3px; height: 0.95em;
+    margin-left: 4px;
+    transform: translateY(2px);
+    background: var(--primary);
+    animation: tw-blink 1s steps(1) infinite;
+}
+.tw-caret.done { animation: tw-blink 1.2s steps(1) infinite; opacity: 0.6; }
+@keyframes tw-blink { 0%,50% { opacity: 1 } 50.01%,100% { opacity: 0 } }
+
+/* --- Confetti --- */
+.confetti-layer {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* --- Skeleton loaders (shimmer) --- */
+.skeleton, img[data-skeleton]:not(.img-loaded) {
+    position: relative;
+    background: var(--surface-2);
+    overflow: hidden;
+}
+img[data-skeleton] {
+    transition: opacity 0.4s var(--ease), filter 0.4s var(--ease);
+}
+img[data-skeleton]:not(.img-loaded) { opacity: 0; }
+img[data-skeleton].img-loaded { opacity: 1; }
+.skeleton::after,
+img[data-skeleton]:not(.img-loaded)::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg,
+        transparent 20%,
+        rgba(148, 197, 255, 0.18) 50%,
+        transparent 80%);
+    transform: translateX(-100%);
+    animation: shimmer 1.3s infinite;
+}
+@keyframes shimmer { to { transform: translateX(100%); } }
+
+/* --- Icônes animées (hover) --- */
+.contact-ic { transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease); }
+.contact-card:hover .contact-ic { transform: scale(1.12) rotate(-6deg); background: var(--blue-100); }
+.contact-ic svg { width: 22px; height: 22px; display: block; }
+.contact-soc svg { width: 20px; height: 20px; display: block; }
+.contact-soc:hover svg { animation: ic-pop 0.4s var(--ease-bounce); }
+@keyframes ic-pop { 0% { transform: scale(1) } 45% { transform: scale(1.25) } 100% { transform: scale(1) } }
+
+/* lien nav : soulignement animé */
+.nav-links a { position: relative; }
+.nav-links a::after {
+    content: "";
+    position: absolute; left: 0; bottom: -4px;
+    width: 100%; height: 2px;
+    background: var(--primary);
+    transform: scaleX(0); transform-origin: right;
+    transition: transform var(--dur-fast) var(--ease);
+}
+.nav-links a:hover::after,
+.nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+
+/* liens footer : flèche au hover */
+.footer-links a { transition: color var(--dur-fast) var(--ease); }
+.footer-links a:hover { color: var(--primary); }
+
+/* --- Scroll snap doux (proximity, jamais bloquant) --- */
+@media (hover: hover) and (pointer: fine) {
+    html { scroll-snap-type: y proximity; }
+    main > section,
+    .hero-stage { scroll-snap-align: start; scroll-margin-top: 80px; }
+}
+
+/* --- Transition entrée de page --- */
+@keyframes page-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+main { animation: page-in 0.45s var(--ease) both; }
+html.is-leaving body {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+    main { animation: none; }
+    html { scroll-snap-type: none; }
+    .tw-caret { animation: none; }
+    .skeleton::after, img[data-skeleton]::after { animation: none; }
+}

@@ -15,8 +15,8 @@
   /* ---- Spotlight + tilt 3D qui suivent la souris sur les cartes ---- */
   if (!reduced && window.matchMedia('(hover: hover)').matches) {
     const MAXT = 5; // amplitude du tilt en degrés
-    $$('.card, .apropos-bloc, .competence-bloc').forEach(card => {
-      const tiltable = card.classList.contains('card');
+    $$('.card, .apropos-bloc, .competence-bloc, .contact-card').forEach(card => {
+      const tiltable = card.classList.contains('card') || card.classList.contains('contact-card');
       card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
         const px = (e.clientX - r.left) / r.width;
@@ -40,7 +40,7 @@
   /* ---- Boutons magnétiques (CTA principal) ---- */
   if (!reduced && window.matchMedia('(hover: hover)').matches) {
     const STR = 0.28, MAX = 10;
-    $$('.btn-primary').forEach(btn => {
+    $$('.btn-primary, .btn-outline, .contact-soc').forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
         const r = btn.getBoundingClientRect();
         let dx = (e.clientX - (r.left + r.width / 2)) * STR;
@@ -950,6 +950,91 @@
         status.textContent = 'Votre messagerie va s\u2019ouvrir avec le message pré-rempli ✓';
         status.className = 'form-status ok';
       }
+      if (window.__burstConfetti) window.__burstConfetti();
+    });
+  })();
+
+  /* ============================================================
+     Typewriter sur les titres de page (h1[data-tw])
+     Texte réel dans le DOM (SEO/a11y) — réécrit lettre par lettre
+     ============================================================ */
+  (function titleTypewriter() {
+    const h1 = $('h1[data-tw]');
+    if (!h1) return;
+    const full = h1.textContent.trim();
+    if (reduced) return;                 // titre statique sous reduced-motion
+    h1.style.minHeight = h1.offsetHeight + 'px';
+    h1.innerHTML = '<span class="tw-text"></span><span class="tw-caret" aria-hidden="true"></span>';
+    const span = h1.querySelector('.tw-text');
+    const caret = h1.querySelector('.tw-caret');
+    let i = 0;
+    const tick = () => {
+      i++;
+      span.textContent = full.slice(0, i);
+      if (i < full.length) setTimeout(tick, 38 + Math.random() * 30);
+      else setTimeout(() => caret.classList.add('done'), 900);
+    };
+    setTimeout(tick, 220);
+  })();
+
+  /* ============================================================
+     Confettis — petit burst canvas (envoi formulaire)
+     ============================================================ */
+  (function confetti() {
+    if (reduced) { window.__burstConfetti = () => {}; return; }
+    window.__burstConfetti = () => {
+      const cv = document.createElement('canvas');
+      cv.className = 'confetti-layer';
+      document.body.appendChild(cv);
+      const ctx = cv.getContext('2d');
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
+      const W = cv.width = innerWidth * DPR, H = cv.height = innerHeight * DPR;
+      cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+      ctx.scale(DPR, DPR);
+      const cols = ['#2563eb', '#38bdf8', '#22c55e', '#1d4ed8', '#93c5fd'];
+      const cx = innerWidth / 2, cy = innerHeight * 0.34;
+      const N = 120;
+      const parts = Array.from({ length: N }, () => {
+        const a = Math.random() * Math.PI * 2, sp = 4 + Math.random() * 7;
+        return {
+          x: cx, y: cy,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 4,
+          g: 0.16 + Math.random() * 0.12,
+          s: 5 + Math.random() * 5, rot: Math.random() * 6.28,
+          vr: (Math.random() - 0.5) * 0.3, c: cols[(Math.random() * cols.length) | 0],
+          life: 0, max: 90 + Math.random() * 40
+        };
+      });
+      let raf;
+      const frame = () => {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        let alive = false;
+        parts.forEach(p => {
+          if (p.life > p.max) return;
+          alive = true;
+          p.life++; p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, 1 - p.life / p.max);
+          ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = p.c;
+          ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.6);
+          ctx.restore();
+        });
+        if (alive) raf = requestAnimationFrame(frame);
+        else cv.remove();
+      };
+      frame();
+    };
+  })();
+
+  /* ============================================================
+     Skeleton loaders — shimmer sur images tant que pas chargées
+     ============================================================ */
+  (function skeletons() {
+    $$('img[data-skeleton]').forEach(img => {
+      const done = () => img.classList.add('img-loaded');
+      if (img.complete && img.naturalWidth > 0) done();
+      else { img.addEventListener('load', done); img.addEventListener('error', done); }
     });
   })();
 })();
