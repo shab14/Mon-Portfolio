@@ -919,4 +919,37 @@
       navActions.insertBefore(btn, navActions.firstChild);
     }
   })();
+
+  /* ============================================================
+     Formulaire de contact — compose un mailto (statique, sans backend)
+     ============================================================ */
+  (function () {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    const TO = 'shabdpreet.singh@example.com'; // ← adresse de destination
+    const status = document.getElementById('formStatus');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const v = (id) => (document.getElementById(id).value || '').trim();
+      const prenom = v('cf-prenom'), nom = v('cf-nom');
+      const email = v('cf-email'), entreprise = v('cf-entreprise');
+      const sujet = v('cf-sujet'), message = v('cf-message');
+
+      const subject = `[Portfolio] ${sujet} — ${prenom} ${nom}`;
+      const body =
+        `Prénom : ${prenom}\nNom : ${nom}\nEmail : ${email}\n` +
+        `Entreprise : ${entreprise || '—'}\nSujet : ${sujet}\n\n${message}\n`;
+
+      window.location.href =
+        `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      if (status) {
+        status.textContent = 'Votre messagerie va s\u2019ouvrir avec le message pré-rempli ✓';
+        status.className = 'form-status ok';
+      }
+    });
+  })();
 })();
