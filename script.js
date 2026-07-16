@@ -596,7 +596,7 @@
             '<span class="egg-badge">🤖 Claude (Anthropic)</span>' +
             '<span class="egg-badge">🚀 GitHub Pages</span>' +
           '</div>' +
-          '<p class="egg-foot">Tu as trouvé un secret. Il y en a un autre — tape <kbd>jeux</kbd> dans la recherche 🦕</p>' +
+          '<p class="egg-foot">Tu as trouvé un secret. Il y en a d\'autres — tape <kbd>jeux</kbd> 🦕 ou <kbd>kill shabd</kbd> 💀 dans la recherche</p>' +
         '</div>';
       ov.querySelector('.secret-close').addEventListener('click', kill);
       ov.addEventListener('click', (e) => { if (e.target === ov) kill(); });
@@ -778,7 +778,11 @@
       { triggers: ['jeux', 'jeu', 'dino', 'game', 'runner', 'play', 'no wifi', 'no signal'],
         icon: '🦕', label: 'Lancer le dino runner', hint: 'secret', run: launchDino },
       { triggers: ['easter egg', 'easteregg', 'egg', 'oeuf', 'œuf', 'credits', 'crédits', 'secret', 'made by'],
-        icon: '🥚', label: 'Page secrète — crédits', hint: 'secret', run: launchEgg }
+        icon: '🥚', label: 'Page secrète — crédits', hint: 'secret', run: launchEgg },
+      { triggers: ['kill shabd', 'kill', 'pkill', 'shabd', 'daemon'],
+        icon: '💀', label: 'kill shabd', hint: 'secret', run: () => { if (window.shabdKill) window.shabdKill(); } },
+      { triggers: ['man shabd', 'man', 'pid 1', 'help shabd'],
+        icon: '👾', label: 'man shabd', hint: 'secret', run: () => { if (window.shabdMan) window.shabdMan(); } }
     ];
 
     const actions = [
@@ -926,7 +930,7 @@
   (function () {
     const form = document.getElementById('contactForm');
     if (!form) return;
-    const TO = 'shabdpreet.singh@example.com'; // ← adresse de destination
+    const TO = 'Shabdpreetsingh2@gmail.com'; // ← adresse de destination
     const status = document.getElementById('formStatus');
 
     form.addEventListener('submit', function (e) {
@@ -1037,4 +1041,150 @@
       else { img.addEventListener('load', done); img.addEventListener('error', done); }
     });
   })();
+})();
+
+/* ============================================================
+   shabd — daemon résident (PID 1)
+   Petit process qui vit en bas à gauche, commente les pages
+   en one-liners façon logs, et respawn si on le kill.
+   Règles : ≤ 12 mots par ligne, cooldown 12 s, mutable (✕),
+   respecte prefers-reduced-motion, absent à l'impression.
+   ============================================================ */
+(function shabdDaemon() {
+  'use strict';
+  if (!document.body || document.querySelector('.err-wrap')) return; // pas sur la 404 (version statique)
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var page = (location.pathname.split('/').pop() || 'index.html').replace('.html', '') || 'index';
+
+  /* -- widget -- */
+  var box = document.createElement('div');
+  box.className = 'shabd';
+  box.setAttribute('role', 'status');
+  box.setAttribute('aria-live', 'polite');
+  box.innerHTML =
+    '<span class="shabd-led" aria-hidden="true"></span>' +
+    '<span class="shabd-name" aria-hidden="true">shabd</span>' +
+    '<span class="shabd-txt"></span>' +
+    '<button class="shabd-x" type="button" aria-label="Masquer shabd">✕</button>';
+  document.body.appendChild(box);
+  var txt = box.querySelector('.shabd-txt');
+
+  var muted = false;
+  try { muted = sessionStorage.getItem('shabd-mute') === '1'; } catch (e) {}
+  box.querySelector('.shabd-x').addEventListener('click', function () {
+    muted = true;
+    try { sessionStorage.setItem('shabd-mute', '1'); } catch (e) {}
+    box.classList.remove('is-on');
+  });
+
+  var hideT = null, typing = null, lastSay = 0;
+  function say(line, ms, force) {
+    if (muted) return;
+    var now = Date.now();
+    if (!force && now - lastSay < 12000) return; // jamais deux d'affilée
+    lastSay = now;
+    clearTimeout(hideT);
+    if (typing) clearInterval(typing);
+    box.classList.add('is-on');
+    if (reduced) {
+      txt.textContent = line;
+    } else {
+      txt.textContent = '';
+      var i = 0;
+      typing = setInterval(function () {
+        txt.textContent = line.slice(0, ++i);
+        if (i >= line.length) clearInterval(typing);
+      }, 16);
+    }
+    hideT = setTimeout(function () { box.classList.remove('is-on'); }, ms || 6500);
+  }
+
+  /* -- répliques -- */
+  var HELLO = {
+    index:   'boot ok. bienvenue sur mon infra.',
+    epreuve: 'check_epreuves… E4 UP, E6 en build.',
+    projet:  'projets documentés, reprenables, testés.',
+    veille:  'flux CVE à jour. vigilance active.',
+    certifs: '13 certifs scannées. zéro erreur.',
+    contact: 'SLA < 24 h. le chrono tourne.'
+  };
+  var IDLE = [
+    'idle détecté. je reste up, c\'est le métier.',
+    'toujours là. Restart=always.',
+    'aucun incident. je m\'ennuie presque.'
+  ];
+
+  /* accueil — une fois par page et par session */
+  var seen = {};
+  try { seen = JSON.parse(sessionStorage.getItem('shabd-seen') || '{}'); } catch (e) {}
+  if (!seen[page] && HELLO[page]) {
+    setTimeout(function () {
+      say(HELLO[page]);
+      seen[page] = 1;
+      try { sessionStorage.setItem('shabd-seen', JSON.stringify(seen)); } catch (e) {}
+    }, 1400);
+  }
+
+  /* réaction au thème */
+  var themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) themeBtn.addEventListener('click', function () {
+    setTimeout(function () {
+      var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      say(dark ? 'mode sombre. choix d\'une personne sérieuse.' : 'mode clair. audacieux.');
+    }, 250);
+  });
+
+  /* réaction copie email */
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.closest && e.target.closest('.copyable')) {
+      say('email copié. le SLA démarre maintenant.');
+    }
+  });
+
+  /* idle 45 s — une fois par page */
+  if (!reduced) {
+    var idleT, idleFired = false;
+    var arm = function () {
+      clearTimeout(idleT);
+      if (idleFired) return;
+      idleT = setTimeout(function () {
+        idleFired = true;
+        say(IDLE[(Math.random() * IDLE.length) | 0]);
+      }, 45000);
+    };
+    ['scroll', 'mousemove', 'keydown', 'touchstart'].forEach(function (ev) {
+      window.addEventListener(ev, arm, { passive: true });
+    });
+    arm();
+  }
+
+  /* bas de page atteint — une fois */
+  var footFired = false;
+  window.addEventListener('scroll', function () {
+    if (footFired) return;
+    var h = document.documentElement;
+    if (h.scrollTop + window.innerHeight >= h.scrollHeight - 40) {
+      footFired = true;
+      say('fin de page. tout est vert. contact ?');
+    }
+  }, { passive: true });
+
+  /* -- secrets palette -- */
+  window.shabdMan = function () {
+    say('daemon résident. PID 1. je surveille, tu visites.', 7000, true);
+  };
+  window.shabdKill = function () {
+    muted = false;
+    try { sessionStorage.removeItem('shabd-mute'); } catch (e) {}
+    clearTimeout(hideT);
+    if (typing) clearInterval(typing);
+    box.classList.add('is-on', 'is-dead');
+    txt.textContent = 'Terminated.';
+    setTimeout(function () { box.classList.remove('is-on'); }, 1400);
+    setTimeout(function () {
+      box.classList.remove('is-dead');
+      say('respawn. tu croyais quoi — Restart=always.', 8000, true);
+    }, 3400);
+  };
 })();
