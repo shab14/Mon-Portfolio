@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 — Service introuvable | Shabdpreet Singh</title>
+    <title>404 — Pièce manquante | Shabdpreet Singh</title>
     <meta name="robots" content="noindex">
     <meta name="description" content="Page introuvable — portfolio de Shabdpreet Singh, étudiant BTS SIO SISR en alternance chez ALLIANC3.">
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#D42B1E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <style>
         .err-wrap {
@@ -21,34 +21,41 @@
             padding: 2rem;
         }
         .err-panel {
+            position: relative;
             background: var(--panel-bg);
-            border-radius: var(--radius);
-            padding: 2.2rem;
-            max-width: 460px;
+            border: 1.5px solid var(--panel-line);
+            padding: 2rem 2rem 1.8rem;
+            max-width: 480px;
             width: 100%;
             font-family: var(--mono);
-            box-shadow: 0 25px 60px -20px rgba(11, 18, 32, 0.55);
-            border: 1px solid rgba(148, 197, 255, 0.12);
+            color: var(--panel-text);
+            box-shadow: 8px 8px 0 var(--red);
         }
         .err-panel .head {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
             padding-bottom: 0.8rem; margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-size: 0.72rem; color: rgba(255,255,255,0.55); letter-spacing: 0.03em;
+            border-bottom: 1.5px solid var(--panel-line);
+            font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--panel-soft);
         }
         .err-panel .code {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 4rem; font-weight: 700; color: #fff; line-height: 1; margin: 0.4rem 0;
+            font-family: var(--display);
+            font-size: 6rem; font-weight: 800; color: #fff; line-height: 0.9; margin: 0.4rem 0 0.8rem;
+            letter-spacing: -0.02em;
         }
-        .err-panel .code .x { color: var(--warn); }
-        .err-line { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0.3rem 0; }
-        .err-line .ok2 { color: var(--ok); }
-        .err-line .warn2 { color: var(--warn); }
+        .err-panel .code .x { color: transparent; -webkit-text-stroke: 2px var(--red); }
+        .err-tag {
+            display: inline-block;
+            font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--red); border: 1.5px solid var(--red);
+            padding: 0.35rem 0.5rem 0.28rem; line-height: 1; margin-bottom: 1rem;
+        }
+        .err-line { color: var(--panel-soft); font-size: 0.84rem; margin: 0.3rem 0; }
+        .err-line .prompt { color: var(--red); font-weight: 600; margin-right: 0.5rem; }
         .err-panel .btn { margin-top: 1.4rem; width: 100%; }
         .err-led {
-            width: 8px; height: 8px; border-radius: 50%; background: var(--warn);
-            display: inline-block; margin-right: 0.4rem;
-            box-shadow: 0 0 0 0 rgba(245,158,11,0.6); animation: pulse-warn 2s infinite;
+            width: 8px; height: 8px; background: var(--warn);
+            display: inline-block; margin-right: 0.45rem; vertical-align: 0;
+            animation: led-blink 1.2s steps(1) infinite;
         }
     </style>
 
@@ -66,16 +73,16 @@
     <div class="err-wrap">
         <div class="err-panel">
             <div class="head">
-                <span><span class="err-led"></span>SUPERVISION — INCIDENT</span>
+                <span><span class="err-led"></span>Notice — pièce manquante</span>
                 <span>HTTP 404</span>
             </div>
             <div class="code">4<span class="x">0</span>4</div>
-            <p class="err-line">$ curl page demandée</p>
+            <span class="err-tag">Runner introuvable</span>
+            <p class="err-line"><span class="prompt">$</span>curl page-demandée</p>
             <p class="err-line"><span class="warn2">&gt; statut : NOT FOUND</span></p>
-            <p class="err-line">La ressource n'existe pas — ou s'est déplacée sans prévenir le DNS.</p>
-            <p class="err-line"><span class="ok2">&gt; reste des services : OK</span></p>
-            <p class="err-line"><span class="ok2">shabd &gt;</span> page introuvable. moi, je suis toujours là.</p>
-            <a href="./index.html" class="btn btn-primary">↩ Retour à l'accueil</a>
+            <p class="err-line">Cette pièce n'est pas sur la grappe — ou elle a bougé sans prévenir le DNS.</p>
+            <p class="err-line"><span class="ok2">&gt; reste du kit : OK</span></p>
+            <a href="./index.html" class="btn btn-primary">Retour à l'accueil</a>
         </div>
     </div>
     <script>

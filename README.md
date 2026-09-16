@@ -9,15 +9,17 @@ Vitrine de mon parcours, de mes compétences réseau & infrastructure, de mes pr
 
 ## ✨ Aperçu
 
-Un site **100% vanilla** (HTML / CSS / JS, sans framework), construit autour de l'univers **SISR / supervision** : panneau de supervision animé, métaphores réseau, thème clair/sombre, et quelques surprises cachées.
+Un site **100% vanilla** (HTML / CSS / JS, sans framework), construit sur une direction artistique **« MASTER GRADE »** : le portfolio comme un kit à monter. Le hero est un box art (grand, frontal), le corps une notice de montage (étapes `STEP 0X`, typo mono, références de pièces, lignes de panneau), les détails une planche de stickers.
 
-- 🎨 Identité visuelle : Space Grotesk + Inter, palette bleu clair, mode sombre persistant
-- 🖥️ Hero animé : panneau de supervision live (LED de statut, uptime, log terminal) + réseau de nœuds animé
-- 📊 Visualisations : radar de compétences SISR, schéma d'architecture Centreon, jauges et anneaux de score
+- 🎨 Identité visuelle : Barlow Condensed (titres) + Barlow (texte) + IBM Plex Mono (technique) ; palette kit — blanc cassé, graphite, rouge, bleu, or ; deux faces **KIT** (clair) / **BOX ART** (sombre)
+- 🖥️ Hero animé : assemblage des pièces au chargement, panneau `SYSTÈMES` (LED, uptime, log), plaque rouge hachurée
+- 📊 Visualisations : radar de compétences avec barres segmentées, schéma d'architecture Centreon, jauge et anneaux de score
 - ⌨️ Palette de commandes (`Ctrl/Cmd + K` ou `/`)
 - 📬 Page **Contact** avec formulaire (envoi par mail) et infos de disponibilité
 - ♿ Accessibilité : animations respectant `prefers-reduced-motion`, fallback sans JS
 - 🔍 SEO / partage : Open Graph, JSON-LD, `sitemap.xml`, `robots.txt`, manifest
+
+La DA complète (concept, palette, typo, règles DO / DON'T, évolution) est documentée dans le projet Claude « Portfolio » (`direction-artistique-master-grade.md`).
 
 ---
 
@@ -49,7 +51,7 @@ Mon-Portfolio/
 ## 🛠️ Stack
 
 - **HTML5 / CSS3 / JavaScript** (vanilla, zéro dépendance)
-- **Google Fonts** — Space Grotesk, Inter, JetBrains Mono
+- **Google Fonts** — Barlow Condensed, Barlow, IBM Plex Mono
 - **GitHub Pages** pour l'hébergement
 - SVG & Canvas pour les visualisations et animations
 

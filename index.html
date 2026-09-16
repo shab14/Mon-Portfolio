@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shabdpreet Singh | Portfolio</title>
-    <meta name="description" content="Portfolio supervisé de Shabdpreet Singh — BTS SIO SISR en alternance chez ALLIANC3. Un daemon nommé shabd veille sur ces pages. Uptime : excellent.">
+    <meta name="description" content="Portfolio de Shabdpreet Singh — BTS SIO SISR en alternance chez ALLIANC3. Supervision, réseaux, infrastructure. Monté pièce par pièce, documenté pour tenir.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <link rel="canonical" href="https://shab14.github.io/Mon-Portfolio/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Shabdpreet Singh | Portfolio">
-    <meta property="og:description" content="Portfolio de Shabdpreet Singh, etudiant BTS SIO SISR en alternance chez ALLIANC3.">
-    <meta name="theme-color" content="#2563eb">
+    <meta property="og:description" content="Portfolio de Shabdpreet Singh, étudiant BTS SIO SISR en alternance chez ALLIANC3.">
+    <meta name="theme-color" content="#D42B1E">
 
     <meta property="og:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
     <meta property="og:url" content="https://shab14.github.io/Mon-Portfolio/">
@@ -60,26 +60,31 @@
                 <li><a href="./certifs.html">Certifications</a></li>
                 <li><a href="./contact.html">Contact</a></li>
             </ul>
-                <div class="nav-actions">
-                    <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le theme clair/sombre" title="Theme clair/sombre"><span class="moon">◐</span><span class="sun">☀</span></button>
-                </div>
+            <div class="nav-actions">
+                <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le thème clair/sombre" title="Thème clair/sombre">
+                    <span class="moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></span>
+                    <span class="sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="8" y="8" width="8" height="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span>
+                </button>
             </div>
+        </div>
     </nav>
 
     <main id="main">
-        <section class="hero hero-stage">
-            <div class="hero-net"></div>
+        <section class="hero hero-stage hazard-bottom">
+            <div class="hero-plate" aria-hidden="true"></div>
+            <span class="reg tl" aria-hidden="true"></span>
+            <span class="reg br" aria-hidden="true"></span>
             <div class="hero-inner">
                 <div class="hero-text">
                     <span class="hero-eyebrow"><span class="dot"></span> Disponible en alternance · BTS SIO SISR</span>
-                    <h1>Bonjour, je suis <span class="grad">Shabdpreet Singh</span></h1>
+                    <h1><span class="name-line"><span>Shabdpreet</span></span><span class="name-line name-outline"><span>Singh</span></span></h1>
                     <p class="hero-roles" aria-hidden="true"><span class="rp">&gt;</span> <span class="role-word" data-roles="je supervise,j'administre,je sécurise,je dépanne,je documente">je supervise</span><span class="role-caret"></span></p>
-                    <p class="lede">Étudiant en BTS SIO option SISR, en alternance chez ALLIANC3. Mon truc : comprendre pourquoi un système tient debout — et rester calme quand il décide de ne plus tenir. Ce portfolio est supervisé en direct par <strong>shabd</strong>, le daemon qui veille en bas à gauche.</p>
+                    <p class="lede">Étudiant en BTS SIO option SISR, en alternance chez ALLIANC3. Je monte des infrastructures comme des kits : <strong>pièce par pièce, proprement, et ça doit tenir</strong>. Quand ça casse, je répare — et je documente pour que ça ne recasse pas.</p>
                     <p class="infos-rapides">
-                        <span>📍 Paris, France</span>
-                        <span>🏫 IAAG</span>
-                        <span>🛠️ Spécialité SISR</span>
-                        <span>💼 ALLIANC3</span>
+                        <span><b>LOC</b>Paris, France</span>
+                        <span><b>ÉCOLE</b>IAAG</span>
+                        <span><b>SPÉ</b>SISR</span>
+                        <span><b>ENTREPRISE</b>ALLIANC3</span>
                     </p>
                     <div class="cta-buttons">
                         <a href="./projet.html" class="btn btn-primary">Voir mes projets</a>
@@ -87,15 +92,16 @@
                         <a href="./veille.html" class="btn btn-outline">Ma veille IT</a>
                     </div>
                     <div class="cta-buttons downloads">
-                        <a href="./fichiers/CV_Shabdpreet_Singh.pdf" class="btn btn-outline" download>📄 Mon CV</a>
-                        <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" class="btn btn-outline" target="_blank" rel="noopener">🔗 LinkedIn</a>
-                        <a href="https://github.com/shab14" class="btn btn-outline" target="_blank" rel="noopener">💻 GitHub</a>
+                        <a href="./fichiers/CV_Shabdpreet_Singh.pdf" class="btn btn-outline" download>Mon CV <span class="arr">↓</span></a>
+                        <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" class="btn btn-outline" target="_blank" rel="noopener">LinkedIn <span class="arr">↗</span></a>
+                        <a href="https://github.com/shab14" class="btn btn-outline" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a>
                     </div>
                 </div>
 
+                <div class="panel-stage">
                 <div class="status-panel" id="statusPanel" aria-hidden="true">
                     <div class="status-panel-head">
-                        <span class="status-panel-title">SUPERVISION — INFRA PERSO</span>
+                        <span class="status-panel-title">SYSTÈMES — INFRA PERSO</span>
                         <span class="status-uptime" id="uptime">uptime 00:00:00</span>
                     </div>
                     <div class="status-row" data-svc="1">
@@ -115,10 +121,11 @@
                         <span class="status-pill">UP</span>
                     </div>
                     <div class="status-row" data-svc="5">
-                        <span class="svc"><span class="status-led"></span><span class="svc-name">shabd</span><span class="svc-meta">PID 1</span></span>
+                        <span class="svc"><span class="status-led"></span><span class="svc-name">pilote</span><span class="svc-meta">LVL 18</span></span>
                         <span class="status-pill">UP</span>
                     </div>
                     <div class="status-log"><span id="statusLog"></span><span class="caret" aria-hidden="true"></span></div>
+                </div>
                 </div>
             </div>
         </section>
@@ -126,22 +133,22 @@
         <section class="metrics-wrap" aria-label="Quelques chiffres">
             <div class="metrics">
                 <div class="metric reveal" data-i="1">
-                    <div class="num"><span class="status-led"></span><span data-count="13">13</span></div>
+                    <div class="num"><span data-count="13">13</span></div>
                     <div class="lbl">Certifications obtenues</div>
                     <div class="sub">numériques &amp; IA</div>
                 </div>
                 <div class="metric reveal" data-i="2">
-                    <div class="num"><span class="status-led"></span><span data-count="11">11</span></div>
+                    <div class="num"><span data-count="11">11</span></div>
                     <div class="lbl">Parcours Anthropic</div>
                     <div class="sub">IA · Claude · MCP</div>
                 </div>
                 <div class="metric reveal" data-i="3">
-                    <div class="num"><span class="status-led"></span><span data-count="1">1</span></div>
+                    <div class="num"><span data-count="1">1</span></div>
                     <div class="lbl">Projet supervision livré</div>
                     <div class="sub">Centreon · AlmaLinux</div>
                 </div>
                 <div class="metric reveal" data-i="4">
-                    <div class="num"><span class="status-led"></span>2025<span class="dash">—</span>26</div>
+                    <div class="num">2025<span class="dash">—</span>26</div>
                     <div class="lbl">Alternance en cours</div>
                     <div class="sub">SISR @ ALLIANC3</div>
                 </div>
@@ -149,9 +156,10 @@
         </section>
 
         <section>
-            <h2 class="section-title">À propos</h2>
+            <h2 class="section-title" data-step="01">À propos</h2>
             <div class="about-intro">
                 <figure class="portrait reveal" data-i="1">
+                    <div class="portrait-stage">
                     <div class="portrait-frame">
                         <img src="./fichiers/photo.jpg" alt="Portrait de Shabdpreet Singh" loading="lazy" data-skeleton
                              onerror="this.closest('.portrait-frame').classList.add('no-photo')">
@@ -159,21 +167,21 @@
                         <span class="p-corner tr" aria-hidden="true"></span>
                         <span class="p-corner bl" aria-hidden="true"></span>
                         <span class="p-corner br" aria-hidden="true"></span>
-                        <span class="p-scan" aria-hidden="true"></span>
                         <span class="portrait-badge"><span class="status-led"></span>online</span>
                         <span class="portrait-placeholder" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+                            <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="8" y="4" width="8" height="8"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg>
                             <em>photo bientôt</em>
                         </span>
                     </div>
-                    <figcaption>Shabdpreet Singh · <span>BTS SIO SISR</span></figcaption>
+                    </div>
+                    <figcaption><b>FIG. 01</b>Shabdpreet Singh · <span>BTS SIO SISR</span></figcaption>
                 </figure>
                 <div class="about-intro-text">
                 <p class="lead-paragraph reveal" data-i="2">Je m'appelle Shabdpreet Singh, 18 ans, en 1ère année de BTS SIO option SISR à l'IAAG (Institut Aéronautique Amaury de la Grange), en alternance chez ALLIANC3. Tout est parti d'une question posée devant un écran qui marchait : <em>pourquoi ça marche ?</em> J'ai démonté, cassé, réparé, recommencé — et compris que derrière chaque service « qui tourne », il y a quelqu'un qui l'a pensé, câblé et surveillé. C'est ce quelqu'un que je suis en train de devenir. Curieux de nature, rigoureux par méthode : je documente tout, parce qu'un travail qu'on ne peut pas reprendre n'est pas un travail fini.</p>
                 <div class="term reveal" data-i="3" aria-hidden="true">
                     <div class="term-head">
                         <span class="term-dots"><i></i><i></i><i></i></span>
-                        <span class="term-title">shab@portfolio: ~</span>
+                        <span class="term-title">console — shab@kit</span>
                     </div>
                     <div class="term-body">
                         <p class="term-line"><span class="prompt">$</span>whoami</p>
@@ -182,11 +190,10 @@
                         <p class="term-line out">BTS SIO SISR @ IAAG</p>
                         <p class="term-line out">alternance @ <span class="accent2">ALLIANC3</span></p>
                         <p class="term-line out">support IT · réseaux · supervision</p>
-                        <p class="term-line"><span class="prompt">$</span>status</p>
-                        <p class="term-line out"><span class="ok2">curieux · rigoureux · apprend vite</span></p>
-                        <p class="term-line"><span class="prompt">$</span>systemctl status shabd</p>
-                        <p class="term-line out">● shabd.service — daemon résident du portfolio</p>
-                        <p class="term-line out"><span class="ok2">Active: active (running) · Restart=always</span></p>
+                        <p class="term-line"><span class="prompt">$</span>stats --pilote</p>
+                        <p class="term-line out">[<span class="ok2">LVL 18</span>] curieux · rigoureux · apprend vite</p>
+                        <p class="term-line"><span class="prompt">$</span>next</p>
+                        <p class="term-line out"><span class="warn2">projet-2</span> — en build · <span class="ok2">E4 livrée</span></p>
                     </div>
                 </div>
                 </div>
@@ -194,23 +201,23 @@
 
             <div class="about-grid">
                 <div class="apropos-bloc reveal" data-i="1">
-                    <h3><span class="ico">🎓</span> Le BTS SIO</h3>
+                    <h3><span class="ico">A-01</span> Le BTS SIO</h3>
                     <p>Le BTS Services Informatiques aux Organisations propose deux voies : SLAM pour ceux qui écrivent le code, <strong>SISR</strong> pour ceux qui font tourner tout le reste — systèmes, réseaux, sécurité. J'ai choisi SISR, en alternance sur deux ans. Quand une appli plante, on cherche le développeur ; quand le réseau tombe, tout le monde se tourne vers nous. J'aime cette responsabilité-là.</p>
                 </div>
                 <div class="apropos-bloc reveal" data-i="2">
-                    <h3><span class="ico">🏢</span> L'entreprise — ALLIANC3</h3>
+                    <h3><span class="ico">A-02</span> L'entreprise — ALLIANC3</h3>
                     <span class="brand-chip"><img src="./fichiers/allianc3-logo.png" alt="Logo ALLIANC3" width="150" height="37" loading="lazy" data-skeleton></span>
                     <p>ALLIANC3 est une Entreprise de Services du Numérique (ESN) spécialisée Data, IA et Salesforce, dédiée à l'accélération numérique de ses clients — conseil, assistance technique, formation, pour des organisations de tous secteurs. Pour moi, c'est le meilleur endroit où apprendre : là où le métier se pratique en production, avec de vrais utilisateurs et de vrais enjeux.</p>
                 </div>
                 <div class="apropos-bloc reveal" data-i="3">
-                    <h3><span class="ico">🛠️</span> Mon rôle</h3>
+                    <h3><span class="ico">A-03</span> Mon rôle</h3>
                     <p>Du <strong>support informatique</strong> au quotidien : un collaborateur bloqué, un incident à résoudre, un ticket qui n'attend pas. C'est là que les cours de SISR cessent d'être de la théorie — un ticket n'a jamais la politesse d'arriver comme dans le manuel. Diagnostiquer, corriger, expliquer, documenter : chaque incident traité est une compétence gagnée. Et une ligne de plus dans mon tableau E4.</p>
                 </div>
             </div>
         </section>
 
         <section>
-            <h2 class="section-title">Compétences</h2>
+            <h2 class="section-title" data-step="02">Compétences</h2>
 
             <div class="radar-wrap reveal" aria-hidden="true">
                 <svg class="radar" viewBox="0 0 200 200" role="img" aria-label="Radar des domaines SISR">
@@ -223,16 +230,16 @@
                     <line class="axis" x1="100" y1="100" x2="53" y2="164.7"/>
                     <line class="axis" x1="100" y1="100" x2="23.9" y2="75.3"/>
                     <polygon class="data" points="100,40 151.7,83.2 125.9,135.6 62.4,151.8 54.3,85.2"/>
-                    <circle class="dot" cx="100" cy="40" r="2.5"/>
-                    <circle class="dot" cx="151.7" cy="83.2" r="2.5"/>
-                    <circle class="dot" cx="125.9" cy="135.6" r="2.5"/>
-                    <circle class="dot" cx="62.4" cy="151.8" r="2.5"/>
-                    <circle class="dot" cx="54.3" cy="85.2" r="2.5"/>
-                    <text class="axis-label" x="100" y="13" text-anchor="middle">Réseau</text>
-                    <text class="axis-label" x="180" y="73" text-anchor="start">Systèmes</text>
-                    <text class="axis-label" x="150" y="178" text-anchor="middle">Sécurité</text>
-                    <text class="axis-label" x="50" y="178" text-anchor="middle">Support</text>
-                    <text class="axis-label" x="20" y="73" text-anchor="end">Scripting</text>
+                    <rect class="dot" x="97.5" y="37.5" width="5" height="5"/>
+                    <rect class="dot" x="149.2" y="80.7" width="5" height="5"/>
+                    <rect class="dot" x="123.4" y="133.1" width="5" height="5"/>
+                    <rect class="dot" x="59.9" y="149.3" width="5" height="5"/>
+                    <rect class="dot" x="51.8" y="82.7" width="5" height="5"/>
+                    <text class="axis-label" x="100" y="12" text-anchor="middle">Réseau</text>
+                    <text class="axis-label" x="181" y="73" text-anchor="start">Systèmes</text>
+                    <text class="axis-label" x="150" y="179" text-anchor="middle">Sécurité</text>
+                    <text class="axis-label" x="50" y="179" text-anchor="middle">Support</text>
+                    <text class="axis-label" x="19" y="73" text-anchor="end">Scripting</text>
                 </svg>
                 <div class="radar-legend">
                     <div class="row"><span class="lbl">Réseau <b>75%</b></span><span class="track"><i style="--w:75%"></i></span></div>
@@ -245,25 +252,25 @@
 
             <div class="competences-grid">
                 <div class="competence-bloc reveal" data-i="1">
-                    <h3>💻 Hard skills</h3>
+                    <h3><span class="ico">B-01</span> Hard skills</h3>
                     <p><strong>Langages</strong></p>
                     <div class="skill-tags"><span>Python</span><span>C</span><span>HTML/CSS</span></div>
-                    <p style="margin-top:.7rem"><strong>Outils & systèmes</strong></p>
+                    <p style="margin-top:.7rem"><strong>Outils &amp; systèmes</strong></p>
                     <div class="skill-tags"><span>Arduino</span><span>Pack Office</span><span>Canva</span><span>SolidWorks</span><span>Windows 10/11</span><span>macOS</span></div>
                 </div>
                 <div class="competence-bloc reveal" data-i="2">
-                    <h3>🤝 Soft skills</h3>
+                    <h3><span class="ico">B-02</span> Soft skills</h3>
                     <div class="skill-tags"><span>Vif d'esprit</span><span>Travail en équipe</span><span>Curiosité</span><span>Rigueur</span></div>
                 </div>
                 <div class="competence-bloc reveal" data-i="3">
-                    <h3>🌍 Langues</h3>
+                    <h3><span class="ico">B-03</span> Langues</h3>
                     <div class="skill-tags"><span>Français — natif</span><span>Anglais — bilingue</span><span>Punjabi / Hindi — natif</span></div>
                 </div>
             </div>
         </section>
 
         <section>
-            <h2 class="section-title">Parcours</h2>
+            <h2 class="section-title" data-step="03">Parcours</h2>
             <ul class="timeline">
                 <li class="reveal current" data-i="1">
                     <span class="when">2025 — 2027</span>
@@ -289,7 +296,7 @@
         </section>
 
         <section>
-            <h2 class="section-title">Expériences</h2>
+            <h2 class="section-title" data-step="04">Expériences</h2>
             <ul class="timeline">
                 <li class="reveal" data-i="1">
                     <span class="when">2024</span>
@@ -310,13 +317,13 @@
         </section>
 
         <section>
-            <h2 class="section-title">Contact</h2>
+            <h2 class="section-title" data-step="05">Contact</h2>
             <ul class="contact-list">
-                <li class="reveal copyable" data-i="1" data-copy="Shabdpreetsingh2@gmail.com"><span class="ico">✉️</span> <a href="mailto:Shabdpreetsingh2@gmail.com">Shabdpreetsingh2@gmail.com</a><span class="copy-hint">copié ✓</span></li>
-                <li class="reveal copyable" data-i="2" data-copy="+33616881700"><span class="ico">📞</span> <a href="tel:+33616881700">+33 6 16 88 17 00</a><span class="copy-hint">copié ✓</span></li>
-                <li class="reveal" data-i="3"><span class="ico">📍</span> Paris — Île-de-France</li>
+                <li class="reveal copyable" data-i="1" data-copy="Shabdpreetsingh2@gmail.com"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"><rect x="3" y="5" width="18" height="14"/><path d="m3 7 9 6 9-6"/></svg></span> <a href="mailto:Shabdpreetsingh2@gmail.com">Shabdpreetsingh2@gmail.com</a><span class="copy-hint">copié ✓</span></li>
+                <li class="reveal copyable" data-i="2" data-copy="+33616881700"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span> <a href="tel:+33616881700">+33 6 16 88 17 00</a><span class="copy-hint">copié ✓</span></li>
+                <li class="reveal" data-i="3"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><rect x="9.5" y="7.5" width="5" height="5"/></svg></span> Paris — Île-de-France</li>
             </ul>
-            <p class="contact-note">Le plus rapide reste l'email. SLA de réponse : moins de 24h — jamais breaché à ce jour.</p>
+            <p class="contact-note">Le plus rapide reste l'email. <strong>SLA de réponse : moins de 24h</strong> — jamais breaché à ce jour.</p>
         </section>
     </main>
 
@@ -326,13 +333,13 @@
             <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
             <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
         </div>
-        <p>© 2026 Shabdpreet Singh — Portfolio</p>
-        <p class="footer-uptime"><span class="status-led"></span>Tous les services sont opérationnels — <strong>shabd</strong> veille</p>
+        <p>© 2026 Shabdpreet Singh — Portfolio · kit v2</p>
+        <p class="footer-uptime"><span class="status-led"></span>Tous les systèmes sont opérationnels</p>
         <p class="footer-alt">En alternance chez <img class="footer-brand" src="./fichiers/allianc3-mark.png" alt="" width="18" height="18" loading="lazy"> <strong>Allianc3</strong></p>
         <p class="footer-clock" id="clock"></p>
     </footer>
 
-    <div class="incident-toast" id="incidentToast" aria-hidden="true">🚨 incident simulé — <span class="ok2">tous services rétablis ✓</span></div>
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">Alerte simulée — <span class="ok2">tous systèmes rétablis ✓</span></div>
     <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
     <script src="./script.js"></script>
 </body>
