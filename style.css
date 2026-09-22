@@ -2413,3 +2413,115 @@ html.is-leaving body { opacity: 0; }
     body { background: #fff; color: #000; }
     .reveal { opacity: 1; transform: none; }
 }
+
+/* ============================================================
+   Pilote — la figurine du kit, posée sur la plaque du hero
+   Même logique que le reste : aplats, lignes de panneau,
+   chanfreins, ombre dure. Elle s'assemble avec le hero.
+   ============================================================ */
+.pilote-stage {
+    /* le plastique reste clair sur les deux faces : c'est un kit blanc
+       posé sur la plaque rouge, comme sur un box art */
+    --pl-plastic: var(--surface);
+    --pl-line: var(--line);
+    /* calée sur la plaque rouge : pieds sur son bord bas (plaque = top 6% + height 88%) */
+    position: absolute;
+    bottom: 6%;
+    right: 33%;
+    width: clamp(104px, 9vw, 128px);
+    z-index: 2;
+}
+[data-theme="dark"] .pilote-stage {
+    --pl-plastic: var(--text);
+    --pl-line: var(--bg);
+}
+.pilote-stage .pilote {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(5px 5px 0 var(--pl-line));
+}
+
+/* Entrée : chaque pièce s'emboîte, en cascade, avec le hero */
+.hero-stage .pl-part {
+    opacity: 0;
+    transform: translateY(-22px);
+}
+.hero-stage.played .pl-part {
+    opacity: 1;
+    transform: none;
+    transition: transform var(--dur-slow) var(--ease-snap),
+                opacity var(--dur-normal) var(--ease-out);
+    transition-delay: calc(0.52s + var(--d, 0s));
+}
+
+/* ---- Vie de la figurine ----------------------------------
+   Rien de décoratif : elle fait le boulot du site. Elle
+   supervise (balayage de visière), elle émet (balise radio),
+   elle a un état (LED). Trois périodes différentes pour que
+   rien ne se synchronise et que ça ne fasse pas « boucle ».
+   ---------------------------------------------------------- */
+
+/* LED de statut : clignotement franc, jamais un fondu */
+.pl-led { animation: pl-led 2.6s steps(1, end) infinite; }
+@keyframes pl-led {
+    0%, 72%   { opacity: 1; }
+    73%, 100% { opacity: 0.22; }
+}
+
+/* Balayage de surveillance : la visière scanne, la tête suit.
+   Mouvements secs avec des temps d'arrêt — un servo, pas un flottement. */
+.pl-head {
+    transform-origin: 100px 90px;
+    animation: pl-look 6.4s var(--ease-snap) 1.4s infinite;
+}
+@keyframes pl-look {
+    0%, 24%   { transform: translateX(0); }
+    30%, 46%  { transform: translateX(-3.5px); }
+    52%, 70%  { transform: translateX(3.5px); }
+    76%, 100% { transform: translateX(0); }
+}
+.pl-scan { animation: pl-sweep 6.4s var(--ease-snap) 1.4s infinite; }
+@keyframes pl-sweep {
+    0%, 24%   { transform: translateX(0); }
+    30%, 46%  { transform: translateX(-6px); }
+    52%, 70%  { transform: translateX(26px); }
+    76%, 100% { transform: translateX(0); }
+}
+
+/* Balise radio du casque-micro : double impulsion, puis silence */
+.pl-beacon { animation: pl-beacon 3.4s steps(1, end) 1.4s infinite; }
+@keyframes pl-beacon {
+    0%,  7%   { opacity: 1; }
+    8%,  15%  { opacity: 0.18; }
+    16%, 23%  { opacity: 1; }
+    24%, 100% { opacity: 0.18; }
+}
+
+/* Au survol : il arrête son scan, te regarde, et lève le bras.
+   Le seul endroit du hero où le curseur sert à quelque chose. */
+.pilote-stage { pointer-events: auto; }
+.pl-arm-r {
+    transform-origin: 150px 110px;
+    transition: transform var(--dur-slow) var(--ease-snap);
+}
+.pilote-stage:hover .pl-arm-r { transform: rotate(-24deg); }
+.pilote-stage:hover .pl-head,
+.pilote-stage:hover .pl-scan {
+    animation: none;
+    transform: none;
+    transition: transform var(--dur-normal) var(--ease-snap);
+}
+.pilote-stage:hover .pl-led { animation: none; opacity: 1; }
+
+/* Sous 900px le hero s'empile : la plaque n'est plus qu'un fond de secours
+   derrière le panneau, la figurine n'a plus de sol. On la retire. */
+@media (max-width: 900px) {
+    .pilote-stage { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hero-stage .pl-part { opacity: 1; transform: none; }
+    .pl-led, .pl-head, .pl-scan, .pl-beacon { animation: none; }
+    .pl-arm-r { transition: none; }
+}

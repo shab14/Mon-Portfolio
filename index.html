@@ -72,6 +72,90 @@
     <main id="main">
         <section class="hero hero-stage hazard-bottom">
             <div class="hero-plate" aria-hidden="true"></div>
+            <div class="pilote-stage" aria-hidden="true">
+                <svg class="pilote" viewBox="0 0 200 338" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Le pilote — figurine du kit">
+                  <defs>
+                    <clipPath id="pl-visor">
+                      <polygon points="74,38 126,38 126,52 117,62 83,62 74,52"/>
+                    </clipPath>
+                  </defs>
+                  <g fill="var(--pl-plastic)" stroke="var(--pl-line)" stroke-width="2.6" stroke-linejoin="miter">
+
+                    <!-- ===== JAMBES ===== -->
+                    <g class="pl-part" style="--d:.30s">
+                      <polygon fill="var(--pl-line)" points="74,178 98,178 96,216 72,214"/>
+                      <polygon fill="var(--pl-line)" points="102,178 126,178 128,214 104,216"/>
+                      <polygon points="70,214 97,216 96,238 68,236"/>
+                      <polygon points="103,216 130,214 132,236 104,238"/>
+                      <polygon points="69,238 96,240 94,286 67,284"/>
+                      <polygon points="104,240 131,238 133,284 106,286"/>
+                      <polygon fill="var(--red)" stroke="none" points="75,248 83,248 81,280 73,280"/>
+                      <polygon fill="var(--red)" stroke="none" points="117,248 125,248 127,280 119,280"/>
+                      <polygon fill="var(--pl-line)" points="63,284 95,286 97,308 58,306"/>
+                      <polygon fill="var(--pl-line)" points="105,286 137,284 142,306 103,308"/>
+                    </g>
+
+                    <!-- ===== BASSIN + sacoche de technicien ===== -->
+                    <g class="pl-part" style="--d:.24s">
+                      <polygon fill="var(--pl-line)" points="76,156 124,156 128,178 72,178"/>
+                      <rect fill="var(--gold)" stroke="none" x="93" y="161" width="14" height="9"/>
+                      <polygon points="126,158 143,158 145,180 128,180"/>
+                      <line x1="128" y1="168" x2="144" y2="168" stroke-width="2.2"/>
+                    </g>
+
+                    <!-- ===== BRAS ===== -->
+                    <g class="pl-part" style="--d:.42s">
+                      <polygon points="36,104 62,110 57,148 31,142"/>
+                      <polygon points="30,148 56,152 52,190 26,186"/>
+                      <polygon fill="var(--pl-line)" points="28,162 55,166 54,177 27,173"/>
+                      <polygon points="24,190 50,194 47,212 21,208"/>
+                    </g>
+                    <g class="pl-part" style="--d:.46s">
+                      <g class="pl-arm-r">
+                        <polygon points="164,104 138,110 143,148 169,142"/>
+                        <polygon points="170,148 144,152 148,190 174,186"/>
+                        <polygon fill="var(--pl-line)" points="172,162 145,166 146,177 173,173"/>
+                        <polygon points="176,190 150,194 153,212 179,208"/>
+                      </g>
+                    </g>
+
+                    <!-- ===== TORSE ===== -->
+                    <g class="pl-part" style="--d:.16s">
+                      <polygon points="70,92 130,92 136,110 130,144 100,160 70,144 64,110"/>
+                      <polygon fill="var(--pl-line)" points="86,98 114,98 114,138 100,146 86,138"/>
+                      <polygon fill="var(--red)" stroke="none" points="96,104 108,104 108,136 98,141"/>
+                      <line x1="67" y1="124" x2="86" y2="124" stroke-width="2.2"/>
+                      <line x1="114" y1="124" x2="133" y2="124" stroke-width="2.2"/>
+                      <rect fill="var(--blue)" stroke="none" x="71" y="130" width="9" height="9"/>
+                      <circle class="pl-led" fill="var(--red)" stroke="none" cx="120" cy="134" r="3.6"/>
+                    </g>
+
+                    <!-- ===== ÉPAULES ===== -->
+                    <g class="pl-part" style="--d:.36s">
+                      <polygon points="34,96 54,86 72,94 72,124 44,128 30,114"/>
+                      <polygon points="166,96 146,86 128,94 128,124 156,128 170,114"/>
+                      <polygon fill="var(--red)" stroke="none" points="38,99 54,91 54,103 38,109"/>
+                      <line x1="150" y1="93" x2="164" y2="106" stroke-width="2.2"/>
+                    </g>
+
+                    <!-- ===== TÊTE : casque de technicien, visière pleine, un seul casque-micro ===== -->
+                    <g class="pl-part" style="--d:.08s">
+                      <rect fill="var(--pl-line)" x="89" y="76" width="22" height="16"/>
+                      <g class="pl-head">
+                        <polygon points="70,32 80,20 120,20 130,32 130,60 120,76 80,76 70,60"/>
+                        <polygon fill="var(--pl-line)" points="74,38 126,38 126,52 117,62 83,62 74,52"/>
+                        <g clip-path="url(#pl-visor)">
+                          <line class="pl-scan" x1="80" y1="46" x2="100" y2="46" stroke="var(--blue)" stroke-width="2.6"/>
+                        </g>
+                        <rect fill="var(--pl-line)" x="58" y="38" width="13" height="19"/>
+                        <rect class="pl-beacon" fill="var(--gold)" stroke="none" x="61" y="44" width="6" height="6"/>
+                        <polygon fill="var(--pl-line)" points="60,38 66,26 71,27 66,38"/>
+                        <line x1="130" y1="44" x2="137" y2="44" stroke-width="2.4"/>
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+            </div>
             <span class="reg tl" aria-hidden="true"></span>
             <span class="reg br" aria-hidden="true"></span>
             <div class="hero-inner">
