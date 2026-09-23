@@ -4,6 +4,9 @@
    (les pièces s'emboîtent, les services s'allument) ou signale
    un état. Rien de décoratif. Tout est désactivé sous
    prefers-reduced-motion.
+   Le pilote SH-14 (pilote.js) écoute les événements « kit:* »
+   émis ici : kit:svc, kit:theme, kit:incident, kit:copy,
+   kit:sent, kit:call.
    ============================================================ */
 
 (function () {
@@ -12,6 +15,7 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
 
   /* ---- Horloge Paris (footer) ---- */
   const clock = $('#clock');
@@ -41,6 +45,7 @@
       if (pos === seq.length) {
         pos = 0;
         document.body.classList.add('incident');
+        emit('kit:incident');
         if (toast) { toast.classList.add('show'); }
         setTimeout(() => {
           document.body.classList.remove('incident');
@@ -65,6 +70,7 @@
         const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
         try { localStorage.setItem('theme', next); } catch (e) {}
+        emit('kit:theme', { theme: next });
       });
     }
   })();
@@ -74,7 +80,11 @@
     el.addEventListener('click', (ev) => {
       if (ev.target.tagName === 'A') return; // laisser mailto/tel marcher
       const txt = el.dataset.copy || '';
-      const done = () => { el.classList.add('copied'); setTimeout(() => el.classList.remove('copied'), 1500); };
+      const done = () => {
+        el.classList.add('copied');
+        emit('kit:copy');
+        setTimeout(() => el.classList.remove('copied'), 1500);
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(txt).then(done).catch(() => {});
       }
@@ -153,27 +163,44 @@
     setTimeout(tick, 400);
   });
 
-  /* ---- Reveal au scroll (avec filets de sécurité) ---- */
-  const revealables = $$('.reveal');
+  /* ---- Reveal au scroll (avec filets de sécurité) ----
+     .reveal : les pièces arrivent de la grappe ; .section-title : l'étiquette
+     STEP se déroule et la ligne de panneau se trace. Le filet de sécurité ne
+     dévoile plus tout au bout de 3 s (ça tuait l'animation au scroll) : il
+     vérifie au scroll ce qui est passé à l'écran, et tout s'affiche à
+     l'impression. Sans JS, rien n'est caché (états initiaux scopés sous .js). */
+  const revealables = $$('.reveal, .section-title');
   if (revealables.length) {
+    const show = (el) => el.classList.add('in');
     if (reduced || !('IntersectionObserver' in window)) {
-      revealables.forEach(el => el.classList.add('in'));
+      revealables.forEach(show);
     } else {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(e => {
-          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+          if (e.isIntersecting) { show(e.target); io.unobserve(e.target); }
         });
       }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
       revealables.forEach(el => io.observe(el));
 
       // Filet 1 : ce qui est déjà visible au chargement s'affiche
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      revealables.forEach(el => {
-        const r = el.getBoundingClientRect();
-        if (r.top < vh && r.bottom > 0) el.classList.add('in');
-      });
-      // Filet 2 : jamais de contenu caché — tout devient visible après 3s
-      setTimeout(() => revealables.forEach(el => el.classList.add('in')), 3000);
+      const check = () => {
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        revealables.forEach(el => {
+          if (el.classList.contains('in')) return;
+          if (el.getBoundingClientRect().top < vh) show(el);
+        });
+      };
+      check();
+      // Filet 2 : au scroll, tout ce qui a déjà traversé l'écran est affiché
+      // (throttlé : l'IntersectionObserver fait le vrai travail, ceci n'est
+      //  qu'une sécurité — pas de lecture de layout à chaque image)
+      let t = 0;
+      window.addEventListener('scroll', () => {
+        clearTimeout(t);                   // débounce : vérifie quand le scroll s'arrête
+        t = setTimeout(check, 160);
+      }, { passive: true });
+      // Filet 3 : impression → tout visible
+      window.addEventListener('beforeprint', () => revealables.forEach(show));
     }
   }
 
@@ -212,6 +239,10 @@
   const heroStage = $('.hero-stage');
   const panel = $('#statusPanel');
   const rows = panel ? $$('.status-row', panel) : [];
+  // Avec le pilote sur son socle : il s'assemble, s'allume, PUIS allume les services
+  const heroPilot = !!$('[data-pilote="hero"]');
+  const svcStart = heroPilot ? 1850 : 600;
+  const svcStep  = heroPilot ? 300 : 260;
 
   if (heroStage) {
     if (reduced) {
@@ -219,11 +250,16 @@
       heroStage.classList.add('played');
       rows.forEach(r => r.classList.add('online'));
     } else {
-      // 1. Le hero se met en place
+      // 1. Le hero se met en place (la classe .boot n'était jamais posée :
+      //    l'allumage un par un ne se voyait plus — corrigé)
+      if (panel) panel.classList.add('boot');
       requestAnimationFrame(() => requestAnimationFrame(() => heroStage.classList.add('played')));
-      // 2. Les services "s'allument" un par un, après l'arrivée du panneau
+      // 2. Les services "s'allument" un par un ; le pilote regarde chaque ligne
       rows.forEach((row, i) => {
-        setTimeout(() => row.classList.add('online'), 600 + i * 260);
+        setTimeout(() => {
+          row.classList.add('online');
+          emit('kit:svc', { row, index: i, last: i === rows.length - 1 });
+        }, svcStart + i * svcStep);
       });
     }
   }
@@ -256,7 +292,7 @@
       logEl.textContent = lines[0];
     } else {
       let li = 0, ci = 0, deleting = false;
-      const startDelay = heroStage ? 600 + rows.length * 260 + 200 : 400;
+      const startDelay = heroStage ? svcStart + rows.length * svcStep + 200 : 400;
       const tick = () => {
         const full = lines[li];
         if (!deleting) {
@@ -282,14 +318,62 @@
     const words = (el.dataset.roles || '').split(',').map(w => w.trim()).filter(Boolean);
     if (words.length < 2 || reduced) return;
     let i = 0;
+    // bascule façon afficheur à volets : le mot sort par le haut, le suivant monte
     setInterval(() => {
-      el.style.opacity = '0';
+      if (document.hidden) return;
+      el.classList.add('is-out');
       setTimeout(() => {
         i = (i + 1) % words.length;
         el.textContent = words[i];
-        el.style.opacity = '1';
-      }, 200);
+        el.classList.remove('is-out');
+        el.classList.add('is-in');
+        void el.offsetWidth;
+        el.classList.remove('is-in');
+      }, 210);
     }, 2300);
+  })();
+
+  /* ============================================================
+     Hero — profondeur au scroll : le nom glisse, la plaque recule,
+     la figurine et son socle montent. Les décalages sont écrits
+     directement sur les 4 calques concernés (propriété translate,
+     couches GPU) : pas de variable héritée qui forcerait à
+     recalculer tout le hero à chaque image.
+     ============================================================ */
+  (function heroDepth() {
+    const hero = $('.hero-stage');
+    if (!hero || reduced) return;
+    const wide = window.matchMedia('(min-width: 901px)');
+    const layers = [
+      [$('.name-line:nth-child(1)', hero), (p) => `${(p * 36).toFixed(1)}px 0`],
+      [$('.name-line:nth-child(2)', hero), (p) => `${(p * 110).toFixed(1)}px 0`],
+      [$('.hero-plate', hero),              (p) => `${(p * 70).toFixed(1)}px ${(p * 36).toFixed(1)}px`],
+      [$('.panel-stage', hero),             (p) => `0 ${(p * -46).toFixed(1)}px`],
+    ].filter(l => l[0]);
+    let raf = 0, last = -1;
+    const update = () => {
+      raf = 0;
+      const p = wide.matches ? Math.min(1, Math.max(0, window.scrollY / (hero.offsetHeight || 1))) : 0;
+      const q = Math.round(p * 400) / 400;
+      if (q === last) return;              // hors du hero : plus aucune écriture
+      last = q;
+      layers.forEach(([el, f]) => { el.style.translate = q ? f(q) : ''; });
+    };
+    window.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    wide.addEventListener && wide.addEventListener('change', update);
+    update();
+  })();
+
+  /* ============================================================
+     Animations continues hors écran → en pause (radar, flux…)
+     ============================================================ */
+  (function pauseOffscreen() {
+    const els = $$('[data-live]');
+    if (!els.length || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => e.target.classList.toggle('is-live', e.isIntersecting));
+    }, { rootMargin: '60px' });
+    els.forEach(el => io.observe(el));
   })();
 
   /* ============================================================
@@ -327,10 +411,31 @@
   })();
 
   /* ============================================================
-     Transitions entre pages — fade out avant navigation interne
+     Transitions entre pages — le volet du kit
+     Un panneau graphite frappé du casque du pilote glisse depuis
+     la gauche (280 ms), la page suivante l'ouvre vers la droite.
+     Le script inline du <head> pose .shutter-in avant le 1er rendu
+     (drapeau sessionStorage) : aucun flash, et l'ouverture est
+     100 % CSS — si le JS casse, le volet s'ouvre quand même.
      ============================================================ */
+  const PAGE_LABELS = {
+    'index.html': 'Accueil', 'epreuve.html': 'Épreuves', 'projet.html': 'Projets',
+    'veille.html': 'Veille', 'certifs.html': 'Certifications', 'contact.html': 'Contact'
+  };
+  const navigate = (url) => {
+    const root = document.documentElement;
+    if (reduced) { location.href = url; return; }
+    let file = '';
+    try { file = new URL(url, location.href).pathname.split('/').pop() || 'index.html'; } catch (e) {}
+    const label = (PAGE_LABELS[file] ? 'STEP → ' + PAGE_LABELS[file] : 'Pièce suivante').toUpperCase();
+    try { sessionStorage.setItem('kit-nav', label); } catch (e) {}
+    root.style.setProperty('--shutter-label', JSON.stringify(label));
+    root.classList.remove('shutter-in');
+    root.classList.add('is-leaving');
+    setTimeout(() => { location.href = url; }, 300);
+  };
   (function pageTransition() {
-    if (reduced) return; // pas de fade sous mouvement réduit
+    if (reduced) return; // pas de volet sous mouvement réduit
     document.addEventListener('click', (e) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = e.target.closest('a');
@@ -340,13 +445,13 @@
       if (!href || href.charAt(0) === '#' || href.startsWith('mailto:') || href.startsWith('tel:')) return;
       if (a.origin !== location.origin) return;      // liens externes : navigation normale
       if (a.href === location.href) return;          // même page
+      if (!/\.html?$|\/$/.test(a.pathname)) return;  // fichiers (pdf, docx…) : navigation normale
       e.preventDefault();
-      document.documentElement.classList.add('is-leaving');
-      setTimeout(() => { location.href = a.href; }, 200);
+      navigate(a.href);
     });
-    // retour arrière (bfcache) : on enlève l'état "leaving"
+    // retour arrière (bfcache) : on range le volet
     window.addEventListener('pageshow', (e) => {
-      if (e.persisted) document.documentElement.classList.remove('is-leaving');
+      if (e.persisted) document.documentElement.classList.remove('is-leaving', 'shutter-in');
     });
   })();
 
@@ -374,7 +479,11 @@
       grid.appendChild(noRes);
     }
 
-    const apply = () => {
+    // user = true : filtrage déclenché par l'utilisateur → les cartes gardées
+    // se re-emboîtent (petite cascade). Au chargement, on laisse le reveal
+    // au scroll faire son travail (avant : toutes les cartes étaient
+    // marquées .in d'office et n'apparaissaient jamais en cascade).
+    const apply = (user) => {
       const q = (search.value || '').trim().toLowerCase();
       let shown = 0;
       cards.forEach(card => {
@@ -382,7 +491,18 @@
         const okText = !q || card.textContent.toLowerCase().includes(q);
         const show = okProv && okText;
         card.classList.toggle('is-hidden', !show);
-        if (show) { card.classList.add('in'); shown++; }
+        if (show) {
+          shown++;
+          if (user === true) {
+            card.classList.add('in');
+            if (!reduced) {
+              card.classList.remove('is-refit');
+              void card.offsetWidth;
+              card.style.setProperty('--refit', Math.min(shown, 8));
+              card.classList.add('is-refit');
+            }
+          }
+        }
       });
       noRes.hidden = shown !== 0;
       count.textContent = shown + ' / ' + cards.length + ' affichées';
@@ -393,10 +513,10 @@
         chips.forEach(c => c.classList.remove('is-active'));
         chip.classList.add('is-active');
         prov = chip.dataset.filter;
-        apply();
+        apply(true);
       });
     });
-    if (search) search.addEventListener('input', apply);
+    if (search) search.addEventListener('input', () => apply(true));
 
     if (sortBtn) {
       sortBtn.addEventListener('click', () => {
@@ -409,11 +529,11 @@
           return dir === 'desc' ? db.localeCompare(da) : da.localeCompare(db);
         });
         sorted.forEach(c => grid.insertBefore(c, noRes));
-        apply();
+        apply(true);
       });
     }
 
-    apply();
+    apply(false);
   })();
 
   /* ============================================================
@@ -421,8 +541,10 @@
      ============================================================ */
   (function commandPalette() {
     // --- Skip-link accessibilité (1er élément focusable) ---
+    // (déjà présent dans le HTML de chaque page : on n'en crée un que s'il manque,
+    //  avant il y en avait deux)
     const main = document.querySelector('main');
-    if (main) {
+    if (main && !document.querySelector('.skip-link')) {
       if (!main.id) main.id = 'contenu';
       const skip = document.createElement('a');
       skip.className = 'skip-link';
@@ -432,14 +554,17 @@
     }
 
     // --- Actions disponibles ---
-    const go   = (rel) => { location.href = './' + rel; };
+    const go   = (rel) => navigate('./' + rel);
     const ext  = (url) => { window.open(url, '_blank', 'noopener'); };
-    const copy = (txt) => { if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => {}); };
+    const copy = (txt) => {
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => emit('kit:copy')).catch(() => {});
+    };
     const toggleTheme = () => {
       const root = document.documentElement;
       const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch (e) {}
+      emit('kit:theme', { theme: next });
     };
     /* ============================================================
        SECRETS — accessibles uniquement en tapant le mot exact
@@ -558,6 +683,14 @@
       const ink    = (styles.getPropertyValue('--ink') || '#15161A').trim();
       const accent = (styles.getPropertyValue('--red') || '#D42B1E').trim();
       const muted  = (styles.getPropertyValue('--text-mute') || '#8A8D94').trim();
+      const dark   = document.documentElement.getAttribute('data-theme') === 'dark';
+      // le coureur, c'est le pilote SH-14 en pixel art (sprite de pilote.js)
+      const sprite = {
+        line: dark ? '#0E0F12' : '#23252B', plastic: dark ? '#E6E4DD' : '#FBFAF6',
+        shade: dark ? '#BDBAB2' : '#E2DFD4', red: accent, gold: '#C9A227', led: '#6F9BFF'
+      };
+      const runner = window.Pilote && window.Pilote.drawRunner;
+      if (runner) { const d = document.querySelector('.dino-title'); if (d) d.textContent = 'sh-14://no-signal'; }
 
       const W = cvs.width, H = cvs.height, GROUND = H - 40;
       let best = 0;
@@ -589,11 +722,16 @@
         // sol
         ctx.strokeStyle = muted; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(0, GROUND + 42); ctx.lineTo(W, GROUND + 42); ctx.stroke();
-        // dino (bloc stylisé + œil)
-        ctx.fillStyle = accent;
-        ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(dino.x + dino.w - 12, dino.y + 8, 6, 6);
+        // coureur : le pilote (sinon, repli sur le bloc stylisé d'origine)
+        if (runner) {
+          const f = dino.jumping ? 2 : (started && !over ? (Math.floor(frame / 6) % 2) : 0);
+          runner(ctx, dino.x, dino.y, 2, f, sprite);
+        } else {
+          ctx.fillStyle = accent;
+          ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(dino.x + dino.w - 12, dino.y + 8, 6, 6);
+        }
         // obstacles (cactus = barres)
         ctx.fillStyle = ink;
         obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
@@ -680,8 +818,9 @@
       { icon: '04', label: 'Certifications',        hint: 'page',   run: () => go('certifs.html') },
       { icon: '05', label: 'Contact',               hint: 'page',   run: () => go('contact.html') },
       { icon: 'THM', label: 'Basculer le thème KIT / BOX ART', hint: 'action', run: toggleTheme },
+      { icon: 'SH', label: 'Appeler le pilote SH-14', hint: 'mascotte', run: () => emit('kit:call') },
       { icon: '@',  label: 'Copier mon email',      hint: 'action', run: () => copy('Shabdpreetsingh2@gmail.com') },
-      { icon: 'CV', label: 'Télécharger mon CV',    hint: 'fichier', run: () => go('fichiers/CV_Shabdpreet_Singh.pdf') },
+      { icon: 'CV', label: 'Télécharger mon CV',    hint: 'fichier', run: () => { location.href = './fichiers/CV_Shabdpreet_Singh.pdf'; } },
       { icon: 'GH', label: 'GitHub',                hint: 'lien',   run: () => ext('https://github.com/shab14') },
       { icon: 'IN', label: 'LinkedIn',              hint: 'lien',   run: () => ext('https://www.linkedin.com/in/shabdpreet-singh-401012376/') }
     ];
@@ -842,6 +981,7 @@
         status.textContent = 'Votre messagerie va s\u2019ouvrir avec le message pré-rempli ✓';
         status.className = 'form-status ok';
       }
+      emit('kit:sent');
       if (window.__burstConfetti) window.__burstConfetti();
     });
   })();

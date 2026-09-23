@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* Avant le 1er rendu : thème sauvegardé (plus de flash clair en mode sombre),
+       classe .js (sans JS, rien n'est caché), volet de transition si on arrive
+       d'une autre page du kit. */
+    (function (h) {
+        h.classList.add('js');
+        try {
+            var t = localStorage.getItem('theme');
+            if (!t && window.matchMedia) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            if (t) h.setAttribute('data-theme', t);
+            var n = sessionStorage.getItem('kit-nav');
+            if (n) {
+                sessionStorage.removeItem('kit-nav');
+                if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    h.classList.add('shutter-in');
+                    h.style.setProperty('--shutter-label', JSON.stringify(n));
+                }
+            }
+        } catch (e) {}
+    })(document.documentElement);
+    </script>
     <title>Contact | Shabdpreet Singh</title>
     <meta name="description" content="Contactez Shabdpreet Singh — BTS SIO SISR en alternance chez ALLIANC3. Ouvert aux opportunités 2026 en supervision, réseaux et infrastructure.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,7 +52,7 @@
     <nav>
         <div class="nav-container">
             <a href="./index.html" class="logo">
-                <span class="logo-mark">S</span>
+                <span class="logo-mark"><span class="lm-s">S</span><span class="lm-v" aria-hidden="true"></span></span>
                 <span class="logo-text">Shabdpreet Singh</span>
             </a>
             <ul class="nav-links">
@@ -108,6 +129,7 @@
 
             <!-- Colonne formulaire -->
             <form class="contact-form reveal" id="contactForm" novalidate>
+                <div class="pl-hello" data-pilote="hello" aria-hidden="true"></div>
                 <div class="form-row">
                     <div class="field">
                         <label for="cf-prenom">Prénom</label>
@@ -162,13 +184,14 @@
             <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
             <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
         </div>
-        <p>© 2026 Shabdpreet Singh — Portfolio · kit v2</p>
+        <p>© 2026 Shabdpreet Singh — Portfolio · kit v3</p>
         <p class="footer-uptime"><span class="status-led"></span>Tous les systèmes sont opérationnels</p>
         <p class="footer-alt">En alternance chez <img class="footer-brand" src="./fichiers/allianc3-mark.png" alt="" width="18" height="18" loading="lazy"> <strong>Allianc3</strong></p>
         <p class="footer-clock" id="clock"></p>
     </footer>
     <div class="incident-toast" id="incidentToast" aria-hidden="true">Alerte simulée — <span class="ok2">tous systèmes rétablis ✓</span></div>
     <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
+    <script src="./pilote.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

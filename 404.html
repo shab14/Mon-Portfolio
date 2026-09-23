@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* thème avant le 1er rendu + classe .js */
+    (function (h) {
+        h.classList.add('js');
+        try {
+            var t = localStorage.getItem('theme');
+            if (!t && window.matchMedia) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            if (t) h.setAttribute('data-theme', t);
+        } catch (e) {}
+    })(document.documentElement);
+    </script>
     <title>404 — Pièce manquante | Shabdpreet Singh</title>
     <meta name="robots" content="noindex">
     <meta name="description" content="Page introuvable — portfolio de Shabdpreet Singh, étudiant BTS SIO SISR en alternance chez ALLIANC3.">
@@ -52,6 +63,17 @@
         .err-line { color: var(--panel-soft); font-size: 0.84rem; margin: 0.3rem 0; }
         .err-line .prompt { color: var(--red); font-weight: 600; margin-right: 0.5rem; }
         .err-panel .btn { margin-top: 1.4rem; width: 100%; }
+        .err-wrap { padding-top: 11rem; }
+        .pl-lost {
+            position: absolute;
+            right: 28px;
+            bottom: calc(100% - 1px);
+            width: 112px;
+            z-index: 2;
+            --pl-sh: 4px;
+            --say-r: 96%;
+            --say-b: 70%;
+        }
         .err-led {
             width: 8px; height: 8px; background: var(--warn);
             display: inline-block; margin-right: 0.45rem; vertical-align: 0;
@@ -72,6 +94,7 @@
 <body>
     <div class="err-wrap">
         <div class="err-panel">
+            <div class="pl-lost" data-pilote="lost" aria-hidden="true"></div>
             <div class="head">
                 <span><span class="err-led"></span>Notice — pièce manquante</span>
                 <span>HTTP 404</span>
@@ -85,9 +108,6 @@
             <a href="/Mon-Portfolio/" class="btn btn-primary">Retour à l'accueil</a>
         </div>
     </div>
-    <script>
-        // Applique le thème sauvegardé pour cohérence
-        (function(){ try { var t = localStorage.getItem('theme'); if(t) document.documentElement.setAttribute('data-theme', t); } catch(e){} })();
-    </script>
+    <script src="/Mon-Portfolio/pilote.js"></script>
 </body>
 </html>
