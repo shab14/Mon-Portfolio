@@ -262,80 +262,211 @@
   }
 
   /* ============================================================
-     HERO — séquence de boot (le moment mémorable du chargement)
+     HERO — panneau SYSTÈMES : une vraie supervision (v4.1)
+     Le moment mémorable du chargement reste le même (le pilote
+     s'assemble puis allume les services un par un), mais chaque
+     ligne « data-check » est vérifiée pour de vrai :
+       · github : API GitHub → dernier commit, n° de build, et
+         l'uptime compte depuis ce dernier déploiement ;
+       · head   : requête HEAD sur le fichier → code HTTP, taille,
+         latence mesurée.
+     Une ligne ne s'allume qu'une fois son check revenu (et jamais
+     avant son tour). Ensuite, un check tourne toutes les 20 s tant
+     que le panneau est à l'écran. Hors ligne : les fichiers déjà
+     embarqués (service worker) passent en CACHE, pas en panne.
      ============================================================ */
   const heroStage = $('.hero-stage');
   const panel = $('#statusPanel');
   const rows = panel ? $$('.status-row', panel) : [];
+  const logEl = $('#statusLog');
+  const uptimeEl = $('#uptime');
   // Avec le pilote sur son socle : il s'assemble, s'allume, PUIS allume les services
   const heroPilot = !!$('[data-pilote="hero"]');
   const svcStart = heroPilot ? 1850 : 600;
   const svcStep  = heroPilot ? 300 : 260;
 
-  if (heroStage) {
-    if (reduced) {
-      // Pas d'orchestration : tout est posé immédiatement
-      heroStage.classList.add('played');
-      rows.forEach(r => r.classList.add('online'));
-    } else {
-      // 1. Le hero se met en place (la classe .boot n'était jamais posée :
-      //    l'allumage un par un ne se voyait plus — corrigé)
-      if (panel) panel.classList.add('boot');
-      requestAnimationFrame(() => requestAnimationFrame(() => heroStage.classList.add('played')));
-      // 2. Les services "s'allument" un par un ; le pilote regarde chaque ligne
-      rows.forEach((row, i) => {
-        setTimeout(() => {
-          row.classList.add('online');
-          emit('kit:svc', { row, index: i, last: i === rows.length - 1 });
-        }, svcStart + i * svcStep);
-      });
+  const CHECK_TIMEOUT_MS = 4000;          // au-delà : « timeout »
+  const GITHUB_CACHE_MS  = 10 * 60e3;     // API publique limitée à 60 requêtes / h / IP
+  const MONITOR_EVERY_MS = 20000;         // un check toutes les 20 s, panneau visible
+  const OFFLINE_CACHE    = 'sh14-kit-v1'; // même nom que dans sw.js
+  const PILL = { up: 'UP', cache: 'CACHE', down: 'DOWN', api: 'API' };
+
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const absUrl = (u) => new URL(u, location.href).href;
+  const fmtSize = (n) => !n ? '' : n >= 1e6 ? (n / 1e6).toFixed(1).replace('.', ',') + ' Mo' : Math.max(1, Math.round(n / 1e3)) + ' Ko';
+  const ago = (iso) => {
+    const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 3600)  return 'il y a ' + Math.max(1, Math.round(s / 60)) + ' min';
+    if (s < 86400) return 'il y a ' + Math.round(s / 3600) + ' h';
+    return 'il y a ' + Math.round(s / 86400) + ' j';
+  };
+  const rowName = (row) => ($('.svc-name', row) || {}).textContent || 'service';
+
+  /* fetch avec délai maximum : AbortController, pas de requête pendue */
+  const timedFetch = async (url, opts = {}) => {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), CHECK_TIMEOUT_MS);
+    try { return await fetch(url, Object.assign({}, opts, { signal: ctl.signal })); }
+    finally { clearTimeout(timer); }
+  };
+  const inOfflineCache = async (url) => {
+    if (!('caches' in window)) return false;
+    try { return !!(await caches.match(absUrl(url), { ignoreSearch: true })); }
+    catch (err) { console.info('[kit] cache illisible :', err.message); return false; }
+  };
+
+  /* ---- check HEAD : code HTTP, taille, latence ---- */
+  async function checkHead(row) {
+    const url = row.dataset.url;
+    const name = rowName(row);
+    const t0 = performance.now();
+    try {
+      const res = await timedFetch(url, { method: 'HEAD', cache: 'no-store' });
+      const ms = Math.round(performance.now() - t0);
+      if (!res.ok) return { state: 'down', meta: 'HTTP ' + res.status, log: `HEAD ${name} → ${res.status}` };
+      const size = fmtSize(parseInt(res.headers.get('content-length') || '0', 10));
+      return { state: 'up', ms, meta: (size ? size + ' · ' : '') + ms + ' ms', log: `HEAD ${name} → ${res.status} · ${ms} ms` };
+    } catch (err) {
+      // pas de réponse : réseau coupé ou délai dépassé → la pièce est-elle embarquée ?
+      if (await inOfflineCache(url)) return { state: 'cache', meta: 'dispo hors ligne', log: `HEAD ${name} → hors ligne · cache ✓` };
+      const why = err.name === 'AbortError' ? 'timeout' : navigator.onLine ? 'injoignable' : 'hors ligne';
+      return { state: 'down', meta: why, log: `HEAD ${name} → ${why}` };
     }
   }
 
-  /* ---- Uptime qui tourne (réintroduit le thème supervision) ---- */
-  const uptimeEl = $('#uptime');
+  /* ---- check API GitHub : dernier commit + n° de build (nb de commits) ---- */
+  const readGithub = (key) => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } };
+  async function checkGithub(row) {
+    const repo = row.dataset.repo;
+    const key = 'kit-gh:' + repo;
+    const saved = readGithub(key);
+    const describe = (d) => (d.build ? 'build #' + d.build + ' · ' : '') + d.sha;   // l'âge est dans l'uptime
+    if (saved && navigator.onLine === false) {
+      return { state: 'cache', data: saved, meta: describe(saved), log: 'GET api.github.com → hors ligne · cache' };
+    }
+    if (saved && Date.now() - saved.at < GITHUB_CACHE_MS) {
+      return { state: 'up', data: saved, meta: describe(saved), log: `portfolio.git · build #${saved.build || '?'} · ${saved.sha}` };
+    }
+    const t0 = performance.now();
+    try {
+      const res = await timedFetch(`https://api.github.com/repos/${repo}/commits?per_page=1`,
+                                   { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' });
+      const ms = Math.round(performance.now() - t0);
+      if (!res.ok) throw Object.assign(new Error('HTTP ' + res.status), { status: res.status });
+      const list = await res.json();
+      const c = list && list[0];
+      if (!c || !c.sha) throw new Error('réponse vide');
+      const last = /[?&]page=(\d+)>;\s*rel="last"/.exec(res.headers.get('link') || '');
+      const data = { sha: c.sha.slice(0, 7), date: c.commit.committer.date, build: last ? +last[1] : 1, at: Date.now() };
+      try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) { /* stockage plein ou bloqué : on s'en passe */ }
+      return { state: 'up', ms, data, meta: describe(data), log: `GET api.github.com → ${res.status} · ${ms} ms` };
+    } catch (err) {
+      const why = err.status === 403 || err.status === 429 ? 'quota API' : err.name === 'AbortError' ? 'timeout' : navigator.onLine ? 'API muette' : 'hors ligne';
+      console.info('[kit] API GitHub :', err.message);
+      // le site, lui, répond (tu le lis) : on garde la dernière valeur connue
+      if (saved) return { state: 'cache', data: saved, meta: describe(saved), log: `GET api.github.com → ${why} · cache` };
+      return { state: 'api', meta: why, log: `GET api.github.com → ${why}` };
+    }
+  }
+  const probe = (row) => row.dataset.check === 'github' ? checkGithub(row) : checkHead(row);
+
+  /* ---- affichage d'un résultat sur sa ligne ---- */
+  const applyResult = (row, res) => {
+    const prev = row.dataset.state;
+    row.dataset.state = res.state;
+    const pill = $('.status-pill', row);
+    const meta = $('.svc-meta', row);
+    if (pill) pill.textContent = PILL[res.state] || 'UP';
+    if (meta && res.meta) meta.textContent = res.meta;
+    if (res.data && res.data.date) setUptimeFrom(res.data.date);
+    return prev;
+  };
+
+  /* ---- journal : la dernière ligne tapée, les suivantes remplacent ---- */
+  let logTimer = 0;
+  const log = (line) => {
+    if (!logEl || !line) return;
+    clearTimeout(logTimer);
+    if (reduced) { logEl.textContent = line; return; }
+    let i = 0;
+    const tick = () => {
+      logEl.textContent = line.slice(0, ++i);
+      if (i < line.length) logTimer = setTimeout(tick, 14);
+    };
+    tick();
+  };
+
+  /* ---- uptime : depuis le dernier déploiement (sinon depuis l'ouverture) ---- */
+  const pad = (n) => String(n).padStart(2, '0');
+  let upFrom = Date.now();
+  function setUptimeFrom(iso) {
+    const t = new Date(iso).getTime();
+    if (Number.isFinite(t) && t < Date.now()) upFrom = t;
+  }
   if (uptimeEl) {
-    const start = Date.now();
-    const pad = (n) => String(n).padStart(2, '0');
     const render = () => {
-      const s = Math.floor((Date.now() - start) / 1000);
-      uptimeEl.textContent = `uptime ${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+      const s = Math.floor((Date.now() - upFrom) / 1000);
+      const d = Math.floor(s / 86400);
+      uptimeEl.textContent = 'uptime ' + (d ? d + 'j ' : '') + `${pad(Math.floor(s / 3600) % 24)}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
     };
     render();
     setInterval(render, 1000);
   }
 
-  /* ---- Logs façon terminal ---- */
-  const logEl = $('#statusLog');
-  if (logEl) {
-    const lines = [
-      'check centreon-srv… 200 OK (12ms)',
-      'sync veille-rss… 6 nouveaux articles',
-      'build projet-2… en cours',
-      'ping portfolio.git… pong',
-      'scan ports… RAS',
-      'stats pilote… LVL 18, tout est vert'
-    ];
+  /* ---- boot : les services s'allument un par un, au rythme des vrais checks ---- */
+  async function bootPanel() {
+    const t0 = performance.now();
+    const pending = rows.map(r => (r.dataset.check ? probe(r) : Promise.resolve(null)));   // tous en parallèle
+    let down = 0;
+    const lat = [];
+    let next = t0 + (reduced ? 0 : svcStart);          // un check lent décale la suite, sans la tasser
+    for (let i = 0; i < rows.length; i++) {
+      const [res] = await Promise.all([pending[i], sleep(Math.max(0, next - performance.now()))]);
+      next = reduced ? 0 : Math.max(next, performance.now()) + svcStep;
+      const row = rows[i];
+      if (res) {
+        applyResult(row, res);
+        if (res.state === 'down') down++;
+        if (res.ms) lat.push(res.ms);
+        if (!reduced) log(res.log);
+      }
+      row.classList.add('online');
+      emit('kit:svc', { row, index: i, last: i === rows.length - 1, ok: !res || res.state !== 'down', down,
+                        offline: navigator.onLine === false });
+    }
+    const checked = rows.filter(r => r.dataset.check).length;
+    const avg = lat.length ? ' · moy. ' + Math.round(lat.reduce((a, b) => a + b, 0) / lat.length) + ' ms' : '';
+    log(`${checked} checks · ${down ? down + ' en panne' : 'tout répond'}${avg}`);
+    monitor();
+  }
+
+  /* ---- surveillance continue : un check toutes les 20 s, panneau visible ---- */
+  function monitor() {
+    const targets = rows.filter(r => r.dataset.check);
+    if (!targets.length) return;
+    let k = 0;
+    setInterval(async () => {
+      if (document.hidden || !panel.classList.contains('is-live')) return;
+      const row = targets[k++ % targets.length];
+      const res = await probe(row);
+      const prev = applyResult(row, res);
+      log(res.log);
+      if (prev && prev !== res.state) emit('kit:check', { name: rowName(row), row, state: res.state, prev });
+    }, MONITOR_EVERY_MS);
+  }
+
+  if (heroStage) {
     if (reduced) {
-      logEl.textContent = lines[0];
+      // Pas d'orchestration : tout est posé, les checks remplissent les lignes
+      heroStage.classList.add('played');
+      rows.forEach(r => r.classList.add('online'));
+      bootPanel();
     } else {
-      let li = 0, ci = 0, deleting = false;
-      const startDelay = heroStage ? svcStart + rows.length * svcStep + 200 : 400;
-      const tick = () => {
-        const full = lines[li];
-        if (!deleting) {
-          ci++;
-          logEl.textContent = full.slice(0, ci);
-          if (ci >= full.length) { deleting = true; setTimeout(tick, 1800); return; }
-          setTimeout(tick, 28);
-        } else {
-          ci--;
-          logEl.textContent = full.slice(0, ci);
-          if (ci <= 0) { deleting = false; li = (li + 1) % lines.length; setTimeout(tick, 300); return; }
-          setTimeout(tick, 12);
-        }
-      };
-      setTimeout(tick, startDelay);
+      // 1. Le hero se met en place
+      if (panel) panel.classList.add('boot');
+      requestAnimationFrame(() => requestAnimationFrame(() => heroStage.classList.add('played')));
+      // 2. Les services s'allument un par un ; le pilote regarde chaque ligne
+      if (rows.length) bootPanel();
     }
   }
 
@@ -496,7 +627,8 @@
      ============================================================ */
   const PAGE_LABELS = {
     'index.html': 'Accueil', 'epreuve.html': 'Épreuves', 'projet.html': 'Projets',
-    'veille.html': 'Veille', 'certifs.html': 'Certifications', 'contact.html': 'Contact'
+    'veille.html': 'Veille', 'certifs.html': 'Certifications', 'contact.html': 'Contact',
+    'mentions-legales.html': 'Mentions légales'
   };
   const navigate = (url) => {
     const root = document.documentElement;
@@ -612,6 +744,122 @@
 
     apply(false);
   })();
+
+  /* ============================================================
+     MODE HORS LIGNE — le kit embarqué (voir sw.js)
+     · enregistre le service worker : les pages visitées restent
+       dans le cache du navigateur ;
+     · bandeau « HORS LIGNE » quand le réseau tombe, « RÉTABLI »
+       quand il revient (le pilote le dit aussi : kit:net) ;
+     · « mode oral » : embarque TOUT d'un coup (pages, docs,
+       polices), même le gros docx Centreon, avant l'examen.
+     ============================================================ */
+  const KIT_FILES = [
+    './', './index.html', './epreuve.html', './projet.html', './veille.html', './certifs.html',
+    './contact.html', './mentions-legales.html', './404.html',
+    './style.css', './script.js', './pilote.js', './favicon.svg', './site.webmanifest',
+    './fichiers/icon-192.png', './fichiers/allianc3-logo.png', './fichiers/allianc3-mark.png',
+    './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
+    './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.docx'
+  ];
+
+  (function registerKit() {
+    if (!('serviceWorker' in navigator)) return;
+    const local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    if (location.protocol !== 'https:' && !local) return;
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .catch((err) => console.warn('[kit] service worker non enregistré :', err.message));
+    });
+  })();
+
+  /* bandeau réseau (en bas à gauche : le dock occupe la droite) */
+  const netToast = (() => {
+    let el = null, hideT = 0;
+    return (text, tone, ms) => {
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'net-toast';
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+        el.innerHTML = '<span class="net-led" aria-hidden="true"></span><span class="net-txt"></span>';
+        document.body.appendChild(el);
+      }
+      clearTimeout(hideT);
+      el.dataset.tone = tone || 'warn';
+      el.querySelector('.net-txt').textContent = text;
+      requestAnimationFrame(() => el.classList.add('show'));
+      if (ms) hideT = setTimeout(() => el.classList.remove('show'), ms);
+    };
+  })();
+
+  (function watchNetwork() {
+    const off = () => { netToast('Hors ligne · le kit tourne sur le cache', 'warn'); emit('kit:net', { online: false }); };
+    const on  = () => { netToast('Réseau rétabli', 'ok', 2400); emit('kit:net', { online: true }); };
+    window.addEventListener('offline', off);
+    window.addEventListener('online', on);
+    if (navigator.onLine === false) off();
+  })();
+
+  /* mode oral : chaque pièce est téléchargée puis rangée dans le cache */
+  let embarking = false;
+  async function embarkKit(onStep) {
+    if (!('caches' in window)) throw new Error('cache indisponible sur ce navigateur');
+    const cache = await caches.open(OFFLINE_CACHE);
+    let bytes = 0, done = 0;
+    for (const url of KIT_FILES) {
+      const res = await fetch(url, { cache: 'reload' });
+      if (!res.ok) throw new Error(`${url.replace('./', '') || 'accueil'} → HTTP ${res.status}`);
+      bytes += parseInt(res.headers.get('content-length') || '0', 10);
+      await cache.put(url, res);
+      if (onStep) onStep(++done, KIT_FILES.length, url);
+    }
+    await embarkFonts(cache);
+    if (navigator.storage && navigator.storage.persist) {
+      // demande au navigateur de ne pas vider ce cache s'il manque de place
+      try { await navigator.storage.persist(); } catch (e) { console.info('[kit] stockage persistant refusé'); }
+    }
+    return { files: done, bytes };
+  }
+  /* polices Google : la feuille CSS, puis chaque fichier de police qu'elle cite */
+  async function embarkFonts(cache) {
+    const link = $('link[href*="fonts.googleapis.com/css"]');
+    if (!link) return;
+    try {
+      const css = await fetch(link.href, { mode: 'cors' });
+      if (!css.ok) return;
+      const text = await css.clone().text();
+      await cache.put(link.href, css);
+      const urls = Array.from(text.matchAll(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/g), (m) => m[1]);
+      await Promise.all(urls.map((u) => fetch(u, { mode: 'cors' }).then((r) => (r.ok ? cache.put(u, r) : null))));
+    } catch (err) {
+      console.info('[kit] polices non embarquées :', err.message);   // le site reste lisible (polices de secours)
+    }
+  }
+  async function runEmbark() {
+    if (embarking) return;
+    embarking = true;
+    netToast('Embarquement du kit…', 'busy');
+    emit('kit:net', { embark: 'start' });
+    try {
+      const r = await embarkKit((done, total, url) => {
+        netToast(`Embarquement ${done}/${total} · ${url.split('/').pop() || 'accueil'}`, 'busy');
+      });
+      const mo = (r.bytes / 1e6).toFixed(1).replace('.', ',');
+      netToast(`Kit embarqué · ${r.files} pièces · ${mo} Mo`, 'ok', 5200);
+      emit('kit:net', { embark: 'done', files: r.files, bytes: r.bytes });
+      $$('[data-embark-status]').forEach((el) => {
+        el.textContent = `Embarqué sur cet appareil : ${r.files} pièces, ${mo} Mo. Le site fonctionne maintenant sans réseau.`;
+      });
+    } catch (err) {
+      console.warn('[kit] embarquement interrompu :', err.message);
+      netToast('Embarquement interrompu · ' + err.message, 'err', 5200);
+      emit('kit:net', { embark: 'fail' });
+    } finally {
+      embarking = false;
+    }
+  }
+  $$('[data-embark]').forEach((btn) => btn.addEventListener('click', runEmbark));
 
   /* ============================================================
      Palette de commandes (⌘K / Ctrl+K / "/") + skip-link
@@ -890,6 +1138,8 @@
       { icon: '05', label: 'Contact',               hint: 'page',   run: () => go('contact.html') },
       { icon: 'THM', label: 'Basculer le thème KIT / BOX ART', hint: 'action', run: toggleTheme },
       { icon: 'SH', label: 'Appeler le pilote SH-14', hint: 'mascotte', run: () => emit('kit:call') },
+      { icon: 'OFF', label: 'Mode oral : embarquer tout le site hors ligne', hint: 'action', run: runEmbark },
+      { icon: 'LEG', label: 'Mentions légales',     hint: 'page',   run: () => go('mentions-legales.html') },
       { icon: '@',  label: 'Copier mon email',      hint: 'action', run: () => copy('Shabdpreetsingh2@gmail.com') },
       { icon: 'CV', label: 'Télécharger mon CV',    hint: 'fichier', run: () => { location.href = './fichiers/CV_Shabdpreet_Singh.pdf'; } },
       { icon: 'GH', label: 'GitHub',                hint: 'lien',   run: () => ext('https://github.com/shab14') },

@@ -2871,7 +2871,7 @@ html.shutter-in main { animation-delay: .3s; }
 .pilote-stage {
     position: absolute;
     top: 0;
-    right: 10%;
+    right: 13%;
     width: calc(var(--pl-h) * 0.645);
     z-index: 2;
     /* bulle : en haut à gauche de la tête (sans jamais la toucher) */
@@ -3332,6 +3332,129 @@ html.is-leaving body::after {
 }
 @keyframes shutter-close { from { transform: translateX(-101%); } to { transform: none; } }
 @keyframes shutter-open  { from { transform: none; } to { transform: translateX(101%); visibility: hidden; } }
+
+/* ============================================================
+   SUPERVISION LIVE (v4.1) — le panneau SYSTÈMES dit la vérité
+   UP : le check répond · CACHE : hors ligne, la pièce est
+   embarquée · API : l'API GitHub ne répond pas (le site, si) ·
+   DOWN : la pièce ne répond pas.
+   ============================================================ */
+.live-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.55rem;
+    vertical-align: 1px;
+    background: var(--red);
+    animation: led-blink 1.6s steps(1) infinite;
+}
+.status-panel-title, .status-uptime { white-space: nowrap; }
+.status-row .svc-name { white-space: nowrap; }
+.status-row .svc-meta { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-row[data-state="cache"] .status-led { background: var(--panel-blue); }
+.status-row[data-state="cache"] .status-pill { border-color: var(--panel-blue); color: var(--panel-blue); }
+.status-row[data-state="api"] .status-led { background: var(--panel-warn); }
+.status-row[data-state="api"] .status-pill { border-color: var(--panel-warn); color: var(--panel-warn); }
+.status-row[data-state="down"] .status-led { background: #FF5A4B; animation: led-alert 0.5s steps(1) infinite; }
+.status-row[data-state="down"] .status-pill { border-color: #FF5A4B; color: #FF5A4B; }
+
+/* ---- Mode hors ligne : bandeau réseau / embarquement (script.js) ---- */
+.net-toast {
+    position: fixed;
+    left: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    max-width: min(440px, calc(100vw - 7.5rem));   /* le dock garde sa place à droite */
+    padding: 0.62rem 0.85rem 0.56rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--panel-bg);
+    border: 1.5px solid var(--panel-line);
+    box-shadow: 4px 4px 0 var(--toast-c, var(--warn));
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-snap);
+}
+.net-toast.show { opacity: 1; transform: none; }
+.net-toast[data-tone="ok"]   { --toast-c: var(--ok); }
+.net-toast[data-tone="busy"] { --toast-c: var(--panel-blue); }
+.net-toast[data-tone="err"]  { --toast-c: var(--red); }
+.net-toast .net-led { width: 8px; height: 8px; flex: none; background: var(--toast-c, var(--warn)); animation: led-blink 1.2s steps(1) infinite; }
+.net-toast .net-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media print { .net-toast { display: none !important; } }
+
+/* ============================================================
+   MENTIONS LÉGALES — la notice, version juridique
+   Fiche éditeur / hébergeur en lignes de panneau, texte court,
+   carte « mode hors ligne complet » (bouton data-embark).
+   ============================================================ */
+.legal-page section { margin-bottom: var(--s-7); }
+.legal-sheet {
+    display: grid;
+    margin: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    box-shadow: var(--shadow-hard);
+}
+.legal-sheet > div {
+    display: grid;
+    grid-template-columns: minmax(150px, 230px) 1fr;
+    gap: 1rem;
+    padding: 0.85rem 1.2rem 0.8rem;
+    border-bottom: 1.5px solid var(--line-soft);
+}
+.legal-sheet > div:last-child { border-bottom: 0; }
+.legal-sheet dt {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    padding-top: 0.22rem;
+}
+.legal-sheet dd { margin: 0; color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
+.legal-text { display: grid; gap: 0.85rem; max-width: 72ch; }
+.legal-text p { color: var(--text-soft); }
+.legal-text strong { color: var(--ink); }
+.legal-date { font-family: var(--mono); font-size: 0.78rem; color: var(--text-mute) !important; }
+.embark-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    margin-top: var(--s-5);
+    padding: 1.1rem 1.3rem;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-left: 6px solid var(--red);
+}
+.embark-card strong {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+.embark-card p { margin: 0.2rem 0 0; max-width: 60ch; color: var(--text-soft); font-size: 0.92rem; }
+.embark-card .btn { flex: none; margin: 0; }
+@media (max-width: 600px) {
+    .legal-sheet > div { grid-template-columns: 1fr; gap: 0.2rem; }
+    .embark-card { flex-direction: column; align-items: stretch; }
+}
+/* lien discret dans la ligne © du footer */
+footer p a { color: #fff; text-decoration-color: var(--red); text-underline-offset: 3px; }
+footer p a:hover { color: var(--red); }
 
 /* ============================================================
    MOTION v4 — le kit s'assemble sous tes yeux

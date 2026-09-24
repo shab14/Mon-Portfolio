@@ -14,6 +14,7 @@
    Événements écoutés (émis par script.js) :
      kit:svc  kit:theme  kit:incident  kit:copy  kit:sent  kit:call
      kit:feed (flux de veille)  kit:filter (filtre des certifs)
+     kit:check (supervision live)  kit:net (réseau coupé / rétabli, mode oral)
    Un seul personnage : les apparitions « station » (hero, portrait,
    chantier, veille, contact, médaille, tampon) et le dock ne se
    montrent jamais en même temps — il va de l'une à l'autre.
@@ -644,12 +645,21 @@
       if (reduced) return;
       pl.lookAtEl(d.row);
       pl.blink();
+      if (d.ok === false) pl.mood('alert', 900);        // un vrai check vient d'échouer
       if (d.last) {
         setTimeout(() => {
           pl.release();
-          pl.look(-0.25, 0.1).mood('happy', 2600);
-          pl.wave(1800);
-          pl.say(LINES.boot, 2600);
+          if (d.offline) {
+            pl.look(-0.25, 0.1).mood('focus', 2600);
+            pl.say('Réseau coupé. Je tourne sur le cache.', 2600);
+          } else if (d.down) {
+            pl.look(-0.25, 0.1).mood('focus', 2600);
+            pl.say(`SH-14 en ligne. ${d.down} pièce${d.down > 1 ? 's' : ''} à vérifier.`, 2600);
+          } else {
+            pl.look(-0.25, 0.1).mood('happy', 2600);
+            pl.wave(1800);
+            pl.say(LINES.boot, 2600);
+          }
           setTimeout(() => { pl.release(); seq = false; }, 2600);
         }, 420);
       }
@@ -767,11 +777,37 @@
       setTimeout(() => {
         host.classList.remove('is-arriving');
         pl.busy = false;
-        if (!greeted) { greeted = true; pl.mood('happy', 2400).say(LINES.back, 2400); pl.wave(1500); }
-        else pl.mood('happy', 1200).blink();
+        const down = $$('.status-row[data-state="down"]').length;
+        if (!greeted) {
+          greeted = true;
+          pl.mood(down ? 'focus' : 'happy', 2400).say(down ? 'Te revoilà. Une pièce ne répond pas.' : LINES.back, 2400);
+          if (!down) pl.wave(1500);
+        } else pl.mood('happy', 1200).blink();
       }, 920);
       lastAct = Date.now();
     };
+
+    /* supervision continue (script.js) : il réagit quand un état change */
+    document.addEventListener('kit:check', (e) => {
+      const d = e.detail || {};
+      if (reduced || seq || away || pl.busy || !pl.visible) return;
+      if (asleep) {                                   // une panne le réveille ; le reste peut attendre
+        if (d.state !== 'down') return;
+        wake();
+      }
+      if (d.state === 'down') {
+        pl.lookAtEl(d.row);
+        host.classList.add('is-alarm');
+        pl.mood('alert', 2200).say(`${d.name} ne répond plus.`, 2400);
+        setTimeout(() => host.classList.remove('is-alarm'), 2200);
+      } else if (d.prev === 'down') {
+        pl.lookAtEl(d.row).mood('check', 1800).say(`${d.name} : rétabli.`, 2000);
+      } else if (d.state === 'cache') {
+        pl.lookAtEl(d.row).mood('focus', 1600).say(`${d.name} : servi depuis le cache.`, 2000);
+      } else return;
+      clearTimeout(idleT);
+      idleT = setTimeout(() => { if (!pl.busy) pl.release(); }, 2200);
+    });
 
     /* survol des boutons du hero : il regarde, et ça se voit sur sa visière */
     if (finePointer && stage) {
@@ -1286,12 +1322,27 @@
   document.addEventListener('kit:incident', () => all.forEach(p => { if (p.visible) p.alert(2500); }));
   /* bascule KIT ↔ BOX ART : chaque LED unit visible se coupe et redémarre */
   document.addEventListener('kit:theme', () => all.forEach(p => { if (p.visible && !p.host.classList.contains('pl--ghost')) p.powerCycle(); }));
-  /* palette ⌘K → « Appeler le pilote » : le plus proche répond */
-  document.addEventListener('kit:call', () => {
+  /* le robot qui répond : la station visible la plus proche, sinon le dock */
+  const speaker = () => {
     const dock = Pilote.dock;
     const dockOn = dock && dock.isPresent && dock.isPresent();
-    const pick = all.find(p => p.visible && p !== dock && !p.host.classList.contains('pl--ghost') &&
-                               !p.host.classList.contains('is-away')) || (dockOn ? dock : null);
+    return all.find(p => p.visible && p !== dock && !p.host.classList.contains('pl--ghost') &&
+                         !p.host.classList.contains('is-away')) || (dockOn ? dock : null);
+  };
+  /* réseau et mode oral (script.js) : il annonce ce qui se passe */
+  document.addEventListener('kit:net', (e) => {
+    const d = e.detail || {};
+    const p = speaker();
+    if (!p) return;
+    if (d.online === false)      p.mood('focus', 2800).say('Réseau coupé. Je tourne sur le cache.', 2800);
+    else if (d.online === true)  p.mood('happy', 2000).say('Réseau rétabli.', 1800);
+    else if (d.embark === 'start') p.mood('loading', 4000).say('J’embarque tout le kit…', 2400);
+    else if (d.embark === 'done')  { p.mood('check', 2800).say('Kit embarqué. Prêt pour l’oral.', 2800); p.hop(); }
+    else if (d.embark === 'fail')  p.mood('question', 2400).say('Embarquement interrompu.', 2400);
+  });
+  /* palette ⌘K → « Appeler le pilote » : le plus proche répond */
+  document.addEventListener('kit:call', () => {
+    const pick = speaker();
     if (!pick) { window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }); return; }
     pick.mood('happy', 2400).say('Présent ! SH-14, à ton service.', 2400);
     if (pick.o.variant !== 'peek' && !pick.o.noArmR && pick.basePose === 'stand') pick.wave(1600);

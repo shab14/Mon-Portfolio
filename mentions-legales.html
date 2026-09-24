@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* Avant le 1er rendu : thème sauvegardé (plus de flash clair en mode sombre),
+       classe .js (sans JS, rien n'est caché), volet de transition si on arrive
+       d'une autre page du kit. */
+    (function (h) {
+        h.classList.add('js');
+        try {
+            var t = localStorage.getItem('theme');
+            if (!t && window.matchMedia) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            if (t) h.setAttribute('data-theme', t);
+            var n = sessionStorage.getItem('kit-nav');
+            if (n) {
+                sessionStorage.removeItem('kit-nav');
+                if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    h.classList.add('shutter-in');
+                    h.style.setProperty('--shutter-label', JSON.stringify(n));
+                }
+            }
+        } catch (e) {}
+    })(document.documentElement);
+    </script>
+    <title>Mentions légales | Shabdpreet Singh</title>
+    <meta name="description" content="Mentions légales et données personnelles du portfolio de Shabdpreet Singh : éditeur, hébergeur, propriété intellectuelle, RGPD, mode hors ligne.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="apple-touch-icon" href="./fichiers/icon-192.png">
+    <link rel="canonical" href="https://shab14.github.io/Mon-Portfolio/mentions-legales.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mentions légales | Shabdpreet Singh">
+    <meta property="og:description" content="Éditeur, hébergeur, données personnelles et mode hors ligne du portfolio.">
+    <meta name="theme-color" content="#D42B1E">
+
+    <meta property="og:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
+    <meta property="og:image:alt" content="SH-14, le robot pilote du portfolio, sur la plaque rouge du kit — Shabdpreet Singh, BTS SIO SISR en alternance chez ALLIANC3">
+    <meta property="og:url" content="https://shab14.github.io/Mon-Portfolio/mentions-legales.html">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
+    <meta name="twitter:image:alt" content="SH-14, le robot pilote du portfolio, sur la plaque rouge du kit — Shabdpreet Singh, BTS SIO SISR en alternance chez ALLIANC3">
+    <meta name="twitter:title" content="Shabdpreet Singh | Portfolio">
+    <meta name="twitter:description" content="BTS SIO SISR en alternance chez ALLIANC3 — supervision, réseaux, infrastructure.">
+    <link rel="manifest" href="./site.webmanifest">
+</head>
+<body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <div class="read-progress"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <span class="logo-mark"><span class="lm-s">S</span><span class="lm-v" aria-hidden="true"></span></span>
+                <span class="logo-text">Shabdpreet Singh</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Accueil</a></li>
+                <li><a href="./epreuve.html">Épreuves</a></li>
+                <li><a href="./projet.html">Projets</a></li>
+                <li><a href="./veille.html">Veille</a></li>
+                <li><a href="./certifs.html">Certifications</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le thème clair/sombre" title="Thème clair/sombre">
+                    <span class="moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></span>
+                    <span class="sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="8" y="8" width="8" height="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main" class="legal-page" data-pl-hello="check|Page légale. Tout est carré.">
+        <span class="page-eyebrow"><span class="dot"></span> Informations légales · RGPD</span>
+        <h1 data-tw>Mentions légales</h1>
+        <p class="page-intro">Ce site est un portfolio personnel, édité à titre non professionnel. Pas de cookie, pas de publicité, pas de mesure d'audience : juste la notice du kit, en toute transparence.</p>
+
+        <div class="term reveal" aria-hidden="true" style="margin-bottom:2.5rem">
+            <div class="term-head">
+                <span class="term-dots"><i></i><i></i><i></i></span>
+                <span class="term-title">console — audit vie privée</span>
+            </div>
+            <div class="term-body">
+                <p class="term-line"><span class="prompt">$</span>audit --privacy</p>
+                <p class="term-line out">cookies ............ <span class="ok2">0</span></p>
+                <p class="term-line out">traceurs ........... <span class="ok2">0</span></p>
+                <p class="term-line out">mesure d'audience .. <span class="ok2">aucune</span></p>
+                <p class="term-line out">données serveur .... <span class="ok2">aucune</span></p>
+                <p class="term-line comment"># le détail, étape par étape, juste en dessous</p>
+            </div>
+        </div>
+
+        <section>
+            <h2 class="section-title" data-step="01"><span class="st-text">Éditeur</span></h2>
+            <dl class="legal-sheet reveal">
+                <div><dt>Éditeur</dt><dd>Shabdpreet Singh — site personnel, non commercial</dd></div>
+                <div><dt>Directeur de la publication</dt><dd>Shabdpreet Singh</dd></div>
+                <div><dt>Contact</dt><dd><a href="mailto:Shabdpreetsingh2@gmail.com">Shabdpreetsingh2@gmail.com</a></dd></div>
+            </dl>
+        </section>
+
+        <section>
+            <h2 class="section-title" data-step="02"><span class="st-text">Hébergement</span></h2>
+            <dl class="legal-sheet reveal">
+                <div><dt>Hébergeur</dt><dd>GitHub, Inc. — service GitHub Pages</dd></div>
+                <div><dt>Adresse</dt><dd>88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis</dd></div>
+                <div><dt>Site</dt><dd><a href="https://github.com" target="_blank" rel="noopener">github.com</a></dd></div>
+            </dl>
+        </section>
+
+        <section>
+            <h2 class="section-title" data-step="03"><span class="st-text">Propriété intellectuelle</span></h2>
+            <div class="legal-text reveal">
+                <p>Les textes, le design, le code et le pilote SH-14 sont la création de Shabdpreet Singh. Toute reproduction ou réutilisation, totale ou partielle, sans autorisation écrite est interdite.</p>
+                <p>Les marques et logos cités (ALLIANC3, Centreon, Anthropic, PIX, GitHub, LinkedIn) appartiennent à leurs propriétaires respectifs. Ils ne servent qu'à décrire un parcours ou un projet.</p>
+                <p>Polices : Barlow, Barlow Condensed et IBM Plex Mono, distribuées sous licence SIL Open Font License.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title" data-step="04"><span class="st-text">Données personnelles</span></h2>
+            <div class="legal-text reveal">
+                <p><strong>Aucun cookie, aucun traceur, aucune mesure d'audience.</strong> Le site ne collecte ni ne conserve aucune donnée sur un serveur.</p>
+                <p><strong>Formulaire de contact.</strong> Il n'envoie rien au site : il ouvre votre propre messagerie avec un message pré-rempli, que vous restez libre d'envoyer ou non.</p>
+                <p><strong>Services tiers.</strong> Pour afficher les pages, votre navigateur contacte GitHub (l'hébergement, et l'API GitHub pour le panneau de supervision de l'accueil) et Google Fonts (les polices). Comme pour tout site, ces services reçoivent votre adresse IP et appliquent leurs propres politiques de confidentialité.</p>
+                <p><strong>Vos droits.</strong> Conformément au RGPD, vous pouvez demander l'accès, la rectification ou l'effacement des données vous concernant en écrivant à l'adresse de contact ci-dessus. Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title" data-step="05"><span class="st-text">Stockage local et hors ligne</span></h2>
+            <div class="legal-text reveal">
+                <p>Le site utilise uniquement le stockage de votre navigateur, sur votre appareil, pour des préférences : thème clair ou sombre, record du mini-jeu, médaille du pilote, dernier état connu du dépôt GitHub. Rien n'en sort.</p>
+                <p>Un service worker garde une copie des pages pour qu'elles restent consultables sans réseau. Vous pouvez tout effacer à tout moment depuis les réglages de votre navigateur (données du site).</p>
+            </div>
+            <div class="embark-card reveal">
+                <div>
+                    <strong>Mode hors ligne complet</strong>
+                    <p data-embark-status>Embarque tout le site sur cet appareil, documents compris (environ 20 Mo), pour le consulter sans réseau.</p>
+                </div>
+                <button class="btn btn-primary" type="button" data-embark>Embarquer le kit</button>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title" data-step="06"><span class="st-text">Crédits</span></h2>
+            <div class="legal-text reveal">
+                <p>Conception, design et code : Shabdpreet Singh, avec Claude (Anthropic). Site statique en HTML, CSS et JavaScript, sans framework, hébergé sur GitHub Pages.</p>
+                <p class="legal-date">Dernière mise à jour : 24 septembre 2026</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/shab14" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
+        </div>
+        <p>© 2026 Shabdpreet Singh — Portfolio · kit v4 · <a href="./mentions-legales.html">Mentions légales</a></p>
+        <p class="footer-uptime"><span class="status-led"></span>Tous les systèmes sont opérationnels</p>
+        <p class="footer-alt">En alternance chez <img class="footer-brand" src="./fichiers/allianc3-mark.png" alt="" width="18" height="18" loading="lazy"> <strong>Allianc3</strong></p>
+        <p class="footer-clock" id="clock"></p>
+    </footer>
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">Alerte simulée — <span class="ok2">tous systèmes rétablis ✓</span></div>
+    <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
+    <script src="./pilote.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
