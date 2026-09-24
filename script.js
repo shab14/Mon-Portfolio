@@ -6,7 +6,7 @@
    prefers-reduced-motion.
    Le pilote SH-14 (pilote.js) écoute les événements « kit:* »
    émis ici : kit:svc, kit:theme, kit:incident, kit:copy,
-   kit:sent, kit:call.
+   kit:sent, kit:call, kit:feed (veille), kit:filter (certifs).
    ============================================================ */
 
 (function () {
@@ -55,8 +55,11 @@
     });
   })();
 
-  /* ---- Thème clair/sombre (persisté) ---- */
-  (function theme() {
+  /* ---- Thème clair/sombre (persisté) ----
+     v4 : la bascule KIT ↔ BOX ART est un balayage de visière — la
+     nouvelle face descend derrière une ligne rouge (View Transitions
+     si le navigateur les gère, sinon bascule directe + la ligne). */
+  const switchTheme = (() => {
     const root = document.documentElement;
     let saved = null;
     try { saved = localStorage.getItem('theme'); } catch (e) {}
@@ -64,15 +67,38 @@
       saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     root.setAttribute('data-theme', saved);
-    const btn = $('#themeToggle');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    let busy = false;
+    return () => {
+      if (busy) return;
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      const apply = () => {
         root.setAttribute('data-theme', next);
         try { localStorage.setItem('theme', next); } catch (e) {}
-        emit('kit:theme', { theme: next });
-      });
-    }
+      };
+      /* la ligne de balayage démarre avec le volet (même durée, même courbe) */
+      const scanLine = () => {
+        if (reduced) return;
+        const scan = document.createElement('div');
+        scan.className = 'theme-scan';
+        scan.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(scan);
+        setTimeout(() => scan.remove(), 700);
+      };
+      const tg = $('#themeToggle');
+      if (tg && !reduced) { tg.classList.remove('is-flip'); void tg.offsetWidth; tg.classList.add('is-flip'); }
+      if (!reduced && document.startViewTransition) {
+        busy = true;
+        root.classList.add('vt-theme');
+        const vt = document.startViewTransition(apply);
+        vt.ready.then(scanLine).catch(() => {});
+        vt.finished.finally(() => { root.classList.remove('vt-theme'); busy = false; });
+      } else { apply(); scanLine(); }
+      emit('kit:theme', { theme: next });
+    };
+  })();
+  (function themeButton() {
+    const btn = $('#themeToggle');
+    if (btn) btn.addEventListener('click', switchTheme);
   })();
 
   /* ---- Copier au clic (email / tel) ---- */
@@ -115,6 +141,7 @@
       const h = document.documentElement;
       const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
       bar.style.width = (Math.min(1, Math.max(0, scrolled)) * 100).toFixed(2) + '%';
+      bar.classList.toggle('is-on', scrolled > 0.012);   // la visière du pilote suit le fil rouge
       ticking = false;
     };
     window.addEventListener('scroll', () => {
@@ -150,6 +177,7 @@
       const full = lines[li];
       if (!deleting) {
         ci++;
+        if (ci === 1) emit('kit:feed', { text: full });   // le pilote de la veille lit le flux
         feed.innerHTML = full.slice(0, ci) + caret;
         if (ci >= full.length) { deleting = true; setTimeout(tick, 1600); return; }
         setTimeout(tick, 26);
@@ -411,6 +439,54 @@
   })();
 
   /* ============================================================
+     v4 — Notice de montage : une étape lue est une étape validée.
+     Quand une section est entièrement passée, son titre STEP se
+     coche et le carré au bout de la ligne de panneau s'allume.
+     ============================================================ */
+  (function stepsDone() {
+    const titles = $$('section > .section-title[data-step]');
+    if (!titles.length || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => {
+        const past = !e.isIntersecting && e.rootBounds && e.boundingClientRect.bottom <= e.rootBounds.top + 1;
+        if (!past) return;
+        const t = e.target.querySelector(':scope > .section-title');
+        if (t) t.classList.add('is-done');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '-38% 0px 0px 0px', threshold: 0 });
+    titles.forEach(t => io.observe(t.parentElement));
+  })();
+
+  /* ============================================================
+     v4 — Ça clique : un clic sur une commande principale fait
+     sauter quelques éclats carrés (rouge, or, graphite), comme
+     les étincelles de la clé du pilote. Souris / tactile, 380 ms.
+     ============================================================ */
+  (function clickSparks() {
+    if (reduced) return;
+    const COLORS = ['var(--red)', 'var(--gold)', 'var(--ink)'];
+    document.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      const t = e.target.closest('.btn-primary, .chip, .scroll-top.dock, .contact-soc');
+      if (!t) return;
+      for (let i = 0; i < 6; i++) {
+        const s = document.createElement('i');
+        const a = (Math.PI * 2 * i) / 6 + (Math.random() - 0.5) * 0.7;
+        const d = 16 + Math.random() * 16;
+        s.className = 'kit-spark';
+        s.style.left = e.clientX + 'px';
+        s.style.top = e.clientY + 'px';
+        s.style.setProperty('--dx', (Math.cos(a) * d).toFixed(1) + 'px');
+        s.style.setProperty('--dy', (Math.sin(a) * d - 6).toFixed(1) + 'px');
+        s.style.setProperty('--c', COLORS[i % COLORS.length]);
+        document.body.appendChild(s);
+        s.addEventListener('animationend', () => s.remove(), { once: true });
+      }
+    }, { passive: true });
+  })();
+
+  /* ============================================================
      Transitions entre pages — le volet du kit
      Un panneau graphite frappé du casque du pilote glisse depuis
      la gauche (280 ms), la page suivante l'ouvre vers la droite.
@@ -506,6 +582,7 @@
       });
       noRes.hidden = shown !== 0;
       count.textContent = shown + ' / ' + cards.length + ' affichées';
+      if (user === true) emit('kit:filter', { shown, total: cards.length, provider: prov });
     };
 
     chips.forEach(chip => {
@@ -559,13 +636,7 @@
     const copy = (txt) => {
       if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => emit('kit:copy')).catch(() => {});
     };
-    const toggleTheme = () => {
-      const root = document.documentElement;
-      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('theme', next); } catch (e) {}
-      emit('kit:theme', { theme: next });
-    };
+    const toggleTheme = switchTheme;
     /* ============================================================
        SECRETS — accessibles uniquement en tapant le mot exact
        dans la recherche : "jeux" → dino runner, "easter egg" → crédits

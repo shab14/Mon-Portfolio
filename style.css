@@ -2690,7 +2690,7 @@ html.shutter-in main { animation-delay: .3s; }
 .pl.pl-hold .pl-svg * { animation-play-state: paused !important; }
 /* le robot du hero a sa propre couche GPU : l'ombre dure et les sauts
    sont composés par la carte graphique, pas repeints à chaque image */
-.pilote-stage .pl-svg { will-change: transform; }
+.pilote-stage .pl-svg { will-change: transform, translate; }
 
 /* ---- LED unit : la face BOX ART s'allume ---- */
 [data-theme="dark"] .pl-svg .pl-face  { filter: drop-shadow(0 0 2px var(--pl-led)); }
@@ -2763,23 +2763,125 @@ html.shutter-in main { animation-delay: .3s; }
 .pl.is-flying .pl-tag { animation-duration: .32s; }
 
 /* ============================================================
+   PILOTE v4 — KIT DELUXE + BATTLE-WORN
+   Le box art sans dégradé : trois tons de plastique posés en
+   aplats durs (clair, ombré, ombre portée), arêtes éclairées en
+   voile blanc à plat, gravures de panneau, décalques. Puis
+   l'usure d'un robot qui travaille : éclats, rayures, graisse,
+   sticker qui se décolle, plaque rivetée. Seule lumière : la
+   LED unit (visière, voyants, tuyères) — halo net en KIT,
+   rayonnement en BOX ART.
+   ============================================================ */
+.pl { --pl-deep: #CBC7BA; }
+[data-theme="dark"] .pl { --pl-deep: #9C988F; }
+
+.pl-svg .d  { fill: var(--pl-deep); }
+.pl-svg .hw { fill: #fff; stroke: none; opacity: .3; }
+.pl-svg .pn { fill: none; stroke: var(--pl-line); stroke-width: 1; opacity: .5; }
+.pl-svg .th { stroke-width: 1.2; }
+.pl-svg .wr { fill: var(--pl-line); opacity: .88; }
+.pl-svg .wp { fill: var(--pl-plastic); }
+.pl-svg .sc { stroke: var(--pl-line); stroke-width: .8; opacity: .42; }
+.pl-svg .so { fill: #0E0F12; opacity: .16; }
+.pl-svg .sh { fill: #000; opacity: .2; }
+.pl-svg .g  { fill: var(--ok); }
+.pl-svg .pl-gold { fill: var(--gold); }
+.pl-svg .pl-chev { fill: none; stroke: var(--pl-line); stroke-width: 1.4; stroke-linecap: square; stroke-linejoin: miter; }
+.pl-svg .pl-mm-o { fill: none; stroke: var(--pl-plastic); stroke-width: .9; opacity: .75; }
+
+/* LED « UP » au col : elle clignote comme les services du site */
+.pl-svg .pl-ok { animation: pl-okled 3.1s steps(1, end) .6s infinite; }
+@keyframes pl-okled { 0%, 86% { opacity: 1; } 87%, 100% { opacity: .3; } }
+.pl.is-off .pl-ok { opacity: .15; animation: none; }
+
+/* mono-œil : halo net (pixel) autour du capteur */
+.pl-svg .pl-bloom { opacity: .22; }
+/* visière : un balayage de rafraîchissement, de temps en temps */
+.pl-svg .pl-scanl { fill: var(--pl-led); stroke: none; opacity: 0; animation: pl-refresh 7.4s linear 2s infinite; }
+@keyframes pl-refresh {
+    0%, 90%  { transform: translate(0, 0); opacity: 0; }
+    90.5%    { transform: translate(0, 0); opacity: .26; }
+    100%     { transform: translate(0, 27px); opacity: .26; }
+}
+.pl.is-off .pl-scanl, .pl[data-mood="sleep"] .pl-scanl { animation: none; opacity: 0; }
+
+/* tuyères : elles restent rouges après un vol, puis refroidissent par paliers */
+.pl-svg .pl-heat { fill: var(--pl-alarm); stroke: none; opacity: 0; }
+.pl.is-hot .pl-heat { animation: pl-cool 2.4s steps(6, end) both; }
+@keyframes pl-cool { from { opacity: 1; } to { opacity: 0; } }
+
+/* médaille épinglée : gagnée une fois sur la page Certifications */
+.pl-svg .pl-medal { display: none; }
+.pl-decorated .pl-svg .pl-medal { display: inline; }
+
+/* médaille brandie : n'apparaît que bras levé */
+.pl-svg .pl-badge { opacity: 0; transition: opacity .08s var(--ease-out); }
+.pl[data-pose="victory"] .pl-badge { opacity: 1; transition: opacity .12s var(--ease-out) .2s; }
+
+/* tampon : il pend toujours droit sous le poing (contre-rotation du bras) */
+.pl-svg .pl-stamp {
+    transform: translate(35.5px, 206px) rotate(calc(-1 * (var(--ua-l) + var(--fa-l)))) translate(-35.5px, -206px);
+}
+
+/* ---- Nouvelles poses (angles par cinématique inverse, comme les autres) ---- */
+.pl[data-pose="salute"]     .pl-svg { --ua-l: 3deg; --ua-r: -134deg; --fa-r: -81deg; --hr: 2deg; }
+.pl[data-pose="point"]      .pl-svg { --ua-l: 3deg; --ua-r: -92deg; --fa-r: 0deg; }
+.pl[data-pose="victory"]    .pl-svg { --ua-l: 6deg; --ua-r: -157deg; --fa-r: -16deg; --hr: -2deg; }
+.pl[data-pose="stamp-up"]   .pl-svg { --ua-l: 132deg; --fa-l: 40deg; --ua-r: -3deg; --hr: -3deg; }
+.pl[data-pose="stamp-down"] .pl-svg {
+    --ua-l: 75deg; --fa-l: -28deg; --ua-r: -3deg; --hr: -5deg;
+    /* le coup de tampon part sec (servo à fond) */
+    transition: --ua-l .16s var(--ease-in), --fa-l .16s var(--ease-in),
+                --ua-r .55s var(--ease-snap), --fa-r .55s var(--ease-snap),
+                --hr .2s var(--ease-in), --hx .38s var(--ease-snap), --hy .38s var(--ease-snap),
+                --ex .16s var(--ease-out), --ey .16s var(--ease-out);
+}
+
+/* ---- Nouvelles expressions : yeux étoiles, joues LED ---- */
+.pl[data-mood="star"] .pl-x-star,
+.pl[data-mood="happy"] .pl-x-blush,
+.pl[data-mood="wink"] .pl-x-blush,
+.pl[data-mood="star"] .pl-x-blush { opacity: 1; }
+
+/* ---- Alarme douce (veille) : la balise s'affole, sans secousse ---- */
+.pl.is-alarm .pl-beacon { animation-duration: .5s; }
+
+/* ---- Petites apparitions : les détails fins disparaissent (netteté) ---- */
+.dock-pilot .pl-fine, .pl-ghostslot .pl-fine, .pl-work .pl-fine, .pl-peek .pl-fine { display: none; }
+.dock-pilot .pl-scanl { display: none; }
+.pl--ghost .pl-dx, .pl--ghost .pl-badge, .pl--ghost .pl-stamp, .pl--ghost .pl-scanl,
+.pl--ghost .pl-bloom, .pl--ghost .pl-heat { display: none; }
+
+/* ---- LED unit, face BOX ART : les nouveaux voyants rayonnent aussi ---- */
+[data-theme="dark"] .pl-svg .pl-bloom { opacity: .34; }
+[data-theme="dark"] .pl-svg .pl-scanl { filter: drop-shadow(0 0 2px var(--pl-led)); }
+[data-theme="dark"] .pl-svg .pl-ok    { filter: drop-shadow(0 0 2.5px var(--ok)); }
+[data-theme="dark"] .pl-svg .pl-heat  { filter: drop-shadow(0 0 3px var(--red)); }
+[data-theme="dark"] .pl-svg .pl-x-star { filter: drop-shadow(0 0 2.5px var(--gold)); }
+
+/* ============================================================
    MISE EN SCÈNE DU PILOTE — chaque apparition a un socle
    ============================================================ */
 
 /* ---- Hero : la figurine debout sur son socle (le panneau SYSTÈMES) ----
    Le panneau arrive, les pièces s'emboîtent dessus, la visière
    s'allume, puis il allume les services un par un. */
-.hero { --pl-h: clamp(250px, 24vw, 330px); }
+.hero { --pl-h: clamp(260px, 25vw, 350px); }
 .panel-stage { padding-top: calc(var(--pl-h) - 3px); }
 .pilote-stage {
     position: absolute;
     top: 0;
-    right: 7%;
+    right: 10%;
     width: calc(var(--pl-h) * 0.645);
     z-index: 2;
     /* bulle : en haut à gauche de la tête (sans jamais la toucher) */
     --say-r: 68%;
     --say-b: 84%;
+}
+@media (max-width: 600px) {
+    /* la bulle reste dans l'écran, à gauche de la figurine */
+    .pilote-stage { --say-r: 62%; }
+    .pilote-stage .pl-say { max-width: 46vw; }
 }
 .pilote-stage.is-kit.is-built .pl-part {
     transition-delay: calc(.62s + var(--d, 0s));
@@ -2935,6 +3037,126 @@ html.shutter-in main { animation-delay: .3s; }
     --say-b: 72%;
 }
 @media (max-width: 760px) { .contact-form:has(.pl-hello) { margin-top: 118px; } }
+
+/* ---- v4 : un seul personnage — le hero décolle, le dock l'accueille ---- */
+.pilote-stage.is-away .pl-svg {
+    translate: 0 -135vh;
+    transition: translate .8s cubic-bezier(.55, 0, .85, .2);
+}
+@keyframes pl-arrive {
+    0%   { translate: 0 -120vh; scale: 1 1; }
+    66%  { translate: 0 3px;    scale: 1.05 .93; }
+    82%  { translate: 0 -6px;   scale: .99 1.02; }
+    100% { translate: 0 0;      scale: 1 1; }
+}
+.pilote-stage.is-arriving .pl-svg { animation: pl-arrive .92s var(--ease-out) both; }
+.dock-pilot.is-gone { visibility: hidden; }
+
+/* flanc de boîte : la référence du kit, à la verticale sur la plaque rouge */
+.hero-plate::before {
+    content: "MG 1/100 · SH-14 · PILOTE DU KIT";
+    position: absolute;
+    top: 20px;
+    right: 10.5%;
+    writing-mode: vertical-rl;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    color: rgba(255, 255, 255, 0.78);
+    z-index: 1;
+}
+
+/* ---- Épreuves : contrôle qualité, il tamponne l'épreuve livrée ---- */
+.card.has-inspector { padding-right: 250px; min-height: 270px; }
+.pl-inspect {
+    position: absolute;
+    right: 44px;
+    bottom: 0;
+    width: 92px;
+    z-index: 2;
+    container-type: inline-size;
+    --pl-sh: 3px;
+    /* bulle : au-dessus de lui, dans la zone réservée (jamais sur le texte) */
+    --say-r: 6%;
+    --say-b: calc(100% + 10px);
+}
+.qc-stamp {
+    position: absolute;
+    z-index: -1;
+    left: -20cqw;                 /* point d'impact du tampon (x = -40 unités du viewBox) */
+    top: 84cqw;                   /* y = 168 unités */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 8px 4px;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 16px;
+    line-height: 0.9;
+    letter-spacing: 0.06em;
+    color: var(--red);
+    border: 2.5px solid var(--red);
+    box-shadow: inset 0 0 0 2px var(--surface), inset 0 0 0 3.5px var(--red);
+    white-space: nowrap;
+    translate: -50% -50%;
+    rotate: -9deg;
+    opacity: 0;
+    pointer-events: none;
+}
+.qc-stamp b { font-weight: 800; }
+.qc-stamp i { font-family: var(--mono); font-style: normal; font-weight: 600; font-size: 7px; letter-spacing: 0.14em; }
+.qc-stamp.is-on { opacity: 0.92; }
+.qc-stamp.is-thump { animation: qc-thump .34s var(--ease-snap) both; }
+@keyframes qc-thump {
+    0%   { scale: 1.4; opacity: 0; }
+    40%  { scale: .95; opacity: .96; }
+    100% { scale: 1;   opacity: .92; }
+}
+.card.is-stamped { animation: card-thump .26s var(--ease-out); }
+@keyframes card-thump { 0%, 100% { translate: 0 0; } 35% { translate: 0 2px; } }
+@media (max-width: 760px) {
+    .card.has-inspector { padding-right: 1.25rem; min-height: 0; }
+    .pl-inspect {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: 80px;
+        /* la marge haute laisse la place à la bulle, sous le bouton */
+        margin: 3.4rem 1.4rem calc(-1.35rem - 1px) auto;
+    }
+}
+
+/* ---- Certifications : debout sur le registre, il brandit la médaille ---- */
+.pl-badgehost {
+    position: absolute;
+    right: 30px;
+    bottom: calc(100% - 1px);
+    width: 96px;
+    z-index: 2;
+    --pl-sh: 3px;
+    --say-r: 100%;
+    --say-b: 66%;
+}
+@media (max-width: 700px) {
+    .certs-summary:has(.pl-badgehost) { margin-top: 150px; }
+    .pl-badgehost { right: 18px; width: 76px; }
+}
+
+/* ---- Projets : la donnée remonte le schéma Centreon (tête du pilote) ---- */
+.pl-packet { transition: transform .5s var(--ease-out), opacity .22s var(--ease-out); }
+.pl-packet.is-reset { transition: none; }
+.pl-packet.is-out { opacity: 0; }
+.pl-packet-in.is-hop { animation: pp-hop .5s var(--ease-out); }
+@keyframes pp-hop { 0%, 100% { transform: translate(0, 0); } 45% { transform: translate(0, -13px); } 80% { transform: translate(0, 1.5px); } }
+.pl-packet .pp-h { fill: var(--surface); stroke: var(--line); stroke-width: 1.8; stroke-linejoin: miter; }
+.pl-packet .pp-s { fill: #E2DFD4; }
+.pl-packet .pp-v { fill: #17181C; }
+.pl-packet .pp-e { fill: #6F9BFF; }
+.pl-packet .pp-r { fill: var(--red); }
+[data-theme="dark"] .pl-packet .pp-h { fill: #E6E4DD; stroke: #0E0F12; }
+[data-theme="dark"] .pl-packet .pp-s { fill: #BDBAB2; }
 
 /* ============================================================
    MOTION v3 — transitions, apparitions, micro-interactions
@@ -3112,6 +3334,123 @@ html.is-leaving body::after {
 @keyframes shutter-open  { from { transform: none; } to { transform: translateX(101%); visibility: hidden; } }
 
 /* ============================================================
+   MOTION v4 — le kit s'assemble sous tes yeux
+   Toujours la même question : « qu'est-ce qui s'emboîte ? »
+   Les cartes se posent (l'ombre dure arrive à l'impact), les
+   étiquettes se collent après, les étapes lues se cochent, la
+   bande hazard avance comme un convoyeur, et le pilote veille
+   jusque dans le logo et le fil rouge de lecture.
+   ============================================================ */
+
+/* ---- Cartes : la pièce arrive, se pose (ombre à l'impact), puis l'étiquette ---- */
+.reveal[data-i="1"]  { --rd: .04s; } .reveal[data-i="2"]  { --rd: .10s; } .reveal[data-i="3"]  { --rd: .16s; }
+.reveal[data-i="4"]  { --rd: .22s; } .reveal[data-i="5"]  { --rd: .28s; } .reveal[data-i="6"]  { --rd: .34s; }
+.reveal[data-i="7"]  { --rd: .40s; } .reveal[data-i="8"]  { --rd: .46s; } .reveal[data-i="9"]  { --rd: .52s; }
+.reveal[data-i="10"] { --rd: .58s; } .reveal[data-i="11"] { --rd: .64s; } .reveal[data-i="12"] { --rd: .70s; }
+.reveal[data-i="13"] { --rd: .76s; }
+@keyframes land-shadow { from { box-shadow: 0 0 0 var(--line); translate: -2px -2px; } }
+.js .card.reveal.in:not(.is-placeholder) {
+    animation: land-shadow .3s var(--ease-snap) backwards;
+    animation-delay: calc(var(--rd, 0s) + .3s);
+}
+.js .card.reveal.in.is-refit { animation: refit .34s var(--ease-snap) backwards; animation-delay: calc(var(--refit, 0) * 35ms); }
+.js .card.reveal:not(.in)[data-part]::after { opacity: 0; translate: 0 -6px; }
+.card.reveal.in[data-part]::after {
+    transition: opacity .2s var(--ease-out) calc(var(--rd, 0s) + .42s),
+                translate .32s var(--ease-snap) calc(var(--rd, 0s) + .42s),
+                background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out);
+}
+
+/* ---- Étapes : une section lue se coche, le carré de fin s'allume ---- */
+@property --st-end { syntax: '<color>'; inherits: false; initial-value: #23252B; }
+.section-title::after {
+    --st-end: var(--line);
+    background:
+        linear-gradient(var(--st-end), var(--st-end)) right center / 8px 8px no-repeat,
+        linear-gradient(var(--line), var(--line)) left center / 100% 1.5px no-repeat;
+    transition: transform .9s var(--ease-snap) .22s, --st-end .24s steps(2, end);
+}
+.section-title.is-done::after { --st-end: var(--red); }
+.section-title.is-done::before { content: "STEP " attr(data-step) " ✓"; animation: step-tick .3s steps(2, end); }
+@keyframes step-tick { 0% { opacity: .2; } 100% { opacity: 1; } }
+
+/* ---- Éclats au clic (script.js) ---- */
+.kit-spark {
+    position: fixed;
+    z-index: 7000;
+    width: 5px;
+    height: 5px;
+    margin: -2.5px 0 0 -2.5px;
+    background: var(--c, var(--red));
+    pointer-events: none;
+    animation: kit-spark .38s var(--ease-out) forwards;
+}
+@keyframes kit-spark { to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+
+/* ---- Bascule KIT ↔ BOX ART : balayage de visière ---- */
+html.vt-theme::view-transition-old(root) { animation: none; }
+html.vt-theme::view-transition-new(root) { animation: vt-wipe .6s var(--ease-snap) both; }
+@keyframes vt-wipe { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+.theme-scan {
+    position: fixed;
+    left: 0; right: 0; top: 0;
+    height: 3px;
+    background: var(--red);
+    z-index: 6000;
+    pointer-events: none;
+    animation: theme-scan .6s var(--ease-snap) both;
+}
+@keyframes theme-scan { from { transform: translateY(-3px); } to { transform: translateY(calc(100vh - 3px)); } }
+.theme-toggle.is-flip svg { animation: tg-flip .42s var(--ease-snap); }
+@keyframes tg-flip { from { transform: rotate(-120deg) scale(.3); opacity: 0; } }
+
+/* ---- Le fil rouge : la visière du pilote file au bout de la barre de lecture ---- */
+.read-progress::before,
+.read-progress::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-out);
+    pointer-events: none;
+}
+.read-progress::before {
+    right: -13px;
+    width: 15px;
+    height: 9px;
+    background: #17181C;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 80% 100%, 20% 100%, 0 60%);
+}
+.read-progress::after {
+    right: -8px;
+    top: 3px;
+    width: 5px;
+    height: 2px;
+    background: #6F9BFF;
+    animation: rp-eye 3.2s steps(1, end) infinite;
+}
+@keyframes rp-eye { 0%, 40% { translate: 0 0; } 45%, 70% { translate: -3px 0; } 75%, 100% { translate: 2px 0; } }
+.read-progress.is-on::before, .read-progress.is-on::after { opacity: 1; }
+
+/* ---- Logo : de temps en temps, le pilote jette un œil depuis la nav ---- */
+@keyframes lm-idle-s { 0%, 91%, 100% { transform: none; } 92.5%, 98% { transform: translateY(-160%); } }
+@keyframes lm-idle-v { 0%, 91%, 100% { transform: translateY(260%); } 92.5%, 98% { transform: none; } }
+.logo:not(:hover):not(:focus-visible) .lm-s { animation: lm-idle-s 17s var(--ease-snap) 4s infinite; }
+.logo:not(:hover):not(:focus-visible) .lm-v { animation: lm-idle-v 17s var(--ease-snap) 4s infinite; }
+.logo:not(:hover):not(:focus-visible) .lm-v::after { animation: lm-eye 1.4s var(--ease-snap) infinite; }
+
+/* ---- Bandes hazard : un convoyeur qui avance avec le scroll ---- */
+@keyframes hz-conveyor { from { background-position: 0 0; } to { background-position: 565.6px 0; } }
+@supports (animation-timeline: scroll()) {
+    .hazard-bottom::after,
+    footer::before {
+        animation: hz-conveyor linear both;
+        animation-timeline: scroll(root block);
+    }
+}
+
+/* ============================================================
    Mouvement réduit — couche v3 (en fin de fichier pour primer)
    Tout est posé : pas de profondeur au scroll, pas de volet,
    pas de balayage radar ; le pilote garde ses poses et ses
@@ -3125,4 +3464,15 @@ html.is-leaving body::after {
     .pl-peek .pl-svg { translate: none; }
     .dock-pilot .pl-svg { translate: none !important; }
     .competence-bloc.in .skill-tags span, .cert-card.is-refit { animation: none; }
+}
+
+/* ============================================================
+   Mouvement réduit — couche v4 : tout est posé, rien ne défile
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .hazard-bottom::after, footer::before { animation: none !important; }
+    .pl .pl-scanl { animation: none !important; opacity: 0 !important; }
+    .logo .lm-s, .logo .lm-v, .logo .lm-v::after, .read-progress::after { animation: none !important; }
+    .js .card.reveal:not(.in)[data-part]::after { opacity: 1; translate: none; }
+    .pl-packet { display: none; }
 }
