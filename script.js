@@ -288,7 +288,7 @@
   const CHECK_TIMEOUT_MS = 4000;          // au-delà : « timeout »
   const GITHUB_CACHE_MS  = 10 * 60e3;     // API publique limitée à 60 requêtes / h / IP
   const MONITOR_EVERY_MS = 20000;         // un check toutes les 20 s, panneau visible
-  const OFFLINE_CACHE    = 'sh14-kit-v1'; // même nom que dans sw.js
+  const OFFLINE_CACHE    = 'sh14-kit-v2'; // même nom que dans sw.js
   const PILL = { up: 'UP', cache: 'CACHE', down: 'DOWN', api: 'API' };
 
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -628,7 +628,7 @@
   const PAGE_LABELS = {
     'index.html': 'Accueil', 'epreuve.html': 'Épreuves', 'projet.html': 'Projets',
     'veille.html': 'Veille', 'certifs.html': 'Certifications', 'contact.html': 'Contact',
-    'mentions-legales.html': 'Mentions légales'
+    'mentions-legales.html': 'Mentions légales', 'hangar.html': 'Hangar SH-14'
   };
   const navigate = (url) => {
     const root = document.documentElement;
@@ -756,7 +756,7 @@
      ============================================================ */
   const KIT_FILES = [
     './', './index.html', './epreuve.html', './projet.html', './veille.html', './certifs.html',
-    './contact.html', './mentions-legales.html', './404.html',
+    './contact.html', './mentions-legales.html', './hangar.html', './404.html',
     './style.css', './script.js', './pilote.js', './favicon.svg', './site.webmanifest',
     './fichiers/icon-192.png', './fichiers/allianc3-logo.png', './fichiers/allianc3-mark.png',
     './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
@@ -799,6 +799,117 @@
     window.addEventListener('offline', off);
     window.addEventListener('online', on);
     if (navigator.onLine === false) off();
+  })();
+
+  /* ============================================================
+     v5 — NOTICE DE VISITE : chaque page vue est une étape montée
+     (un carré rouge s'allume sur son lien dans la nav, le compteur
+     avance en pied de page). Les six pages vues → kit complet :
+     SH-14 gagne l'antenne V dorée et la garde sur tout le site.
+     Stockage local uniquement (clé kit-notice), rien n'en sort.
+     ============================================================ */
+  const NOTICE = [
+    ['index.html', 'Accueil'], ['epreuve.html', 'Épreuves'], ['projet.html', 'Projets'],
+    ['veille.html', 'Veille'], ['certifs.html', 'Certifications'], ['contact.html', 'Contact'],
+  ];
+  const NOTICE_KEY = 'kit-notice';
+  const isNoticeStep = (f) => NOTICE.some(([n]) => n === f);
+  const readNotice = () => {
+    try {
+      const d = JSON.parse(localStorage.getItem(NOTICE_KEY) || 'null');
+      if (d && Array.isArray(d.steps)) return { steps: d.steps.filter(isNoticeStep), vfin: !!d.vfin };
+    } catch (e) { /* stockage illisible : on repart de zéro */ }
+    return { steps: [], vfin: false };
+  };
+  const writeNotice = (d) => {
+    try { localStorage.setItem(NOTICE_KEY, JSON.stringify(d)); } catch (e) { /* bloqué : la notice ne persiste pas */ }
+  };
+  /* pilote.js lit ce drapeau : sur les pages qui chargent script.js, c'est ici
+     qu'on décide quand l'antenne apparaît (après la cérémonie, pas avant) */
+  document.documentElement.dataset.kitScript = '1';
+
+  const notice = (() => {
+    const d = readNotice();
+    const fresh = isNoticeStep(here) && !d.steps.includes(here);
+    const steps = fresh ? [...d.steps, here] : d.steps;
+    const complete = NOTICE.every(([f]) => steps.includes(f));
+    const first = complete && !d.vfin;
+    const state = { steps, vfin: d.vfin || complete };
+    if (fresh || first) writeNotice(state);
+    return { ...state, fresh, first };
+  })();
+  if (notice.vfin && !notice.first) document.documentElement.classList.add('pl-vfin-on');
+
+  /* pied de page : « NOTICE 4/6 » + six cases ; un clic ouvre la palette sur la notice */
+  const footNotice = (() => {
+    const foot = $('footer');
+    if (!foot) return null;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'footer-notice';
+    const anchor = $('.footer-uptime', foot);
+    if (anchor) anchor.after(b); else foot.appendChild(b);
+    b.addEventListener('click', () => emit('kit:palette', { q: 'notice' }));
+    return b;
+  })();
+  function renderNotice(d) {
+    $$('.nav-links a').forEach((a) => {
+      const f = (a.getAttribute('href') || '').split('/').pop() || 'index.html';
+      a.classList.toggle('is-built', d.steps.includes(f));
+    });
+    /* page Hangar : la notice en grand (six étapes, liens, état de l'antenne) */
+    $$('[data-notice-board]').forEach((box) => {
+      const rows = NOTICE.map(([f, label], k) => {
+        const on = d.steps.includes(f);
+        return `<li class="${on ? 'is-on' : ''}"><a href="./${f}"><b>${String(k + 1).padStart(2, '0')}</b>${label}</a>` +
+          `<span>${on ? 'monté ✓' : 'à monter'}</span></li>`;
+      }).join('');
+      box.innerHTML = `<ol class="nb-list" aria-label="Étapes de la notice">${rows}</ol>` +
+        `<p class="nb-foot"><span>Notice ${d.steps.length}/${NOTICE.length}</span>` +
+        `<span class="${d.vfin ? 'nb-v is-on' : 'nb-v'}">Antenne V : ${d.vfin ? 'montée' : 'à gagner'}</span></p>`;
+    });
+    if (!footNotice) return;
+    const n = d.steps.length, total = NOTICE.length;
+    const cells = NOTICE.map(([f]) => `<i class="${d.steps.includes(f) ? 'on' : ''}"></i>`).join('');
+    footNotice.innerHTML = `<span class="fn-k">Notice</span><span class="fn-cells" aria-hidden="true">${cells}</span>` +
+      `<span class="fn-n">${n}/${total}</span>` +
+      (d.vfin ? '<span class="fn-done">kit complet · antenne V</span>' : '<span class="fn-hint">étapes montées</span>');
+    footNotice.setAttribute('aria-label', `Notice de visite : ${n} pages sur ${total} vues` + (d.vfin ? ', kit complet' : '') + '. Ouvrir la liste.');
+  }
+  renderNotice(notice);
+
+  /* cérémonie : antenne V au 6/6 ; coup de pouce au 5/6 (une seule fois) */
+  {
+    const onHome = !!$('.hero-stage');
+    if (notice.first) {
+      setTimeout(() => {
+        const root = document.documentElement;
+        root.classList.add('pl-vfin-on', 'pl-vfin-new');
+        setTimeout(() => root.classList.remove('pl-vfin-new'), 1800);
+        netToast('Notice 6/6 · kit complet · antenne V débloquée', 'ok', 5600);
+        emit('kit:notice', { complete: true });
+      }, onHome ? 7200 : 1900);
+    } else if (notice.fresh && notice.steps.length === NOTICE.length - 1) {
+      const left = NOTICE.find(([f]) => !notice.steps.includes(f));
+      setTimeout(() => emit('kit:notice', { done: notice.steps.length, total: NOTICE.length, left: left[1] }), onHome ? 7600 : 2600);
+    }
+  }
+  const resetNotice = () => {
+    writeNotice({ steps: isNoticeStep(here) ? [here] : [], vfin: false });
+    document.documentElement.classList.remove('pl-vfin-on');
+    renderNotice(readNotice());
+    netToast('Notice remise à zéro · l’antenne V est rangée', 'warn', 3600);
+    emit('kit:notice', { reset: true });
+  };
+  $$('[data-notice-reset]').forEach((b) => b.addEventListener('click', resetNotice));
+
+  /* mobile : la nav défile ; on amène le lien de la page en cours dans le champ */
+  (function navActiveInView() {
+    const list = $('.nav-links');
+    const a = list && $('a.active', list);
+    if (!list || !a || list.scrollWidth <= list.clientWidth) return;
+    const r = a.getBoundingClientRect(), lr = list.getBoundingClientRect();
+    list.scrollLeft = Math.max(0, r.left - lr.left + list.scrollLeft - (lr.width - r.width) / 2);
   })();
 
   /* mode oral : chaque pièce est téléchargée puis rangée dans le cache */
@@ -1129,21 +1240,26 @@
         icon: 'SEC', label: 'Page secrète — crédits', hint: 'secret', run: launchEgg }
     ];
 
+    /* v5 : les pages affichent leur état dans la notice (« monté ✓ ») */
+    const NOTICE_KW = 'notice étape kit';
     const actions = [
-      { icon: '00', label: 'Accueil',               hint: 'page',   run: () => go('index.html') },
-      { icon: '01', label: 'Épreuves',              hint: 'page',   run: () => go('epreuve.html') },
-      { icon: '02', label: 'Projets',               hint: 'page',   run: () => go('projet.html') },
-      { icon: '03', label: 'Veille technologique',  hint: 'page',   run: () => go('veille.html') },
-      { icon: '04', label: 'Certifications',        hint: 'page',   run: () => go('certifs.html') },
-      { icon: '05', label: 'Contact',               hint: 'page',   run: () => go('contact.html') },
+      { icon: 'GO', label: 'Visite guidée — l\'essentiel en 1 min', hint: 'oral', kw: 'visite tour jury oral présentation guide', run: () => tour.start() },
+      { icon: '00', label: 'Accueil',               hint: 'page', file: 'index.html',   kw: NOTICE_KW, run: () => go('index.html') },
+      { icon: '01', label: 'Épreuves',              hint: 'page', file: 'epreuve.html', kw: NOTICE_KW, run: () => go('epreuve.html') },
+      { icon: '02', label: 'Projets',               hint: 'page', file: 'projet.html',  kw: NOTICE_KW, run: () => go('projet.html') },
+      { icon: '03', label: 'Veille technologique',  hint: 'page', file: 'veille.html',  kw: NOTICE_KW, run: () => go('veille.html') },
+      { icon: '04', label: 'Certifications',        hint: 'page', file: 'certifs.html', kw: NOTICE_KW, run: () => go('certifs.html') },
+      { icon: '05', label: 'Contact',               hint: 'page', file: 'contact.html', kw: NOTICE_KW, run: () => go('contact.html') },
       { icon: 'THM', label: 'Basculer le thème KIT / BOX ART', hint: 'action', run: toggleTheme },
       { icon: 'SH', label: 'Appeler le pilote SH-14', hint: 'mascotte', run: () => emit('kit:call') },
+      { icon: 'HGR', label: 'Hangar SH-14 — la fiche du robot', hint: 'page', kw: 'robot mascotte pilote making-of poses', run: () => go('hangar.html') },
       { icon: 'OFF', label: 'Mode oral : embarquer tout le site hors ligne', hint: 'action', run: runEmbark },
       { icon: 'LEG', label: 'Mentions légales',     hint: 'page',   run: () => go('mentions-legales.html') },
       { icon: '@',  label: 'Copier mon email',      hint: 'action', run: () => copy('Shabdpreetsingh2@gmail.com') },
       { icon: 'CV', label: 'Télécharger mon CV',    hint: 'fichier', run: () => { location.href = './fichiers/CV_Shabdpreet_Singh.pdf'; } },
       { icon: 'GH', label: 'GitHub',                hint: 'lien',   run: () => ext('https://github.com/shab14') },
-      { icon: 'IN', label: 'LinkedIn',              hint: 'lien',   run: () => ext('https://www.linkedin.com/in/shabdpreet-singh-401012376/') }
+      { icon: 'IN', label: 'LinkedIn',              hint: 'lien',   run: () => ext('https://www.linkedin.com/in/shabdpreet-singh-401012376/') },
+      { icon: 'RST', label: 'Notice : remettre à zéro (range l\'antenne V)', hint: 'kit', kw: 'notice reset antenne', run: resetNotice }
     ];
 
     // --- Construction du DOM de la palette ---
@@ -1175,9 +1291,17 @@
 
     const render = () => {
       const q = input.value.trim().toLowerCase();
+      const steps = readNotice().steps;
+      actions.forEach(a => { if (a.file) a.hint = steps.includes(a.file) ? 'monté ✓' : 'à monter'; });
       filtered = q
-        ? actions.filter(a => a.label.toLowerCase().includes(q) || a.hint.includes(q))
+        ? actions.filter(a => a.label.toLowerCase().includes(q) || a.hint.includes(q) || (a.kw || '').includes(q))
         : actions.slice();
+      /* « notice » : une ligne d'état en tête (n/6, antenne V) */
+      if (q && 'notice'.startsWith(q) && q.length >= 3) {
+        const d = readNotice();
+        filtered.unshift({ icon: d.steps.length + '/6', label: d.vfin ? 'Notice complète — antenne V montée' : `Notice : ${d.steps.length} pages sur 6 vues`,
+                           hint: 'kit', run: () => {} });
+      }
       // secrets : on les ajoute uniquement si la saisie correspond à un déclencheur
       if (q.length >= 2) {
         secrets.forEach(s => {
@@ -1208,10 +1332,10 @@
       if (el) el.scrollIntoView({ block: 'nearest' });
     };
 
-    const open = () => {
+    const open = (q) => {
       lastFocus = document.activeElement;
       wrap.hidden = false;
-      input.value = '';
+      input.value = typeof q === 'string' ? q : '';
       sel = 0;
       render();
       input.focus();
@@ -1244,6 +1368,9 @@
       else if (e.key === 'Enter')     { e.preventDefault(); exec(); }
     });
 
+    /* ouverture depuis ailleurs (pied de page « notice ») */
+    document.addEventListener('kit:palette', (e) => open(e.detail && e.detail.q));
+
     // --- Raccourcis globaux : Ctrl/Cmd+K et "/" ---
     window.addEventListener('keydown', (e) => {
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || '')) || e.target.isContentEditable;
@@ -1271,6 +1398,235 @@
       navActions.insertBefore(btn, navActions.firstChild);
     }
   })();
+
+  /* ============================================================
+     v5 — VISITE GUIDÉE (pensée pour l'oral) : 12 étapes, ~1 min,
+     à travers les six pages. Un bandeau-console en bas de l'écran
+     tape le commentaire, des repères de calage rouges encadrent le
+     point montré, et le SH-14 visible le regarde. L'étape en cours
+     survit au changement de page (sessionStorage, clé kit-tour).
+     ← → : étape précédente / suivante · espace : pause · Échap : quitter.
+     Un défilement à la main met la visite en pause (on reprend avec ▶).
+     ============================================================ */
+  const TOUR = [
+    { page: 'index.html', sel: '.hero h1', mood: 'happy',
+      text: 'Visite express du kit : 12 étapes, à peine une minute. Je te montre l’essentiel.' },
+    { page: 'index.html', sel: '#statusPanel', mood: 'focus',
+      text: 'Ce panneau est vivant : il vérifie vraiment les fichiers du site — code HTTP, taille, latence, dernier commit.' },
+    { page: 'index.html', sel: '.about-intro', mood: 'happy',
+      text: 'Shabdpreet Singh, 18 ans : BTS SIO option SISR à l’IAAG, en alternance chez ALLIANC3.' },
+    { page: 'index.html', sel: '.radar-wrap', mood: 'focus',
+      text: 'Ses domaines : réseau, systèmes, sécurité, support et scripting — le support en tête.' },
+    { page: 'epreuve.html', sel: '.card[data-part="E-04"]', mood: 'check',
+      text: 'Épreuve E4 : livrée. Le tableau de synthèse des réalisations se télécharge ici.' },
+    { page: 'epreuve.html', sel: '.card[data-part="E-06"]', mood: 'loading',
+      text: 'Épreuve E6, cybersécurité : en préparation, les documents arrivent au fil de la formation.' },
+    { page: 'projet.html', sel: '.card[data-part="P-01"]', mood: 'happy',
+      text: 'Projet phare : la supervision Centreon sur AlmaLinux, de l’installation à la documentation complète.' },
+    { page: 'projet.html', sel: '.archi', mood: 'focus',
+      text: 'Le schéma suit une donnée de supervision, de l’hôte jusqu’à l’interface web.' },
+    { page: 'veille.html', sel: '.stand--watch', mood: 'focus',
+      text: 'La veille : cybersécurité, réseaux et IA, suivis chaque matin — CERT-FR, ANSSI, flux RSS.' },
+    { page: 'certifs.html', sel: '.certs-summary', mood: 'star',
+      text: '13 certifications, dont 11 du parcours Anthropic. AI Fluency : 10/10.' },
+    { page: 'contact.html', sel: '#contactForm', mood: 'happy',
+      text: 'Pour le contacter : ce formulaire ou l’email. Réponse en moins de 24 h.' },
+    { page: 'contact.html', sel: '.contact-avail', mood: 'wink',
+      text: 'Ouvert aux opportunités 2026. Fin de la visite — merci de l’avoir suivie !' },
+  ];
+  const ICON = {
+    prev: '<svg viewBox="0 0 16 16" aria-hidden="true"><polygon points="11,3 4.5,8 11,13"/></svg>',
+    next: '<svg viewBox="0 0 16 16" aria-hidden="true"><polygon points="5,3 11.5,8 5,13"/></svg>',
+    play: '<svg viewBox="0 0 16 16" aria-hidden="true"><polygon points="5,2.5 13,8 5,13.5"/></svg>',
+    pause: '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="3" height="10"/><rect x="9" y="3" width="3" height="10"/></svg>',
+    close: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4 12 12M12 4 4 12"/></svg>',
+  };
+  const tour = (() => {
+    const KEY = 'kit-tour';
+    let i = -1, playing = false, hud = null, frame = null, target = null;
+    let nextT = 0, typeT = 0, showT = 0, raf = 0;
+    const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify({ i, playing })); } catch (e) { /* navigation privée stricte */ } };
+    const forget = () => { try { sessionStorage.removeItem(KEY); } catch (e) { /* idem */ } };
+    const dur = (s) => Math.min(4800, Math.max(3200, 1500 + s.text.length * 26));
+    const pad = (n) => String(n).padStart(2, '0');
+
+    function build() {
+      if (hud) return;
+      hud = document.createElement('div');
+      hud.className = 'tour-hud';
+      hud.setAttribute('role', 'region');
+      hud.setAttribute('aria-label', 'Visite guidée');
+      hud.innerHTML =
+        '<div class="tour-bar" aria-hidden="true"><i></i></div>' +
+        '<div class="tour-row">' +
+          '<span class="tour-face" aria-hidden="true"></span>' +
+          '<p class="tour-txt" aria-live="polite"><b class="tour-step"></b><span class="tour-say"></span></p>' +
+          '<div class="tour-ctl">' +
+            `<button class="tour-btn" type="button" data-t="prev" aria-label="Étape précédente">${ICON.prev}</button>` +
+            `<button class="tour-btn" type="button" data-t="play" aria-label="Pause">${ICON.pause}</button>` +
+            `<button class="tour-btn" type="button" data-t="next" aria-label="Étape suivante">${ICON.next}</button>` +
+            `<button class="tour-btn" type="button" data-t="close" aria-label="Quitter la visite">${ICON.close}</button>` +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(hud);
+      frame = document.createElement('div');
+      frame.className = 'tour-frame';
+      frame.setAttribute('aria-hidden', 'true');
+      frame.innerHTML = '<i></i><i></i><i></i><i></i><b class="tour-tag"></b>';
+      document.body.appendChild(frame);
+      hud.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-t]');
+        if (!b) return;
+        const t = b.dataset.t;
+        if (t === 'prev') go(i - 1);
+        else if (t === 'next') go(i + 1);
+        else if (t === 'play') toggle();
+        else if (t === 'close') stop();
+        else if (t === 'again') start();
+      });
+    }
+    function setPlayBtn() {
+      const b = hud && $('[data-t="play"]', hud);
+      if (!b) return;
+      b.innerHTML = playing ? ICON.pause : ICON.play;
+      b.setAttribute('aria-label', playing ? 'Pause' : 'Reprendre');
+    }
+    /* les repères suivent la cible pendant le défilement */
+    function track() {
+      cancelAnimationFrame(raf);
+      const loop = () => {
+        if (!target || !frame) return;
+        const r = target.getBoundingClientRect();
+        frame.style.transform = `translate(${Math.round(r.left - 8)}px, ${Math.round(r.top - 8)}px)`;
+        frame.style.width = Math.round(r.width + 16) + 'px';
+        frame.style.height = Math.round(r.height + 16) + 'px';
+        raf = requestAnimationFrame(loop);
+      };
+      loop();
+    }
+    function type(text) {
+      const say = $('.tour-say', hud);
+      clearTimeout(typeT);
+      if (reduced) { say.textContent = text; return; }
+      let k = 0;
+      const tick = () => {
+        say.textContent = text.slice(0, ++k);
+        if (k < text.length) typeT = setTimeout(tick, 15);
+      };
+      tick();
+    }
+    function show(k) {
+      clearTimeout(nextT); clearTimeout(showT);
+      i = k;
+      const st = TOUR[k];
+      document.documentElement.classList.add('is-touring');
+      build();
+      hud.classList.add('is-on');
+      hud.classList.remove('is-end');
+      $('.tour-bar i', hud).style.transform = `scaleX(${(k + 1) / TOUR.length})`;
+      $('.tour-step', hud).textContent = `${pad(k + 1)}/${pad(TOUR.length)}`;
+      setPlayBtn();
+      /* étape sur une autre page : on y va (le volet du kit), la visite reprend là-bas */
+      if (st.page !== here) {
+        save();
+        target = null; frame.classList.remove('is-on');
+        type('→ ' + (PAGE_LABELS[st.page] || st.page) + '…');
+        showT = setTimeout(() => navigate('./' + st.page), reduced ? 0 : 520);
+        return;
+      }
+      save();
+      target = $(st.sel);
+      if (!target) { nextT = setTimeout(() => go(k + 1), 200); return; }
+      frame.classList.remove('is-on');
+      target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      showT = setTimeout(() => {
+        $('.tour-tag', frame).textContent = `VISITE · ${pad(k + 1)}`;
+        void frame.offsetWidth;
+        frame.classList.add('is-on');
+        track();
+        type(st.text);
+        emit('kit:tour', { el: target, mood: st.mood, i: k, n: TOUR.length });
+        if (playing) nextT = setTimeout(() => go(k + 1), dur(st));
+      }, reduced ? 60 : 620);
+    }
+    function go(k) {
+      if (k < 0) k = 0;
+      if (k >= TOUR.length) { finish(); return; }
+      show(k);
+    }
+    function toggle() {
+      playing = !playing;
+      setPlayBtn(); save();
+      clearTimeout(nextT);
+      if (playing) nextT = setTimeout(() => go(i + 1), 1400);
+    }
+    function pause() {
+      if (!playing) return;
+      playing = false; clearTimeout(nextT); setPlayBtn(); save();
+    }
+    function finish() {
+      clearTimeout(nextT); clearTimeout(showT);
+      playing = false; forget();
+      target = null;
+      if (frame) frame.classList.remove('is-on');
+      if (!hud) return;
+      hud.classList.add('is-end');
+      $('.tour-step', hud).textContent = 'FIN';
+      $('.tour-bar i', hud).style.transform = 'scaleX(1)';
+      type('Visite terminée. Kit monté à 100 % — tout est dans le menu (Ctrl K).');
+      $('.tour-ctl', hud).innerHTML =
+        '<button class="tour-btn tour-btn--txt" type="button" data-t="again">Revoir</button>' +
+        `<button class="tour-btn" type="button" data-t="close" aria-label="Fermer">${ICON.close}</button>`;
+      emit('kit:tour', { end: true });
+      i = -1;
+    }
+    function stop() {
+      clearTimeout(nextT); clearTimeout(showT); clearTimeout(typeT);
+      cancelAnimationFrame(raf);
+      playing = false; i = -1; target = null; forget();
+      document.documentElement.classList.remove('is-touring');
+      if (hud) { hud.remove(); hud = null; }
+      if (frame) { frame.remove(); frame = null; }
+      emit('kit:tour', { stop: true });
+    }
+    function start() {
+      if (hud) { hud.remove(); hud = null; }
+      if (frame) { frame.remove(); frame = null; }
+      playing = true;
+      go(0);
+    }
+    /* reprise après un changement de page */
+    function resume() {
+      let st = null;
+      try { st = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { st = null; }
+      if (!st || typeof st.i !== 'number' || st.i < 0 || st.i >= TOUR.length) return;
+      /* on n'est pas arrivé ici par la visite (retour arrière, autre onglet…) : on n'insiste pas */
+      if (TOUR[st.i].page !== here) { forget(); return; }
+      playing = !!st.playing;
+      i = st.i;
+      document.documentElement.classList.add('is-touring');
+      setTimeout(() => go(i), reduced ? 100 : 900);
+    }
+    /* clavier + défilement à la main (pause) */
+    window.addEventListener('keydown', (e) => {
+      if (!hud || i < 0) return;
+      const cmdk = $('#cmdk');
+      if (cmdk && !cmdk.hidden) return;
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || '')) return;
+      if (e.key === 'Escape') { e.preventDefault(); stop(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); pause(); go(i + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); pause(); go(i - 1); }
+      else if (e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+    ['wheel', 'touchmove'].forEach((ev) => window.addEventListener(ev, () => { if (hud && i >= 0) pause(); }, { passive: true }));
+    /* un lien cliqué pendant la visite = on reprend la main : la visite s'arrête */
+    document.addEventListener('click', (e) => {
+      if (hud && i >= 0 && e.target.closest('a[href]') && !e.target.closest('.tour-hud')) stop();
+    }, true);
+    return { start, stop, resume, active: () => i >= 0 };
+  })();
+  $$('[data-tour-start]').forEach((b) => b.addEventListener('click', () => tour.start()));
+  tour.resume();
 
   /* ============================================================
      Formulaire de contact — compose un mailto (statique, sans backend)

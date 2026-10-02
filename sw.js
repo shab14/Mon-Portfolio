@@ -19,7 +19,7 @@
    ============================================================ */
 'use strict';
 
-const CACHE = 'sh14-kit-v1';
+const CACHE = 'sh14-kit-v2';
 const NETWORK_TIMEOUT_MS = 4000;   // réseau trop lent : on sert la copie locale
 
 /* Pièces embarquées dès l'installation (légères : ~0,5 Mo) */
@@ -32,6 +32,7 @@ const CORE = [
   './certifs.html',
   './contact.html',
   './mentions-legales.html',
+  './hangar.html',
   './404.html',
   './style.css',
   './script.js',

@@ -57,11 +57,11 @@
         .err-tag {
             display: inline-block;
             font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
-            color: var(--red); border: 1.5px solid var(--red);
+            color: var(--panel-red); border: 1.5px solid var(--panel-red);
             padding: 0.35rem 0.5rem 0.28rem; line-height: 1; margin-bottom: 1rem;
         }
         .err-line { color: var(--panel-soft); font-size: 0.84rem; margin: 0.3rem 0; }
-        .err-line .prompt { color: var(--red); font-weight: 600; margin-right: 0.5rem; }
+        .err-line .prompt { color: var(--panel-red); font-weight: 600; margin-right: 0.5rem; }
         .err-panel .btn { margin-top: 1.4rem; width: 100%; }
         .err-wrap { padding-top: 11rem; }
         .pl-lost {
@@ -92,14 +92,14 @@
     <link rel="manifest" href="/Mon-Portfolio/site.webmanifest">
 </head>
 <body>
-    <div class="err-wrap">
+    <main class="err-wrap" id="main">
         <div class="err-panel">
             <div class="pl-lost" data-pilote="lost" aria-hidden="true"></div>
             <div class="head">
                 <span><span class="err-led"></span>Notice — pièce manquante</span>
                 <span>HTTP 404</span>
             </div>
-            <div class="code">4<span class="x">0</span>4</div>
+            <h1 class="code" aria-label="Erreur 404 : page introuvable">4<span class="x">0</span>4</h1>
             <span class="err-tag">Runner introuvable</span>
             <p class="err-line"><span class="prompt">$</span>curl page-demandée</p>
             <p class="err-line"><span class="warn2">&gt; statut : NOT FOUND</span></p>
@@ -107,7 +107,7 @@
             <p class="err-line"><span class="ok2">&gt; reste du kit : OK</span></p>
             <a href="/Mon-Portfolio/" class="btn btn-primary">Retour à l'accueil</a>
         </div>
-    </div>
+    </main>
     <script src="/Mon-Portfolio/pilote.js"></script>
 </body>
 </html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* Avant le 1er rendu : thème sauvegardé (plus de flash clair en mode sombre),
+       classe .js (sans JS, rien n'est caché), volet de transition si on arrive
+       d'une autre page du kit. */
+    (function (h) {
+        h.classList.add('js');
+        try {
+            var t = localStorage.getItem('theme');
+            if (!t && window.matchMedia) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            if (t) h.setAttribute('data-theme', t);
+            var n = sessionStorage.getItem('kit-nav');
+            if (n) {
+                sessionStorage.removeItem('kit-nav');
+                if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    h.classList.add('shutter-in');
+                    h.style.setProperty('--shutter-label', JSON.stringify(n));
+                }
+            }
+        } catch (e) {}
+    })(document.documentElement);
+    </script>
+    <title>Hangar SH-14 | Shabdpreet Singh</title>
+    <meta name="description" content="Le making-of de SH-14, le robot pilote du portfolio : banc d’essai interactif (poses, expressions, vue éclatée), fiche technique et règles de conception.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="apple-touch-icon" href="./fichiers/icon-192.png">
+    <link rel="canonical" href="https://shab14.github.io/Mon-Portfolio/hangar.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hangar SH-14 | Shabdpreet Singh">
+    <meta property="og:description" content="Le making-of du robot pilote du portfolio : banc d’essai, vue éclatée, fiche technique.">
+    <meta name="theme-color" content="#D42B1E">
+
+    <meta property="og:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
+    <meta property="og:image:alt" content="SH-14, le robot pilote du portfolio, sur la plaque rouge du kit — Shabdpreet Singh, BTS SIO SISR en alternance chez ALLIANC3">
+    <meta property="og:url" content="https://shab14.github.io/Mon-Portfolio/hangar.html">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
+    <meta name="twitter:image:alt" content="SH-14, le robot pilote du portfolio, sur la plaque rouge du kit — Shabdpreet Singh, BTS SIO SISR en alternance chez ALLIANC3">
+    <meta name="twitter:title" content="Shabdpreet Singh | Portfolio">
+    <meta name="twitter:description" content="BTS SIO SISR en alternance chez ALLIANC3 — supervision, réseaux, infrastructure.">
+    <link rel="manifest" href="./site.webmanifest">
+</head>
+<body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <div class="read-progress"></div>
+    <nav>
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <span class="logo-mark"><span class="lm-s">S</span><span class="lm-v" aria-hidden="true"></span></span>
+                <span class="logo-text">Shabdpreet Singh</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Accueil</a></li>
+                <li><a href="./epreuve.html">Épreuves</a></li>
+                <li><a href="./projet.html">Projets</a></li>
+                <li><a href="./veille.html">Veille</a></li>
+                <li><a href="./certifs.html">Certifications</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Basculer le thème clair/sombre" title="Thème clair/sombre">
+                    <span class="moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></span>
+                    <span class="sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="8" y="8" width="8" height="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main" class="legal-page hangar-page" data-pl-hello="happy|Me revoilà, en version de poche.">
+        <span class="page-eyebrow"><span class="dot"></span> Making-of · la mascotte du kit</span>
+        <h1 data-tw>Hangar SH-14</h1>
+        <p class="page-intro">SH-14 est le pilote du portfolio : un robot entièrement en SVG, dessiné et animé par le code du site, sans image ni bibliothèque. Ici, il est sur son banc d’essai : chaque pose, chaque expression et chaque pièce se déclenche à la main.</p>
+
+        <section aria-labelledby="hg-t1">
+            <h2 class="section-title" data-step="01" id="hg-t1"><span class="st-text">Banc d’essai</span></h2>
+            <div class="hg-bench">
+                <figure class="hg-bay reveal">
+                    <span class="hg-bay-tag" aria-hidden="true">BAY 01 · SH-14</span>
+                    <div class="hg-stage">
+                        <div class="pl-hangar" data-pilote="hangar" aria-hidden="true"></div>
+                    </div>
+                    <div class="hg-plinth" aria-hidden="true"><span>Banc d’essai</span><span>Échelle 1:1 · SVG</span></div>
+                    <figcaption class="sr-only">SH-14 debout sur son banc d’essai. Les commandes à côté changent sa pose et son expression, déclenchent ses actions ou le démontent en vue éclatée.</figcaption>
+                </figure>
+
+                <div class="hg-console reveal">
+                    <button class="btn btn-primary hg-explode" type="button" data-hg-explode aria-pressed="false">
+                        <span class="hg-explode-on">Vue éclatée</span><span class="hg-explode-off">Remonter le kit</span>
+                        <span class="arr" aria-hidden="true">↕</span>
+                    </button>
+
+                    <div class="hg-group" role="group" aria-labelledby="hg-g1">
+                        <h3 class="hg-label" id="hg-g1">Poses <span>sh14 pose</span></h3>
+                        <div class="hg-chips">
+                            <button type="button" class="hg-chip" data-hg-pose="stand" aria-pressed="true">Repos</button>
+                            <button type="button" class="hg-chip" data-hg-pose="salute" aria-pressed="false">Salut</button>
+                            <button type="button" class="hg-chip" data-hg-pose="point" aria-pressed="false">Pointe</button>
+                            <button type="button" class="hg-chip" data-hg-pose="victory" aria-pressed="false">Victoire</button>
+                            <button type="button" class="hg-chip" data-hg-pose="celebrate" aria-pressed="false">Hourra</button>
+                            <button type="button" class="hg-chip" data-hg-pose="lookout" aria-pressed="false">Vigie</button>
+                            <button type="button" class="hg-chip" data-hg-pose="scratch" aria-pressed="false">Se gratte</button>
+                            <button type="button" class="hg-chip" data-hg-pose="crouch" aria-pressed="false">Accroupi</button>
+                            <button type="button" class="hg-chip" data-hg-pose="watch" aria-pressed="false">Montre</button>
+                            <button type="button" class="hg-chip" data-hg-pose="wipe" aria-pressed="false">Visière</button>
+                            <button type="button" class="hg-chip" data-hg-pose="stretch" aria-pressed="false">Étirement</button>
+                        </div>
+                    </div>
+
+                    <div class="hg-group" role="group" aria-labelledby="hg-g2">
+                        <h3 class="hg-label" id="hg-g2">Visière LED <span>sh14 mood</span></h3>
+                        <div class="hg-chips">
+                            <button type="button" class="hg-chip" data-hg-mood="" aria-pressed="true">Scan</button>
+                            <button type="button" class="hg-chip" data-hg-mood="open" aria-pressed="false">Ouvert</button>
+                            <button type="button" class="hg-chip" data-hg-mood="happy" aria-pressed="false">Content</button>
+                            <button type="button" class="hg-chip" data-hg-mood="wink" aria-pressed="false">Clin d’œil</button>
+                            <button type="button" class="hg-chip" data-hg-mood="surprise" aria-pressed="false">Surpris</button>
+                            <button type="button" class="hg-chip" data-hg-mood="focus" aria-pressed="false">Concentré</button>
+                            <button type="button" class="hg-chip" data-hg-mood="alert" aria-pressed="false">Alerte</button>
+                            <button type="button" class="hg-chip" data-hg-mood="question" aria-pressed="false">Question</button>
+                            <button type="button" class="hg-chip" data-hg-mood="check" aria-pressed="false">Validé</button>
+                            <button type="button" class="hg-chip" data-hg-mood="loading" aria-pressed="false">Chargement</button>
+                            <button type="button" class="hg-chip" data-hg-mood="dizzy" aria-pressed="false">Sonné</button>
+                            <button type="button" class="hg-chip" data-hg-mood="sleep" aria-pressed="false">Veille</button>
+                            <button type="button" class="hg-chip" data-hg-mood="star" aria-pressed="false">Étoiles</button>
+                        </div>
+                    </div>
+
+                    <div class="hg-group" role="group" aria-labelledby="hg-g3">
+                        <h3 class="hg-label" id="hg-g3">Actions <span>sh14 …</span></h3>
+                        <div class="hg-chips">
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="wave">Coucou</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="hop">Saut</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="takeoff">Décollage</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="land">Réception</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="incident">Incident</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="power">LED unit</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="say">Parler</button>
+                        </div>
+                    </div>
+
+                    <p class="term-strip hg-log" aria-live="polite"><span class="prompt" aria-hidden="true">$</span><span data-hg-log>sh14 --status <span class="hg-log-c"># en attente sur le banc</span></span></p>
+                </div>
+            </div>
+
+            <ol class="hg-legend reveal" aria-label="Pièces du robot, de A à H">
+                <li><button type="button" class="hg-key" data-hg-part="head"><b>A</b><span class="hg-key-n">Casque</span><span class="hg-key-d">visière LED, antenne, micro</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="shoulders"><b>B</b><span class="hg-key-n">Épaulières</span><span class="hg-key-d">panneau rouge, sticker hazard</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="arm-l"><b>C</b><span class="hg-key-n">Bras gauche</span><span class="hg-key-d">brassard bleu, montre, index</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="arm-r"><b>D</b><span class="hg-key-n">Bras droit</span><span class="hg-key-d">écusson or, main outil</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="torso"><b>E</b><span class="hg-key-n">Torse</span><span class="hg-key-d">jauge d’énergie, décalque 14</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="hip"><b>F</b><span class="hg-key-n">Bassin</span><span class="hg-key-d">jupes, sacoche, flamme</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="legs"><b>G</b><span class="hg-key-n">Jambes</span><span class="hg-key-d">hanche, genou, cheville</span></button></li>
+                <li><button type="button" class="hg-key" data-hg-part="back"><b>H</b><span class="hg-key-n">Dos</span><span class="hg-key-d">sac, tuyères de jupe</span></button></li>
+            </ol>
+        </section>
+
+        <section aria-labelledby="hg-t2">
+            <h2 class="section-title" data-step="02" id="hg-t2" data-pl="focus|Fiche technique : tout est vérifié en direct."><span class="st-text">Fiche technique</span></h2>
+            <dl class="legal-sheet hg-sheet reveal">
+                <div><dt>Désignation</dt><dd>SH-14 — pilote du kit, mascotte du portfolio</dd></div>
+                <div><dt>Code</dt><dd><code>pilote.js</code> · <span data-spec="loc">≈ 1 800 lignes</span> — JavaScript sans framework</dd></div>
+                <div><dt>Dessin</dt><dd>SVG vectoriel (viewBox 200 × 310) · <span data-spec="shapes">≈ 400</span> formes : polygones, rectangles, traits</dd></div>
+                <div><dt>Pièces</dt><dd><span data-spec="parts">8</span> pièces (A à H) · <span data-spec="joints">13</span> articulations : taille, hanches, genoux, chevilles, épaules, coudes, cou, œil</dd></div>
+                <div><dt>Visière</dt><dd>Matrice LED : <span data-spec="moods">12</span> expressions, plus le mono-œil de surveillance</dd></div>
+                <div><dt>Poses</dt><dd><span data-spec="poses">15</span> poses, angles calculés par cinématique inverse (pieds plantés au sol)</dd></div>
+                <div><dt>Apparitions</dt><dd><span data-spec="presets">10</span> rôles sur le site, plus le compagnon du bouton « remonter »</dd></div>
+                <div><dt>Mouvement</dt><dd>Servo : ça part net, ça s’arrête net. Seule la pièce qui bouge est recalculée</dd></div>
+                <div><dt>Accessibilité</dt><dd>Décoratif (ignoré des lecteurs d’écran) · immobile si « réduire les animations » est activé</dd></div>
+                <div><dt>Antenne V</dt><dd data-spec="vfin">À gagner : visiter les six pages du kit</dd></div>
+            </dl>
+        </section>
+
+        <section aria-labelledby="hg-t3">
+            <h2 class="section-title" data-step="03" id="hg-t3" data-pl="check|R-01 : un seul moi à l’écran. Toujours."><span class="st-text">Règles de conception</span></h2>
+            <div class="hg-rules">
+                <article class="card reveal" data-part="R-01">
+                    <h3>Un seul SH-14 à l’écran</h3>
+                    <p>Il voyage d’une station à l’autre : dès qu’une station est visible, le compagnon du bouton « remonter » décolle.</p>
+                </article>
+                <article class="card reveal" data-part="R-02">
+                    <h3>Mouvement de servo</h3>
+                    <p>Ça part net, ça s’arrête net : courbes à léger dépassement, crans au repos, jamais de flottement.</p>
+                </article>
+                <article class="card reveal" data-part="R-03">
+                    <h3>Aplats seulement</h3>
+                    <p>Trois tons de plastique, une ombre dure, des lignes de panneau. Aucun dégradé.</p>
+                </article>
+                <article class="card reveal" data-part="R-04">
+                    <h3>Une seule lumière</h3>
+                    <p>La LED unit : visière, voyants et tuyères. Elle rayonne vraiment sur la face BOX ART (thème sombre).</p>
+                </article>
+                <article class="card reveal" data-part="R-05">
+                    <h3>Il parle peu</h3>
+                    <p>Une bulle tapée à la machine, seulement quand il se passe quelque chose.</p>
+                </article>
+                <article class="card reveal" data-part="R-06">
+                    <h3>Mouvement réduit respecté</h3>
+                    <p>Avec « réduire les animations » activé : poses fixes, pas de vol, expressions sans mouvement.</p>
+                </article>
+            </div>
+        </section>
+
+        <section aria-labelledby="hg-t4">
+            <h2 class="section-title" data-step="04" id="hg-t4" data-pl="open|On se croise partout. Ou presque."><span class="st-text">Où le croiser</span></h2>
+            <ul class="hg-stations reveal">
+                <li><a href="./index.html">Accueil</a><p>Debout sur le panneau SYSTÈMES : il s’assemble, allume les services un par un et pointe les boutons survolés. Plus bas, il passe la tête au-dessus de la photo.</p></li>
+                <li><a href="./epreuve.html">Épreuves</a><p>Contrôle qualité : il tamponne l’épreuve E4 « livrée ».</p></li>
+                <li><a href="./projet.html">Projets</a><p>Accroupi sur le chantier P-02, clé en main. Sa silhouette en pointillés réserve P-03, et sa tête voyage dans le schéma Centreon.</p></li>
+                <li><a href="./veille.html">Veille</a><p>En sentinelle, la main en visière : il réagit au flux d’alertes.</p></li>
+                <li><a href="./certifs.html">Certifications</a><p>Il brandit la médaille, puis la garde épinglée sur tout le site.</p></li>
+                <li><a href="./contact.html">Contact</a><p>Il suit ta saisie et fête l’envoi du message.</p></li>
+                <li><a href="./404.html">Page 404</a><p>Il lui manque un bras. Classique.</p></li>
+                <li><span class="hg-st-any">Partout</span><p>Sur le bouton « remonter » quand aucune station n’est à l’écran — et en pixel art dans un mini-jeu caché de la palette (Ctrl K).</p></li>
+            </ul>
+        </section>
+
+        <section aria-labelledby="hg-t5">
+            <h2 class="section-title" data-step="05" id="hg-t5" data-pl="star|Six pages, une antenne. Le deal est simple."><span class="st-text">Notice de visite</span></h2>
+            <div class="legal-text reveal">
+                <p>Chaque page visitée monte une étape de la notice : un carré rouge s’allume sur son lien dans le menu. Les six pages montées, SH-14 gagne l’antenne V dorée et la garde partout. Tout reste dans ton navigateur.</p>
+            </div>
+            <div class="hg-notice reveal" data-notice-board></div>
+            <div class="embark-card reveal">
+                <div>
+                    <strong>Repartir de zéro</strong>
+                    <p>Efface la progression de la notice (et range l’antenne V) pour refaire la visite.</p>
+                </div>
+                <button class="btn btn-outline" type="button" data-notice-reset>Remettre à zéro</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/shab14" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/shabdpreet-singh-401012376/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="./fichiers/CV_Shabdpreet_Singh.pdf" download>CV</a>
+            <a href="./hangar.html" aria-current="page">Hangar SH-14</a>
+        </div>
+        <p>© 2026 Shabdpreet Singh — Portfolio · kit v5 · <a href="./mentions-legales.html">Mentions légales</a></p>
+        <p class="footer-uptime"><span class="status-led"></span>Tous les systèmes sont opérationnels</p>
+        <p class="footer-alt">En alternance chez <img class="footer-brand" src="./fichiers/allianc3-mark.png" alt="" width="18" height="18" loading="lazy"> <strong>Allianc3</strong></p>
+        <p class="footer-clock" id="clock"></p>
+    </footer>
+    <div class="incident-toast" id="incidentToast" aria-hidden="true">Alerte simulée — <span class="ok2">tous systèmes rétablis ✓</span></div>
+    <button class="scroll-top" id="scrollTop" type="button" aria-label="Remonter en haut">↑</button>
+    <script src="./pilote.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>

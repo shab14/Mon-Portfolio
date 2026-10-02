@@ -7,7 +7,7 @@
    de page, 404, sprite du dino runner.
 
    Côté HTML c'est déclaratif :
-     <div data-pilote="hero|peek|work|ghost|watch|hello|lost|badge|stamp">
+     <div data-pilote="hero|peek|work|ghost|watch|hello|lost|badge|stamp|hangar">
    Réactions de section (compagnon) :
      data-pl="humeur|texte"   sur un titre ou un bloc
      data-pl-hello="humeur|texte"  sur <main> (arrivée sur la page)
@@ -15,9 +15,10 @@
      kit:svc  kit:theme  kit:incident  kit:copy  kit:sent  kit:call
      kit:feed (flux de veille)  kit:filter (filtre des certifs)
      kit:check (supervision live)  kit:net (réseau coupé / rétabli, mode oral)
+     kit:notice (notice de visite, antenne V)  kit:tour (visite guidée)
    Un seul personnage : les apparitions « station » (hero, portrait,
-   chantier, veille, contact, médaille, tampon) et le dock ne se
-   montrent jamais en même temps — il va de l'une à l'autre.
+   chantier, veille, contact, médaille, tampon, banc du hangar) et le
+   dock ne se montrent jamais en même temps — il va de l'une à l'autre.
 
    Règles DA : aplats, lignes de panneau, ombre dure, mouvement
    de servo (ça claque, ça s'arrête net). La seule lumière du
@@ -68,72 +69,108 @@
   const line = (x1, y1, x2, y2, c) => `<line${c ? ` class="${c}"` : ''} x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
   const path = (d, c) => `<path${c ? ` class="${c}"` : ''} d="${d}"/>`;
   const grp  = (c, inner, extra) => `<g${c ? ` class="${c}"` : ''}${extra || ''}>${inner}</g>`;
-  /* pièce du kit : wrapper d'assemblage (+ wrapper de respiration) */
-  const part = (name, inner, d, idle) =>
-    `<g class="pl-part pl-p-${name}" style="--d:${d}s">${idle ? grp('pl-idle', inner) : inner}</g>`;
+  /* pièce du kit : wrapper d'assemblage (+ wrapper de respiration).
+     upper = bloc du haut du corps (v5) : il descend et s'incline d'un seul tenant
+     quand les genoux plient (classe .pl-up, propriétés --ux / --by / --ut). */
+  const part = (name, inner, d, idle, upper) =>
+    `<g class="pl-part pl-p-${name}${upper ? ' pl-j pl-up' : ''}" style="--d:${d}s">${idle ? grp('pl-idle', inner) : inner}</g>`;
 
-  const FLAMES =
-    grp('pl-flames',
-      poly('66,306 92,307.6 79,338', 'r n pl-fl') + poly('108,307.6 134,306 121,338', 'r n pl-fl') +
-      poly('72,307 86,307.8 79,326', 'y n pl-fl') + poly('114,307.8 128,307 121,326', 'y n pl-fl'));
+  /* tuyères des pieds (une par pied : elles suivent la jambe) */
+  const FLAME = {
+    l: grp('pl-flames', poly('66,306 92,307.6 79,338', 'r n pl-fl') + poly('72,307 86,307.8 79,326', 'y n pl-fl')),
+    r: grp('pl-flames', poly('108,307.6 134,306 121,338', 'r n pl-fl') + poly('114,307.8 128,307 121,326', 'y n pl-fl')),
+  };
+  /* v5 — verniers de mollet : petites flammes en biais, côté extérieur des tibias */
+  const VERNIER = {
+    l: grp('pl-vern', poly('68.6,269.6 66.4,281.4 50.6,300.6', 'r n') + poly('68,272.6 66.9,279.4 57.6,291', 'y n')),
+    r: grp('pl-vern', poly('131.4,269.6 133.6,281.4 149.4,300.6', 'r n') + poly('132,272.6 133.1,279.4 142.4,291', 'y n')),
+  };
 
+  /* dos : sac à dos + (v5) tuyères de jupe arrière — le jet sort de derrière
+     les hanches et flamboie le long du genou, sous le poing */
   const BACK =
+    grp('pl-bflames',
+      poly('60.4,151 70.4,153.6 48.6,238', 'r n pl-fl') + poly('62.8,153 68.4,154.4 54.6,214', 'y n pl-fl') +
+      poly('139.6,151 129.6,153.6 151.4,238', 'r n pl-fl') + poly('137.2,153 131.6,154.4 145.4,214', 'y n pl-fl')) +
     poly('58,72 70,66 76,92 60,95', 's') + poly('142,72 130,66 124,92 140,95', 's') +
     poly('59.4,73.2 69.6,68.2 70.5,72.4 60.3,77.4', 'r n') + poly('140.6,73.2 130.4,68.2 129.5,72.4 139.7,77.4', 'r n');
 
-  const LEGS =
-    /* cuisses */
-    poly('74,178 98,178 96,216 72,214', 'k') + poly('102,178 126,178 128,214 104,216', 'k') +
-    /* genoux + rotule boulonnée */
-    poly('70,214 97,216 96,238 68,236') + poly('103,216 130,214 132,236 104,238') +
-    poly('75,219.5 91,220.6 90.4,232 74.4,231', 's n') + poly('109,220.6 125,219.5 125.6,231 109.6,232', 's n') +
-    rect(81, 224, 3.6, 3.6, 'k n') + rect(115.4, 224, 3.6, 3.6, 'k n') +
-    /* tibias : face ombrée, bande rouge, ouïes */
-    poly('69,238 96,240 94,286 67,284') + poly('104,240 131,238 133,284 106,286') +
-    poly('87,239.3 96,240 94,286 85.4,285.4', 's n') + poly('124,238.5 131,238 133,284 126.4,284.5', 's n') +
-    poly('75,248 83,248 81,280 73,280', 'r n') + poly('117,248 125,248 127,280 119,280', 'r n') +
-    line(86.6, 262, 92.4, 262.4, 't') + line(86.4, 267, 92.2, 267.4, 't') + line(86.2, 272, 92, 272.4, 't') +
-    line(107.6, 262.4, 113.4, 262, 't') + line(107.8, 267.4, 113.6, 267, 't') + line(108, 272.4, 113.8, 272, 't') +
-    /* pieds (tuyères dessous) */
-    poly('63,284 95,286 97,308 58,306', 'k') + poly('105,286 137,284 142,306 103,308', 'k') +
-    line(61.6, 297, 95.6, 298.6, 'h') + line(104.4, 298.6, 138.6, 297, 'h') +
-    DX_LEGS();
-
-  /* ---- v4 : jambes deluxe + usure ---- */
-  function DX_LEGS() {
-    /* marques de mission : pleines = livrées, vides = en préparation */
+  /* Marques de mission (cuisse gauche) : pleines = livrées, vides = en préparation */
+  function MARKS() {
     let marks = '';
     for (let i = 0; i < MISSIONS.total; i++) {
       const x = 80.2 + i * 5.3;
       marks += i < MISSIONS.done ? rect(x, 195, 3.8, 3.8, 'r n pl-mm') : rect(x + 0.45, 195.45, 2.9, 2.9, 'pl-mm-o');
     }
-    return grp('pl-dx',
-      /* reflets sur le graphite des cuisses */
-      poly('75.1,180 77.7,180 75.9,212.4 73.3,212.4', 'hw') +
-      poly('103.3,180 105.9,180 107.7,214.6 105.1,214.6', 'hw') +
-      marks +
-      /* plaque réparée sur le terrain, un peu de travers, rivetée */
-      poly('109.4,188.4 121.8,188 122.2,198.4 109.8,198.8', 's th') +
-      rect(110.5, 189.5, 1.8, 1.8, 'k n') + rect(119.7, 189.2, 1.8, 1.8, 'k n') +
-      rect(110.8, 196, 1.8, 1.8, 'k n') + rect(120, 195.7, 1.8, 1.8, 'k n') +
-      /* genoux : boulons éclairés, éclats aux angles */
-      rect(81, 224, 3.6, 1.1, 'hw') + rect(115.4, 224, 3.6, 1.1, 'hw') +
-      poly('68.9,233.4 71.8,235.9 68.9,236.2', 'wr n') + poly('131.1,233.4 128.2,235.9 131.1,236.2', 'wr n') +
-      /* tibias : bandes rouges éclairées, écaillées ; ombre au pied */
-      poly('75.3,248.6 77.5,248.6 75.5,279.4 73.4,279.4', 'hw') +
-      poly('117.3,248.6 119.5,248.6 121.4,279.4 119.3,279.4', 'hw') +
-      poly('76.4,262.2 79.6,261.6 77.8,264.6', 'wp n') + poly('121.2,270.4 124,271 121.8,273', 'wp n') +
-      poly('67.3,280.6 94.2,282.5 94,286 67,284', 'd n') + poly('106.2,282.5 132.8,280.6 133,284 106,286', 'd n') +
-      /* sticker « caution » sur le tibia droit */
-      poly('108.2,258.6 115.4,258.6 111.8,252.4', 'y th') + rect(111.3, 254.5, 1.1, 2.3, 'k n') + rect(111.3, 257.2, 1.1, .8, 'k n') +
-      /* pieds : arête avant éclairée ; tuyères qui gardent la chaleur */
-      poly('63.6,285 94.4,287 94.5,288.3 63.4,286.3', 'hw') + poly('105.6,287 136.4,285 136.6,286.3 105.5,288.3', 'hw') +
-      rect(71.5, 305.2, 15, 2.2, 'pl-heat') + rect(113.5, 305.2, 15, 2.2, 'pl-heat')) +
-    grp('pl-dx pl-fine',
-      line(68.7, 244.3, 95.6, 246.2, 'pn') + line(104.4, 246.2, 131.3, 244.3, 'pn') +
-      line(112, 196.6, 119.8, 190.4, 'pn') +
-      line(72.6, 229.6, 77.2, 226.6, 'sc') + line(70.2, 271, 71.6, 265.4, 'sc') + line(126.6, 226.8, 128.8, 231.6, 'sc'));
+    return marks;
   }
+
+  /* ---- v5 : JAMBES ARTICULÉES (vue de face) ----
+     Trois segments imbriqués par jambe : cuisse (pivot hanche) ⊃ genou + tibia
+     (pivot genou) ⊃ pied (pivot cheville). La cuisse se raccourcit (--tk) quand le
+     genou avance vers nous : c'est la perspective d'un accroupi vu de face. Les angles
+     sont calculés par cinématique inverse (pieds plantés) — voir style.css. */
+  const LEG_PARTS = {
+    l: {
+      thigh:
+        poly('74,178 98,178 96,216 72,214', 'k') +
+        grp('pl-dx', poly('75.1,180 77.7,180 75.9,212.4 73.3,212.4', 'hw') + MARKS()),
+      shin:
+        VERNIER.l +
+        poly('70,214 97,216 96,238 68,236') + poly('75,219.5 91,220.6 90.4,232 74.4,231', 's n') + rect(81, 224, 3.6, 3.6, 'k n') +
+        poly('69,238 96,240 94,286 67,284') + poly('87,239.3 96,240 94,286 85.4,285.4', 's n') +
+        poly('75,248 83,248 81,280 73,280', 'r n') +
+        line(86.6, 262, 92.4, 262.4, 't') + line(86.4, 267, 92.2, 267.4, 't') + line(86.2, 272, 92, 272.4, 't') +
+        grp('pl-dx',
+          rect(81, 224, 3.6, 1.1, 'hw') + poly('68.9,233.4 71.8,235.9 68.9,236.2', 'wr n') +
+          poly('75.3,248.6 77.5,248.6 75.5,279.4 73.4,279.4', 'hw') + poly('76.4,262.2 79.6,261.6 77.8,264.6', 'wp n') +
+          poly('67.3,280.6 94.2,282.5 94,286 67,284', 'd n')) +
+        grp('pl-dx pl-fine', line(68.7, 244.3, 95.6, 246.2, 'pn') + line(72.6, 229.6, 77.2, 226.6, 'sc') + line(70.2, 271, 71.6, 265.4, 'sc')),
+      foot:
+        FLAME.l +
+        poly('63,284 95,286 97,308 58,306', 'k') + line(61.6, 297, 95.6, 298.6, 'h') +
+        grp('pl-dx', poly('63.6,285 94.4,287 94.5,288.3 63.4,286.3', 'hw') + rect(71.5, 305.2, 15, 2.2, 'pl-heat')),
+    },
+    r: {
+      thigh:
+        poly('102,178 126,178 128,214 104,216', 'k') +
+        grp('pl-dx',
+          poly('103.3,180 105.9,180 107.7,214.6 105.1,214.6', 'hw') +
+          /* plaque réparée sur le terrain, un peu de travers, rivetée */
+          poly('109.4,188.4 121.8,188 122.2,198.4 109.8,198.8', 's th') +
+          rect(110.5, 189.5, 1.8, 1.8, 'k n') + rect(119.7, 189.2, 1.8, 1.8, 'k n') +
+          rect(110.8, 196, 1.8, 1.8, 'k n') + rect(120, 195.7, 1.8, 1.8, 'k n')) +
+        grp('pl-dx pl-fine', line(112, 196.6, 119.8, 190.4, 'pn')),
+      shin:
+        VERNIER.r +
+        poly('103,216 130,214 132,236 104,238') + poly('109,220.6 125,219.5 125.6,231 109.6,232', 's n') + rect(115.4, 224, 3.6, 3.6, 'k n') +
+        poly('104,240 131,238 133,284 106,286') + poly('124,238.5 131,238 133,284 126.4,284.5', 's n') +
+        poly('117,248 125,248 127,280 119,280', 'r n') +
+        line(107.6, 262.4, 113.4, 262, 't') + line(107.8, 267.4, 113.6, 267, 't') + line(108, 272.4, 113.8, 272, 't') +
+        grp('pl-dx',
+          rect(115.4, 224, 3.6, 1.1, 'hw') + poly('131.1,233.4 128.2,235.9 131.1,236.2', 'wr n') +
+          poly('117.3,248.6 119.5,248.6 121.4,279.4 119.3,279.4', 'hw') + poly('121.2,270.4 124,271 121.8,273', 'wp n') +
+          poly('106.2,282.5 132.8,280.6 133,284 106,286', 'd n') +
+          /* sticker « caution » sur le tibia droit */
+          poly('108.2,258.6 115.4,258.6 111.8,252.4', 'y th') + rect(111.3, 254.5, 1.1, 2.3, 'k n') + rect(111.3, 257.2, 1.1, .8, 'k n')) +
+        grp('pl-dx pl-fine', line(104.4, 246.2, 131.3, 244.3, 'pn') + line(126.6, 226.8, 128.8, 231.6, 'sc')),
+      foot:
+        FLAME.r +
+        poly('105,286 137,284 142,306 103,308', 'k') + line(104.4, 298.6, 138.6, 297, 'h') +
+        grp('pl-dx', poly('105.6,287 136.4,285 136.6,286.3 105.5,288.3', 'hw') + rect(113.5, 305.2, 15, 2.2, 'pl-heat')),
+    },
+  };
+  const LEG = (s) =>
+    grp(`pl-j pl-thf pl-thf-${s}`,
+      grp(`pl-j pl-thk pl-thk-${s}`, LEG_PARTS[s].thigh) +
+      grp(`pl-j pl-sh pl-sh-${s}`, LEG_PARTS[s].shin + grp(`pl-j pl-ft pl-ft-${s}`, LEG_PARTS[s].foot)));
+  const LEGS = LEG('l') + LEG('r');
+
+  /* v5 — poussière d'atterrissage : des éclats carrés, à plat, qui fusent au ras du sol */
+  const DUST = grp('pl-dust',
+    [[66, 300, -26, -10, 5.2], [58, 303, -38, -4, 4], [78, 303, -12, -16, 3.4], [88, 305, -6, -8, 2.6],
+     [129, 300, 26, -10, 5.2], [138, 303, 38, -4, 4], [119, 303, 12, -16, 3.4], [109, 305, 6, -8, 2.6]]
+      .map(([x, y, dx, dy, s]) => `<rect x="${x}" y="${y}" width="${s}" height="${s}" style="--dx:${dx}px;--dy:${dy}px"/>`).join(''));
 
   const HIP = (o) =>
     /* jupe latérale + bassin + boucle or */
@@ -228,6 +265,10 @@
       fa: poly('40,141.5 48,141.5 50.5,145 50.5,151 48,154.5 40,154.5 37.5,151 37.5,145', 'k') +
           poly('30,148 56,152 52,190 26,186') + poly('46,150.5 56,152 52,190 42.4,188.6', 's n') +
           poly('28,162 55,166 54,177 27,173', 'k') +
+          /* v5 : montre sur la manchette (écran = mini-visière, s'allume quand il la regarde) */
+          poly('36.4,165.4 45.4,166.8 45,172.8 36,171.4', 'v pl-wscr th') +
+          /* v5 : index tendu, sorti seulement quand il pointe (dessiné sous le poing) */
+          grp('pl-finger', poly('30.4,208.6 37,209.6 36,221 29.4,220') + poly('33.8,209.1 37,209.6 36,221 32.8,220.5', 's n')) +
           poly('24,190 50,194 47,212 21,208') + poly('40,192.5 50,194 47,212 37.4,210.6', 's n') +
           line(22.8, 200, 48.6, 203.8, 't') +
           /* v4 : manchette éclairée, ombre au poignet, graisse sur le poing */
@@ -278,7 +319,7 @@
      une contre-rotation CSS annule celle du bras (voir .pl-stamp).
      Dessiné devant l'avant-bras : bras levé, on le voit devant. */
   const STAMP_HAND =
-    grp('pl-stamp',
+    grp('pl-j pl-stamp',
       rect(32.5, 210.6, 6, 6.8, 'k n') +
       poly('24.5,217 46.5,217 48,226 23,226', 'r th') + rect(25.2, 217.7, 20.6, 1.2, 'hw') +
       rect(23.4, 223.4, 24.2, 2.6, 'k n') + rect(22.6, 226, 25.8, 3.6, 'k n'));
@@ -295,7 +336,7 @@
     grp('pl-matrix',
       line(74, 40.5, 126, 40.5) + line(74, 43.5, 126, 43.5) + line(74, 46.5, 126, 46.5) + line(74, 49.5, 126, 49.5) +
       line(74, 52.5, 126, 52.5) + line(74, 55.5, 126, 55.5) + line(74, 58.5, 126, 58.5)) +
-    grp('pl-scanwrap', grp('pl-eyewrap', rect(86.6, 42.2, 26.8, 7.6, 'e pl-bloom') + rect(90, 44.2, 20, 3.6, 'e pl-eye'))) +
+    grp('pl-scanwrap', grp('pl-j pl-eyewrap', rect(86.6, 42.2, 26.8, 7.6, 'e pl-bloom') + rect(90, 44.2, 20, 3.6, 'e pl-eye'))) +
     grp('pl-x pl-x-open', rect(83, 44, 9, 6, 'e') + rect(108, 44, 9, 6, 'e')) +
     grp('pl-x pl-x-happy', path('M81,51.4 L87.5,44.6 L94,51.4 M106,51.4 L112.5,44.6 L119,51.4', 'pl-ln')) +
     grp('pl-x pl-x-wink', path('M81,51.4 L87.5,44.6 L94,51.4', 'pl-ln') + rect(108, 44, 9, 6, 'e')) +
@@ -316,7 +357,7 @@
   const HEAD = (id) =>
     /* cou (ne suit pas l'inclinaison de la tête) */
     rect(89, 76, 22, 16, 'k') + line(91, 81.5, 109, 81.5, 'h') + line(91, 86.5, 109, 86.5, 'h') +
-    grp('pl-look', grp('pl-head',
+    grp('pl-look', grp('pl-j pl-head',
       /* casque */
       poly('70,32 80,20 120,20 130,32 130,60 120,76 80,76 70,60') +
       poly('116,20 120,20 130,32 130,60 120,76 116,76', 's n') +
@@ -330,6 +371,11 @@
         poly('71.2,56.6 73.6,59.2 71.2,60.2', 'wr n') + rect(97, 22.4, 6, 1, 'hw')) +
       grp('pl-dx pl-fine',
         line(77, 34.6, 123, 34.6, 'pn') + line(84.2, 27.4, 88.8, 24.6, 'sc') + line(121.6, 66.8, 124.4, 62.2, 'sc')) +
+      /* v5 : antenne V dorée (kit complet) — deux lames + cimier + capteur */
+      grp('pl-vfin',
+        poly('96.8,15.6 95,20.6 68.4,0.6', 'y th') + poly('103.2,15.6 105,20.6 131.6,0.6', 'y th') +
+        poly('95.8,16.6 95.3,17.9 71.2,2.2', 'hw') + poly('104.2,16.6 104.7,17.9 128.8,2.2', 'hw') +
+        poly('94.2,21.4 105.8,21.4 104.2,15.4 95.8,15.4', 'y th') + rect(98.3, 16.6, 3.4, 3.4, 'r n pl-vcam')) +
       /* visière + matrice LED (+ balayage de rafraîchissement) */
       poly('74,38 126,38 126,52 117,62 83,62 74,52', 'v') +
       grp('pl-face', grp('pl-lid', FACE) + rect(74, 35.6, 52, 2.4, 'pl-scanl'), ` clip-path="url(#plv${id})"`) +
@@ -337,7 +383,7 @@
       poly('119.2,40.4 122.6,40.4 120.2,43 116.8,43', 'pl-glint n') +
       /* casque-micro : oreillette + balise or + antenne + perche micro */
       rect(58, 38, 13, 19, 'k') + rect(61, 44, 6, 6, 'y n pl-beacon') +
-      poly('60,38 66,26 71,27 66,38', 'k') +
+      grp('pl-ant', poly('60,38 66,26 71,27 66,38', 'k')) +
       path('M65,57 L67,66 L83.4,70.4', 'pl-boom') + rect(83, 67.6, 6, 5, 'k') + rect(85, 69.2, 2, 1.8, 'r n') +
       line(130, 44, 137, 44, 'm') +
       /* « z » du mode veille */
@@ -357,7 +403,9 @@
      badge   : médaille dans la main droite (visible bras levé)
      stamp   : tampon dans la main gauche
      noArmR  : bras droit manquant (404)
-     frontL / frontR : avant-bras dessiné devant la tête (poses main-visière) */
+     frontL / frontR : avant-bras dessiné devant la tête (poses main-visière)
+     swap    : (v5) copies des avant-bras dessinées devant, masquées sauf dans les
+               poses qui passent la main devant le corps (visière, montre) */
   function build(o = {}) {
     const id = ++uid;
     if (o.variant === 'peek') {
@@ -368,23 +416,25 @@
         grp('pl-body', part('head', HEAD(id), 0, false) + part('fists', fists, 0, false)) + '</svg>';
     }
     const vb = o.wrench ? '-4 -4 212 318' : '0 0 200 310';
-    const faL = grp('pl-fa pl-fa-l', ARM.l.fa + (o.stamp ? STAMP_HAND : ''));
-    const faR = grp('pl-fa pl-fa-r', (o.wrench ? WRENCH_HAND : '') + (o.badge ? BADGE_HAND : '') + ARM.r.fa);
-    const armL = grp('pl-ua pl-ua-l', ARM.l.ua) + (o.frontL ? '' : faL);
-    const armR = o.noArmR ? MISSING_R : grp('pl-ua pl-ua-r', ARM.r.ua) + (o.frontR ? '' : faR);
-    const front = (o.frontL ? faL : '') + (o.frontR && !o.noArmR ? faR : '');
+    const faL = (ff) => grp('pl-j pl-fa pl-fa-l' + (ff ? ' pl-ff' : ''), ARM.l.fa + (!ff && o.stamp ? STAMP_HAND : ''));
+    const faR = (ff) => grp('pl-j pl-fa pl-fa-r' + (ff ? ' pl-ff' : ''),
+      (!ff && o.wrench ? WRENCH_HAND : '') + (!ff && o.badge ? BADGE_HAND : '') + ARM.r.fa);
+    const armL = grp('pl-j pl-ua pl-ua-l', ARM.l.ua) + (o.frontL ? '' : faL());
+    const armR = o.noArmR ? MISSING_R : grp('pl-j pl-ua pl-ua-r', ARM.r.ua) + (o.frontR ? '' : faR());
+    const front = (o.frontL ? faL() : '') + (o.frontR && !o.noArmR ? faR() : '') +
+      (o.swap ? (o.frontL ? '' : faL(true)) + (o.frontR || o.noArmR ? '' : faR(true)) : '');
     return `<svg class="pl-svg" viewBox="${vb}" aria-hidden="true" focusable="false">${defs(id)}` +
       grp('pl-body',
-        FLAMES +
-        part('back', BACK, 0.30, true) +
+        part('back', BACK, 0.30, true, true) +
         part('legs', LEGS, 0.00, false) +
-        part('hip', HIP(o), 0.08, false) +
-        part('arm-l', armL, 0.34, true) +
-        part('arm-r', armR, 0.38, true) +
-        part('torso', TORSO, 0.16, true) +
-        part('shoulders', SHOULDERS(id), 0.26, true) +
-        part('head', HEAD(id), 0.46, true) +
-        (front ? part('front', front, 0.40, true) : '')) +
+        part('hip', HIP(o), 0.08, false, true) +
+        part('arm-l', armL, 0.34, true, true) +
+        part('arm-r', armR, 0.38, true, true) +
+        part('torso', TORSO, 0.16, true, true) +
+        part('shoulders', SHOULDERS(id), 0.26, true, true) +
+        part('head', HEAD(id), 0.46, true, true) +
+        (front ? part('front', front, 0.40, true, true) : '') +
+        DUST) +
       '</svg>';
   }
 
@@ -410,6 +460,11 @@
       this.svg = $('.pl-svg', host);
       this.sayEl = $('.pl-say', host);
       this.sayTxt = $('.pl-say-txt', host);
+      /* v5 : les articulations pilotées en JS (regard, pointage) reçoivent leurs
+         angles directement — jamais le <svg> entier (voir style.css, .pl-j) */
+      this.headEl = $('.pl-head', this.svg);
+      this.eyeEl = $('.pl-eyewrap', this.svg);
+      this.armL = $$('.pl-ua-l, .pl-fa-l, .pl-stamp', this.svg);
       this.pose(this.basePose);
       this.mood(this.baseMood);
       if (o.scan !== false) host.classList.add('is-scanning');
@@ -456,19 +511,31 @@
     /* regard normalisé (-1..1) : l'œil file, la tête suit un peu */
     look(nx, ny) {
       nx = clamp(nx, -1, 1); ny = clamp(ny, -1, 1);
-      const s = this.svg.style;
-      s.setProperty('--ex', (nx * 15).toFixed(2) + 'px');
-      s.setProperty('--ey', (ny * 3.2).toFixed(2) + 'px');
-      s.setProperty('--hx', (nx * 2.6).toFixed(2) + 'px');
-      s.setProperty('--hy', (ny * 1.6).toFixed(2) + 'px');
-      s.setProperty('--hr', (nx * 3.5).toFixed(2) + 'deg');
+      if (this.eyeEl) {
+        const e = this.eyeEl.style;
+        e.setProperty('--ex', (nx * 15).toFixed(2) + 'px');
+        e.setProperty('--ey', (ny * 3.2).toFixed(2) + 'px');
+      }
+      if (this.headEl) {
+        const h = this.headEl.style;
+        h.setProperty('--hx', (nx * 2.6).toFixed(2) + 'px');
+        h.setProperty('--hy', (ny * 1.6).toFixed(2) + 'px');
+        h.setProperty('--hr', (nx * 3.5).toFixed(2) + 'deg');
+      }
       this.host.classList.remove('is-scanning');
       this.host.classList.add('is-tracking');
       return this;
     }
+    /* position du robot à l'écran, mise en cache 200 ms : suivre le curseur ne
+       force plus un recalcul de mise en page à chaque image (lecture puis écriture) */
+    box() {
+      const now = performance.now();
+      if (!this._box || now - this._boxT > 200) { this._box = this.svg.getBoundingClientRect(); this._boxT = now; }
+      return this._box;
+    }
     /* regarder un point de l'écran */
     lookAt(x, y) {
-      const r = this.svg.getBoundingClientRect();
+      const r = this.box();
       if (!r.width) return this;
       const vb = this.svg.viewBox.baseVal;
       const hx = r.left + ((100 - vb.x) / vb.width) * r.width;
@@ -483,8 +550,9 @@
     }
     /* rend la main : retour au regard libre + scan si prévu */
     release() {
-      const s = this.svg.style;
-      ['--ex', '--ey', '--hx', '--hy', '--hr'].forEach(p => s.removeProperty(p));
+      if (this.eyeEl) ['--ex', '--ey'].forEach(p => this.eyeEl.style.removeProperty(p));
+      if (this.headEl) ['--hx', '--hy', '--hr'].forEach(p => this.headEl.style.removeProperty(p));
+      this.unaim();
       this.host.classList.remove('is-tracking');
       if (this.o.scan !== false) this.host.classList.add('is-scanning');
       return this;
@@ -528,13 +596,12 @@
       }
       return this;
     }
+    /* saut : les genoux plient (anticipation), il pousse, retombe et encaisse */
     hop() {
       if (reduced) return this;
-      this.host.classList.remove('is-hop');
-      void this.host.offsetWidth;
-      this.host.classList.add('is-hop');
-      clearTimeout(this._ht);
-      this._ht = setTimeout(() => this.host.classList.remove('is-hop'), 950);
+      this._kick('is-hop', 950);
+      clearTimeout(this._hl);
+      this._hl = setTimeout(() => { this._kick('is-dust', 560); this._kick('is-wobble', 900); }, 760);
       return this;
     }
     wave(ms = 1700) {
@@ -567,6 +634,61 @@
       this._pc = setTimeout(() => this.powerOn(), 160);
       return this;
     }
+    /* ---- v5 : il pointe un élément de la page avec le bras gauche ----
+       angle épaule → cible calculé à la volée ; l'index sort du poing */
+    aimAt(el) {
+      if (!el || !this.armL.length || this.o.variant === 'peek') return this;
+      const r = el.getBoundingClientRect(), b = this.box();
+      if (!b.width) return this;
+      const vb = this.svg.viewBox.baseVal;
+      const k = b.width / vb.width;
+      const sx = b.left + (49 - vb.x) * k, sy = b.top + (107 - vb.y) * k;          // épaule gauche
+      const dx = r.left + r.width / 2 - sx, dy = r.top + r.height / 2 - sy;
+      /* bras pendant = (0, 1) ; rotation SVG positive = horaire : θ = atan2(-dx, dy) */
+      const ua = clamp(Math.atan2(-dx, dy) * 180 / Math.PI, 30, 150);
+      this.armL.forEach(j => { j.style.setProperty('--ua-l', ua.toFixed(1) + 'deg'); j.style.setProperty('--fa-l', '-4deg'); });
+      this.host.classList.add('is-aiming');
+      return this.lookAtEl(el);
+    }
+    unaim() {
+      if (!this.host.classList.contains('is-aiming')) return this;
+      this.armL.forEach(j => { j.style.removeProperty('--ua-l'); j.style.removeProperty('--fa-l'); });
+      this.host.classList.remove('is-aiming');
+      return this;
+    }
+    /* relance une classe d'animation CSS (même si elle tourne déjà) */
+    _kick(cls, ms) {
+      if (reduced) return this;
+      const h = this.host;
+      h.classList.remove(cls);
+      void h.offsetWidth;
+      h.classList.add(cls);
+      clearTimeout(this['_k' + cls]);
+      this['_k' + cls] = setTimeout(() => h.classList.remove(cls), ms);
+      return this;
+    }
+    /* ---- v5 : réception façon mecha — les genoux encaissent, la poussière
+       carrée fuse au ras du sol, l'antenne oscille ---- */
+    land(hard) {
+      if (reduced) return this;
+      this._kick(hard ? 'is-land-hard' : 'is-land', 620);
+      this._kick('is-dust', 560);
+      this._kick('is-wobble', 900);
+      return this;
+    }
+    /* anticipation : il plie les genoux avant de pousser */
+    prep(on) {
+      if (reduced) return this;
+      this.host.classList.toggle('is-prep', !!on);
+      return this;
+    }
+    wobble() { return this._kick('is-wobble', 900); }
+    /* transfert de poids au repos : 'l' | 'r' | null */
+    stance(s) {
+      if (s) this.host.setAttribute('data-stance', s);
+      else this.host.removeAttribute('data-stance');
+      return this;
+    }
     /* petite séquence : [[ms, fn], …] — annulée si une autre commence */
     play(steps) {
       (this._seq || []).forEach(clearTimeout);
@@ -591,6 +713,11 @@
     ],
   };
 
+  /* défilement / redimensionnement : les positions en cache sont périmées */
+  const dropBoxes = () => all.forEach(p => { p._box = null; });
+  window.addEventListener('scroll', dropBoxes, { passive: true });
+  window.addEventListener('resize', dropBoxes, { passive: true });
+
   /* Suivi du curseur partagé (un seul listener, throttlé rAF) */
   const trackers = new Set();
   let ptr = null, ptrRaf = 0;
@@ -614,7 +741,7 @@
 
   /* ---- HERO : la figurine sur son socle (le panneau SYSTÈMES) ---- */
   function heroPilote(host) {
-    const pl = new Pilote(host, { bubble: true, interactive: true, station: true });
+    const pl = new Pilote(host, { bubble: true, interactive: true, station: true, swap: true });
     const stage = host.closest('.hero-stage');
     let seq = true;             // séquence de démarrage en cours
     let idleT = 0, asleep = false, clicks = [], ci = 0, cooling = false;
@@ -711,7 +838,7 @@
       pl.mood(m, 2400).say(txt, 2400);
       pl.hop();
       if (!reduced) {
-        pl.fly(true);
+        setTimeout(() => pl.fly(true), 130);            // genoux pliés d'abord, puis la poussée
         setTimeout(() => pl.fly(false), 700);
         /* le socle encaisse l'atterrissage */
         const panel = document.getElementById('statusPanel');
@@ -773,7 +900,7 @@
       host.classList.remove('is-away');
       host.classList.add('is-arriving');
       pl.fly(true);
-      setTimeout(() => { pl.fly(false); impact(); }, 640);
+      setTimeout(() => { pl.fly(false); pl.land(true); impact(); }, 600);
       setTimeout(() => {
         host.classList.remove('is-arriving');
         pl.busy = false;
@@ -817,8 +944,9 @@
           const m = btn.classList.contains('btn-primary') ? 'happy'
             : btn.hasAttribute('download') ? 'check'
             : btn.target === '_blank' ? 'wink' : 'open';
-          pl.lookAtEl(btn).mood(m, 1600);
+          pl.aimAt(btn).mood(m, 1600);                // v5 : il pointe le bouton (bras gauche, index tendu)
         });
+        btn.addEventListener('pointerleave', () => { if (!pl.busy) pl.unaim(); });
       });
     }
 
@@ -828,8 +956,14 @@
     trackers.add(() => { lastPtr = Date.now(); });
     const FIDGETS = [
       () => pl.play([[0, () => pl.look(-0.9, 0.05)], [700, () => pl.look(0.9, 0.05)], [1400, () => pl.release()]]),
+      /* v5 : il essuie sa visière d'un revers de main… et elle brille */
+      () => { pl.pose('wipe', 2300); pl.mood('focus', 1900); pl.play([[2000, () => { pl._kick('is-shine', 900); pl.mood('happy', 900); }]]); },
       () => { pl.look(0.05, 1).mood('loading'); pl.play([[1000, () => pl.mood('check', 900)], [1900, () => pl.release()]]); },
+      /* v5 : coup d'œil à sa montre (l'écran s'allume) */
+      () => { pl.mood(null); pl.pose('watch', 2200); pl.play([[1250, () => pl.mood('check', 800)]]); },
       () => { pl.pose('celebrate', 1100); pl.mood('happy', 1100); },
+      /* v5 : il s'étire, bras tendus, en se penchant d'un côté puis de l'autre */
+      () => { pl.pose('stretch', 2300); pl.mood('sleep', 1600); pl.play([[1700, () => pl.mood('happy', 800)]]); },
       () => { pl.pose('salute', 1600); pl.mood('wink', 1600); },
     ];
     if (!reduced) {
@@ -839,6 +973,15 @@
         setTimeout(fidget, 9000 + Math.random() * 6000);
       };
       setTimeout(fidget, 11000);
+      /* v5 : transfert de poids — il change d'appui de temps en temps, jamais figé */
+      let st = 0;
+      const shift = () => {
+        const calm = !seq && !away && !asleep && !pl.busy && pl.visible && !document.hidden &&
+                     host.getAttribute('data-pose') === 'stand';
+        if (calm) { st = (st + 1) % 4; pl.stance([null, 'l', null, 'r'][st]); }
+        setTimeout(shift, 3600 + Math.random() * 3200);
+      };
+      setTimeout(shift, 7000);
     }
 
     /* clignement occasionnel (vivant, pas mécanique) */
@@ -849,6 +992,7 @@
       };
       setTimeout(blinkLoop, 4000);
     }
+    pl.booting = () => seq;
     Pilote.hero = pl;
     return pl;
   }
@@ -1154,8 +1298,268 @@
     });
   }
 
+  /* ---- HANGAR : le banc d'essai (page making-of) ----
+     Les commandes de la page passent toutes par l'API de la classe (pose, mood,
+     hop, fly, land, wave, alert, powerCycle, say) : le banc montre exactement ce
+     que font les autres apparitions, rien de truqué. Vue éclatée façon notice :
+     les huit pièces A–H s'écartent (propriété CSS translate, par pièce, décalée
+     dans le temps) et des repères lettrés les suivent. */
+  const HANGAR_PARTS = [
+    /* k = pièce (classe .pl-p-k) · l = lettre de notice · o = décalage en vue éclatée
+       a = point d'ancrage du repère (sur la pièce) · b = étiquette (unités du viewBox) */
+    { k: 'head',      l: 'A', o: [0, -124],  a: [129.6, 46],  b: [152, 40] },
+    { k: 'shoulders', l: 'B', o: [0, -84],   a: [168.6, 112], b: [188, 101] },
+    { k: 'arm-l',     l: 'C', o: [-40, -50], a: [22.6, 199],  b: [4, 214] },
+    { k: 'arm-r',     l: 'D', o: [40, -50],  a: [177.4, 199], b: [196, 214] },
+    { k: 'torso',     l: 'E', o: [0, -44],   a: [67.2, 128],  b: [45, 134] },
+    { k: 'hip',       l: 'F', o: [0, -24],   a: [144.2, 170], b: [164, 167] },
+    { k: 'legs',      l: 'G', o: [0, 0],     a: [132, 262],   b: [154, 262] },
+    { k: 'back',      l: 'H', o: [0, -98],   a: [141.8, 74],  b: [161, 62] },
+  ];
+  /* articulations réelles (pivots), comptées en direct dans le dessin */
+  const JOINTS = ['.pl-up', '.pl-thf-l', '.pl-thf-r', '.pl-sh-l', '.pl-sh-r', '.pl-ft-l', '.pl-ft-r',
+                  '.pl-ua-l', '.pl-ua-r', '.pl-fa-l', '.pl-fa-r', '.pl-head', '.pl-eyewrap'];
+  const BENCH_LINES = [
+    ['happy', 'Banc d’essai : toutes mes pièces sont d’origine.'],
+    ['wink', 'Mes angles ? Calculés par cinématique inverse.'],
+    ['open', 'Ma visière, c’est ma seule lumière. Règle R-04.'],
+    ['check', 'Pas une image : que des polygones.'],
+    ['focus', 'Clique « Vue éclatée » : je me démonte sans outil.'],
+  ];
+  function hangarPilote(host) {
+    const pl = new Pilote(host, { bubble: true, interactive: true, station: true, swap: true });
+    const bay = host.closest('.hg-bay') || host.parentElement;
+    const plinth = bay && $('.hg-plinth', bay);
+    const logEl = $('[data-hg-log]');
+    const explodeBtn = $('[data-hg-explode]');
+    let ready = reduced, exploded = false, inBay = false, li = 0, pinned = null;
+
+    /* ---- repères de la vue éclatée (calque SVG au-dessus du robot) ---- */
+    const NS = 'http://www.w3.org/2000/svg';
+    const ov = document.createElementNS(NS, 'svg');
+    ov.setAttribute('class', 'hg-co-svg');
+    ov.setAttribute('viewBox', '0 0 200 310');
+    ov.setAttribute('aria-hidden', 'true');
+    ov.setAttribute('focusable', 'false');
+    const partOf = {};
+    ov.innerHTML = HANGAR_PARTS.map((p) => {
+      const el = $('.pl-p-' + p.k, pl.svg);
+      partOf[p.k] = el;
+      const d = (el && el.style.getPropertyValue('--d')) || '0s';
+      const vars = `--ox:${p.o[0]}px;--oy:${p.o[1]}px;--d:${d}`;
+      if (el) { el.style.setProperty('--ox', p.o[0] + 'px'); el.style.setProperty('--oy', p.o[1] + 'px'); }
+      const [ax, ay] = p.a, [bx, by] = p.b;
+      return `<g class="hg-co hg-co-${p.k}" style="${vars}">` +
+        line(ax, ay, bx, by, 'hg-co-l') + rect(ax - 1.7, ay - 1.7, 3.4, 3.4, 'hg-co-dot') +
+        rect(bx - 7.5, by - 7.5, 15, 15, 'hg-co-b') +
+        `<text class="hg-co-t" x="${bx}" y="${by + 3.7}">${p.l}</text></g>`;
+    }).join('');
+    host.appendChild(ov);
+    const coOf = {};
+    HANGAR_PARTS.forEach((p) => { coOf[p.k] = $('.hg-co-' + p.k, ov); });
+
+    /* ---- journal façon console : la commande + sa traduction ---- */
+    const log = (cmd, note) => {
+      if (!logEl) return;
+      logEl.textContent = cmd + ' ';
+      if (note) {
+        const c = document.createElement('span');
+        c.className = 'hg-log-c';
+        c.textContent = '# ' + note;
+        logEl.appendChild(c);
+      }
+      const strip = logEl.parentElement;
+      if (strip && !reduced) { strip.classList.remove('is-tick'); void strip.offsetWidth; strip.classList.add('is-tick'); }
+    };
+    /* le socle encaisse les réceptions */
+    const impact = () => {
+      if (!plinth || reduced) return;
+      plinth.classList.remove('is-impact'); void plinth.offsetWidth; plinth.classList.add('is-impact');
+    };
+
+    /* ---- montage sur le banc, la première fois qu'on le voit ---- */
+    if (!reduced) {
+      host.classList.add('is-kit', 'is-off');
+      onReveal(bay || host, () => {
+        host.classList.add('is-built');
+        setTimeout(() => { host.classList.remove('is-kit', 'is-built'); pl.powerOn(); }, 1350);
+        setTimeout(() => {
+          ready = true;
+          if (pl.busy || exploded) return;
+          pl.mood('happy', 2400).wave(1800);
+          pl.say('Banc d’essai prêt. À toi les commandes.', 2600);
+        }, 2100);
+      }, { threshold: 0.35 });
+    }
+
+    /* ---- poses : elles restent (pose de base du banc) ---- */
+    const press = (sel, btn) => $$(sel).forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    $$('[data-hg-pose]').forEach((b) => b.addEventListener('click', () => {
+      const p = b.dataset.hgPose;
+      pl.unaim(); pl.stance(null);
+      host.classList.toggle('is-scratching', p === 'scratch');
+      /* même pose recliquée : on rejoue son geste (visière, étirement…) */
+      if (host.getAttribute('data-pose') === p && !reduced) { host.setAttribute('data-pose', 'stand'); void host.offsetWidth; }
+      pl.basePose = p;
+      pl.pose(p);
+      press('[data-hg-pose]', b);
+      log('sh14 pose ' + p, b.textContent.trim().toLowerCase());
+    }));
+    /* ---- visière : l'humeur choisie devient l'humeur de base ---- */
+    $$('[data-hg-mood]').forEach((b) => b.addEventListener('click', () => {
+      const m = b.dataset.hgMood || null;
+      pl.baseMood = m;
+      pl.mood(m);
+      press('[data-hg-mood]', b);
+      log('sh14 mood ' + (m || '--scan'), b.textContent.trim().toLowerCase());
+    }));
+    /* ---- actions ponctuelles ---- */
+    const ACTS = {
+      wave: () => pl.wave(2000),
+      hop: () => {
+        pl.hop();
+        if (reduced) return;
+        setTimeout(() => pl.fly(true), 130);
+        setTimeout(() => pl.fly(false), 700);
+        setTimeout(impact, 760);
+      },
+      /* décollage : genoux pliés, poussée, vol stationnaire, réception lourde */
+      takeoff: () => {
+        if (reduced || pl.busy) return;
+        pl.busy = true;
+        pl.hush(); pl.unaim(); pl.release();
+        pl.prep(true);
+        pl.play([
+          [150, () => { pl.prep(false); pl.fly(true); host.classList.add('is-hover'); }],
+          [1900, () => host.classList.remove('is-hover')],
+          [2330, () => { pl.fly(false); pl.land(true); impact(); }],
+          [2900, () => { pl.busy = false; }],
+        ]);
+      },
+      land: () => { pl.land(true); impact(); },
+      incident: () => pl.alert(2400),
+      power: () => pl.powerCycle(),
+      /* en vue éclatée, la bulle masquerait le casque : la réplique part dans le journal */
+      say: () => {
+        const [m, t] = BENCH_LINES[li++ % BENCH_LINES.length];
+        pl.mood(m, 2800);
+        if (!exploded) pl.say(t, 2600);
+        return t;
+      },
+    };
+    const ACT_CMD = { wave: 'sh14 wave', hop: 'sh14 hop', takeoff: 'sh14 fly --hover', land: 'sh14 land --hard',
+                      incident: 'sh14 alert', power: 'sh14 led --cycle', say: 'sh14 say' };
+    $$('[data-hg-act]').forEach((b) => b.addEventListener('click', () => {
+      const a = b.dataset.hgAct;
+      if (!ACTS[a]) return;
+      const said = ACTS[a]();
+      log(ACT_CMD[a] || 'sh14 ' + a, typeof said === 'string' ? said
+        : reduced && /hop|takeoff|land|power/.test(a) ? 'animations réduites : il reste posé' : b.textContent.trim().toLowerCase());
+    }));
+
+    /* ---- pièces : survol de la légende = la pièce ressort, les autres s'effacent ---- */
+    const focusPart = (k) => {
+      host.classList.toggle('has-focus', !!k);
+      HANGAR_PARTS.forEach((p) => {
+        if (partOf[p.k]) partOf[p.k].classList.toggle('is-focus', p.k === k);
+        if (coOf[p.k]) coOf[p.k].classList.toggle('is-focus', p.k === k);
+      });
+      $$('[data-hg-part]').forEach((b) => b.classList.toggle('is-focus', b.dataset.hgPart === k));
+    };
+    const inspect = (k) => {
+      const p = HANGAR_PARTS.find((x) => x.k === k);
+      const key = $(`[data-hg-part="${k}"]`);
+      const name = key ? $('.hg-key-n', key).textContent.toLowerCase() : k;
+      pinned = pinned === k ? null : k;
+      focusPart(pinned);
+      if (pinned) log(`sh14 inspect ${p ? p.l : ''}`, name);
+    };
+
+    /* ---- vue éclatée ---- */
+    const setExploded = (on) => {
+      if (on === exploded) return;
+      if (host.classList.contains('is-kit')) { host.classList.remove('is-kit', 'is-built'); pl.powerOn(); ready = true; }
+      exploded = on;
+      pl.hush(); pl.unaim(); pl.release();
+      host.classList.remove('is-hover');
+      host.classList.toggle('is-exploded', on);
+      if (explodeBtn) explodeBtn.setAttribute('aria-pressed', String(on));
+      if (on) {
+        pl.mood('focus', 1600);
+        log('sh14 explode', 'vue éclatée, pièces A à H');
+      } else {
+        pinned = null; focusPart(null);
+        log('sh14 assemble', 'kit remonté');
+        if (!reduced) setTimeout(() => { if (!exploded) { pl.land(); impact(); pl.mood('check', 1400); } }, 560);
+      }
+    };
+    if (explodeBtn) explodeBtn.addEventListener('click', () => setExploded(!exploded));
+    $$('[data-hg-part]').forEach((b) => {
+      const k = b.dataset.hgPart;
+      b.addEventListener('pointerenter', () => focusPart(k));
+      b.addEventListener('pointerleave', () => focusPart(pinned));
+      b.addEventListener('focus', () => focusPart(k));
+      b.addEventListener('blur', () => focusPart(pinned));
+      b.addEventListener('click', () => {
+        if (!exploded) setExploded(true);
+        inspect(k);
+      });
+    });
+
+    /* ---- clic sur le robot : en vue éclatée on inspecte la pièce, sinon il réagit ---- */
+    host.addEventListener('click', (e) => {
+      const part = e.target.closest && e.target.closest('.pl-part');
+      if (exploded) {
+        const k = part && HANGAR_PARTS.find((p) => part.classList.contains('pl-p-' + p.k));
+        if (k) inspect(k.k);
+        return;
+      }
+      if (pl.busy) return;
+      log('sh14 say', ACTS.say());
+      ACTS.hop();
+    });
+
+    /* ---- il suit le curseur quand on passe sur le banc ---- */
+    if (finePointer) {
+      bay.addEventListener('pointerenter', () => { inBay = true; });
+      bay.addEventListener('pointerleave', () => { inBay = false; if (!pl.busy) pl.release(); });
+    }
+    trackers.add((p) => { if (inBay && ready && !exploded && !pl.busy && pl.visible) pl.lookAt(p.x, p.y); });
+    if (!reduced) {
+      const loop = () => { if (pl.visible && !document.hidden && !exploded) pl.blink(); setTimeout(loop, 2800 + Math.random() * 3600); };
+      setTimeout(loop, 4000);
+    }
+
+    /* ---- fiche technique : les chiffres sont lus dans le dessin, en direct ---- */
+    const spec = (k, v) => $$(`[data-spec="${k}"]`).forEach((el) => { el.textContent = v; });
+    const fr = (n) => n.toLocaleString('fr-FR');
+    spec('shapes', fr($$('polygon, rect, line, path, text', pl.svg).length));
+    spec('parts', HANGAR_PARTS.length);
+    spec('joints', JOINTS.filter((s) => $(s, pl.svg)).length);
+    spec('moods', MOODS.length);
+    spec('poses', POSES.length);
+    spec('presets', Object.keys(PRESETS).length);
+    if (window.fetch) {
+      fetch('./pilote.js').then((r) => (r.ok ? r.text() : Promise.reject(r.status))).then((t) => {
+        spec('loc', `${fr(t.split('\n').length)} lignes · ${fr(Math.round(t.length / 1024))} Ko`);
+      }).catch(() => { /* hors ligne sans cache : on garde l'estimation */ });
+    }
+    const vfinSpec = () => {
+      let on = false;
+      try { const n = JSON.parse(localStorage.getItem('kit-notice') || 'null'); on = !!(n && n.vfin); } catch (e) { /* stockage bloqué */ }
+      spec('vfin', on ? 'Montée — kit complet, il la porte sur tout le site' : 'À gagner : visiter les six pages du kit');
+    };
+    vfinSpec();
+    document.addEventListener('kit:notice', vfinSpec);
+    return pl;
+  }
+
+  /* toutes les poses dessinées (style.css) — le banc et la fiche technique les comptent */
+  const POSES = ['stand', 'wave', 'salute', 'point', 'victory', 'celebrate', 'lookout', 'scratch', 'crouch',
+                 'watch', 'wipe', 'stretch', 'work', 'stamp-up', 'stamp-down'];
+
   const PRESETS = { hero: heroPilote, peek: peekPilote, work: workPilote, ghost: ghostPilote, watch: watchPilote,
-                    hello: helloPilote, lost: lostPilote, badge: badgePilote, stamp: stampPilote };
+                    hello: helloPilote, lost: lostPilote, badge: badgePilote, stamp: stampPilote, hangar: hangarPilote };
 
   /* ============================================================
      4. COMPAGNON — le bouton « remonter » devient son socle
@@ -1189,18 +1593,23 @@
 
     /* ---- un seul SH-14 à l'écran ----
        Le robot n'occupe le dock que si aucune « station » (hero,
-       portrait, formulaire, veille, tampon, médaille, chantier)
-       n'est visible : sinon c'est qu'il est là-bas, au travail. */
+       portrait, formulaire, veille, tampon, médaille, chantier,
+       hangar) n'est visible, même d'un bout : sinon c'est qu'il est
+       là-bas, au travail. (v5 : avant, une station visible à moins
+       de 30 % laissait le dock atterrir → deux robots sur mobile.) */
     const stationsOn = new Set();
     const stationBusy = () => [...stationsOn].some(el => !el.classList.contains('is-away'));
+    let homing = false;            // il rentre se poser sur le hero : le dock reste vide
     const land = () => {
       h.classList.remove('is-launch', 'is-gone', 'pl-hold');
       if (reduced) return;
       h.classList.add('is-landing');
       pl.fly(true);
-      setTimeout(() => pl.fly(false), 520);
+      /* il touche la base à 62 % de l'animation : les genoux encaissent, la poussière fuse */
+      setTimeout(() => { pl.fly(false); pl.land(); }, 440);
       setTimeout(() => h.classList.remove('is-landing'), 760);
-      if (!helloDone && main && main.dataset.plHello) {
+      if (Pilote.cheerPending && Pilote.cheerPending()) setTimeout(() => Pilote.cheerKit(pl), 900);
+      else if (!helloDone && main && main.dataset.plHello) {
         helloDone = true;
         setTimeout(() => react(main.dataset.plHello), 800);
       }
@@ -1208,15 +1617,15 @@
     const takeoff = () => {
       pl.hush();
       if (reduced) { h.classList.add('is-gone', 'pl-hold'); return; }
-      pl.fly(true);
-      h.classList.add('is-launch');
-      setTimeout(() => { pl.fly(false); h.classList.add('is-gone', 'pl-hold'); }, 900);
+      pl.prep(true);                                   // anticipation : il plie les genoux…
+      setTimeout(() => { pl.prep(false); pl.fly(true); h.classList.add('is-launch'); }, 150);   // …et pousse
+      setTimeout(() => { pl.fly(false); h.classList.add('is-gone', 'pl-hold'); }, 1050);
     };
     let syncT = 0;
     const sync = (now) => {
       clearTimeout(syncT);
       syncT = setTimeout(() => {
-        const want = shown && !stationBusy();
+        const want = shown && !stationBusy() && !homing;
         if (want && !present) { present = true; land(); }
         else if (!want && present) { present = false; takeoff(); }
       }, now ? 0 : 260);
@@ -1224,16 +1633,28 @@
     h.classList.add('pl-hold', 'is-gone');           // rangé : invisible, animations en pause
 
     /* le robot du hero part quand on l'a quitté des yeux (jamais sous
-       ton nez), et revient se poser quand on remonte */
+       ton nez), et revient se poser dès que son socle repasse à l'écran :
+       le dock décolle d'abord, PUIS il atterrit sur le panneau */
     const hero = Pilote.hero && Pilote.hero.depart ? Pilote.hero : null;
     let heroSeen = !!hero;
-    const maybeDepart = () => { if (hero && shown && !heroSeen) hero.depart(); };
+    const heroAway = () => !!hero && hero.host.classList.contains('is-away');
+    const maybeDepart = () => { if (hero && shown && !heroSeen && !homing) hero.depart(); };
+    const comeHome = () => {
+      if (!heroAway() || homing) return;
+      homing = true;
+      const wasDocked = present;
+      if (present) { present = false; takeoff(); }
+      setTimeout(() => {
+        hero.arrive();
+        setTimeout(() => { homing = false; sync(); }, 1000);
+      }, wasDocked ? 700 : 0);
+    };
     new MutationObserver(() => {
       const on = btn.classList.contains('show');
       if (on === shown) return;
       shown = on;
       if (on) maybeDepart();
-      else if (hero) hero.arrive();
+      else comeHome();
       sync(!on);
     }).observe(btn, { attributes: true, attributeFilter: ['class'] });
 
@@ -1241,12 +1662,15 @@
     if (stationHosts.length && 'IntersectionObserver' in window) {
       const sio = new IntersectionObserver((ents) => {
         ents.forEach(en => {
-          if (en.isIntersecting && en.intersectionRatio >= 0.3) stationsOn.add(en.target);
+          if (en.isIntersecting) stationsOn.add(en.target);
           else stationsOn.delete(en.target);
-          if (hero && en.target === hero.host) { heroSeen = en.isIntersecting; maybeDepart(); }
+          if (hero && en.target === hero.host) {
+            heroSeen = en.isIntersecting;
+            if (heroSeen) comeHome(); else maybeDepart();
+          }
         });
         sync();
-      }, { threshold: [0, 0.3, 0.6] });
+      }, { threshold: 0, rootMargin: '20% 0px 20% 0px' });   // il décolle AVANT qu'une station n'entre à l'écran
       stationHosts.forEach(el => sio.observe(el));
     }
 
@@ -1254,9 +1678,9 @@
       if (reduced || !present) return;
       pl.hush();
       pl.mood('happy');
-      pl.fly(true);
-      h.classList.add('is-launch');
-      setTimeout(() => { pl.fly(false); pl.mood(null); }, 1100);
+      pl.prep(true);
+      setTimeout(() => { pl.prep(false); pl.fly(true); h.classList.add('is-launch'); }, 140);
+      setTimeout(() => { pl.fly(false); pl.mood(null); }, 1240);
     });
     if (finePointer) {
       btn.addEventListener('pointerenter', () => { if (present && !pl.busy) pl.look(0, -1).mood('open'); });
@@ -1340,6 +1764,49 @@
     else if (d.embark === 'done')  { p.mood('check', 2800).say('Kit embarqué. Prêt pour l’oral.', 2800); p.hop(); }
     else if (d.embark === 'fail')  p.mood('question', 2400).say('Embarquement interrompu.', 2400);
   });
+  /* ---- v5 : notice de visite — l'antenne V au 6/6, un coup de pouce au 5/6 ---- */
+  let pendingCheer = false;
+  const cheerKit = (p) => {
+    if (p.o.variant === 'peek') { p.mood('star', 2600).say('Kit complet ! Antenne V montée.', 2800); p.hop(); return; }
+    p.busy = true;
+    p.unaim();
+    p.pose(p.o.badge ? 'victory' : 'celebrate').mood('star');
+    if (!reduced) { p.hop(); setTimeout(() => p.fly(true), 130); setTimeout(() => p.fly(false), 700); }
+    p.say('Kit complet ! Antenne V montée — grade MASTER.', 3000);
+    setTimeout(() => { p.pose(p.basePose); p.mood(p.baseMood); p.busy = false; }, 3000);
+  };
+  Pilote.cheerPending = () => { const was = pendingCheer; pendingCheer = false; return was; };
+  Pilote.cheerKit = cheerKit;
+  document.addEventListener('kit:notice', (e) => {
+    const d = e.detail || {};
+    let tries = 0;
+    const run = () => {
+      const p = speaker();
+      /* le robot du hero finit d'abord d'allumer ses services */
+      if (p && p.booting && p.booting() && tries++ < 12) { setTimeout(run, 700); return; }
+      if (d.complete) { if (p) cheerKit(p); else pendingCheer = true; }
+      else if (d.left && p && !p.busy) p.mood('open', 2800).say(`Notice ${d.done}/${d.total}. Plus qu’une pièce : ${d.left}.`, 2800);
+      else if (d.reset && p) p.mood('question', 1800);
+    };
+    run();
+  });
+  /* ---- v5 : visite guidée — le robot à l'écran regarde le point montré ---- */
+  document.addEventListener('kit:tour', (e) => {
+    const d = e.detail || {};
+    const p = speaker();
+    if (!p || p.busy) return;
+    if (d.el) {
+      p.hush();
+      p.lookAtEl(d.el);
+      if (d.mood) p.mood(d.mood, 3000);
+      clearTimeout(p._tourT);
+      p._tourT = setTimeout(() => { if (!p.busy) p.release(); }, 3200);
+    } else if (d.end) {
+      p.mood('star', 2600);
+      p.hop();
+    }
+  });
+
   /* palette ⌘K → « Appeler le pilote » : le plus proche répond */
   document.addEventListener('kit:call', () => {
     const pick = speaker();
@@ -1396,6 +1863,13 @@
   function mountAll() {
     /* médaille gagnée sur la page Certifications : il la garde partout */
     try { if (localStorage.getItem('pl-medal') === '1') document.documentElement.classList.add('pl-decorated'); } catch (e) {}
+    /* antenne V : sur les pages avec script.js, c'est lui qui la monte (après la cérémonie) */
+    if (!document.documentElement.dataset.kitScript) {
+      try {
+        const n = JSON.parse(localStorage.getItem('kit-notice') || 'null');
+        if (n && n.vfin) document.documentElement.classList.add('pl-vfin-on');
+      } catch (e) { /* stockage illisible : pas d'antenne */ }
+    }
     $$('[data-pilote]').forEach(el => {
       if (el.__pilote) return;
       const fn = PRESETS[el.dataset.pilote];
@@ -1406,6 +1880,8 @@
   }
 
   window.Pilote = Pilote;
+  Pilote.MOODS = MOODS;
+  Pilote.POSES = POSES;
   Pilote.build = build;
   Pilote.all = all;
   Pilote.drawRunner = drawRunner;
