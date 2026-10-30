@@ -25,7 +25,7 @@
     })(document.documentElement);
     </script>
     <title>Veille Technologique | Shabdpreet Singh</title>
-    <meta name="description" content="Veille technologique de Shabdpreet Singh : cybersécurité (CVE, ANSSI), réseaux et infrastructures, IA générative.">
+    <meta name="description" content="Veille technologique de Shabdpreet Singh : l'IA et les infrastructures (pénurie de mémoire, datacenters, énergie). Journal daté et sourcé, synthèse et méthode.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
     <link rel="canonical" href="https://shab14.github.io/Mon-Portfolio/veille.html">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Veille Technologique | Shabdpreet Singh">
-    <meta property="og:description" content="Veille IT de Shabdpreet Singh : cybersecurite, reseaux, IA.">
+    <meta property="og:description" content="Veille IT de Shabdpreet Singh : l'IA et les infrastructures.">
     <meta name="theme-color" content="#D42B1E">
 
     <meta property="og:image" content="https://shab14.github.io/Mon-Portfolio/fichiers/og-image.png">
@@ -76,10 +76,10 @@
         </div>
     </nav>
 
-    <main id="main" data-pl-hello="open|Vigilance élevée. Je veille aussi.">
-        <span class="page-eyebrow"><span class="dot"></span> Mise à jour régulière</span>
+    <main id="main" data-pl-hello="focus|Mémoire, SSD, datacenters : je surveille.">
+        <span class="page-eyebrow"><span class="dot"></span> Sujet suivi · mise à jour le 30 octobre 2026</span>
         <h1 data-tw>Veille Technologique</h1>
-        <p class="page-intro">Cybersécurité, réseaux, IA : trois flux que je surveille comme mes services — en continu, pas la veille du contrôle. Un SISR qui ne lit plus les CVE de la semaine administre déjà l'infrastructure d'hier.</p>
+        <p class="page-intro">Mon sujet&nbsp;: <strong>l'IA et les infrastructures</strong>. L'IA ne change pas que les logiciels, elle aspire aussi la mémoire, le stockage et l'électricité de tout le secteur. Je l'ai vu en chiffrant mon home lab&nbsp;: un disque NAS de 4 To coûtait environ 100 € en février 2026, et 243 € en octobre. Pour un admin SISR, ça change les budgets, les achats et la durée de vie du matériel.</p>
 
         <div class="stand stand--watch" style="margin-bottom:2.5rem">
             <div class="pl-watch" data-pilote="watch" aria-hidden="true"></div>
@@ -95,77 +95,163 @@
             </div>
         </div>
 
-        <h2 class="sr-only">Niveau de vigilance et sujets suivis</h2>
+        <h2 class="sr-only">Tension sur le matériel</h2>
         <div class="gauge-card reveal">
-            <svg class="gauge" viewBox="0 0 200 148" role="img" aria-label="Jauge de vigilance : élevé" style="--circ:251; --off:70; --deg:40deg">
+            <svg class="gauge" viewBox="0 0 200 148" role="img" aria-label="Jauge de tension sur le matériel : élevée" style="--circ:251; --off:70; --deg:40deg">
                 <path class="bg" d="M20,100 A80,80 0 0 1 180,100"/>
                 <path class="fill" d="M20,100 A80,80 0 0 1 180,100"/>
                 <line class="needle" x1="100" y1="100" x2="100" y2="34"/>
                 <rect class="hub" x="94" y="94" width="12" height="12"/>
-                <text class="gauge-val" x="100" y="140">élevé</text>
+                <text class="gauge-val" x="100" y="140">élevée</text>
             </svg>
             <div class="gauge-label">
-                <h3><span class="ico">V-01</span> Niveau de vigilance</h3>
-                <span class="level"><span class="status-led warn"></span>ÉLEVÉ — surveillance active</span>
-                <p>Le rythme des CVE et des bulletins ANSSI ne ralentit jamais — les attaquants non plus. Passage quotidien sur les alertes critiques systèmes et réseaux : mieux vaut lire un bulletin de trop qu'un post-mortem de plus.</p>
+                <h3><span class="ico">V-01</span> Tension sur le matériel</h3>
+                <span class="level"><span class="status-led warn"></span>ÉLEVÉE — prix en hausse sur 12 mois</span>
+                <p>Un kit de RAM DDR5 de 32 Go est passé de 119 € à 414 € en un an, et un SSD de 1 To coûte 215 € en prix médian. Aucune source ne prévoit de baisse rapide&nbsp;: des analystes voient la pénurie de mémoire durer au moins jusqu'en 2029.</p>
             </div>
         </div>
 
+        <section>
+        <h2 class="section-title" data-step="01" data-pl="focus|Un sujet, quatre axes, suivis jusqu'à l'examen."><span class="st-text">Mon sujet</span></h2>
         <div class="grid">
-            <section class="card reveal" data-i="1" data-part="V-02">
-                <span class="cert-pill">Sujet 1</span>
-                <h2>Intelligence Artificielle générative</h2>
-                <p>Les LLM entrent dans les salles serveurs — autant savoir les piloter. Suivi des modèles, de leurs usages en entreprise et des outils IA pour les métiers du SISR, avec 12 certifications Anthropic pour appuyer la théorie.</p>
-                <hr class="card-divider">
+            <article class="card reveal" data-i="1" data-part="V-02">
+                <span class="cert-pill">Problématique</span>
+                <h3 style="margin-top:.8rem">Comment l'IA bouleverse&#8209;t&#8209;elle le matériel et les infrastructures, et comment un administrateur systèmes et réseaux peut&#8209;il s'y adapter&nbsp;?</h3>
+            </article>
+            <article class="card reveal" data-i="2" data-part="V-03">
+                <span class="cert-pill">Pourquoi ce sujet</span>
+                <p style="margin-top:.8rem">Il relie mes deux centres d'intérêt&nbsp;: l'IA, avec mes 12 certifications Anthropic, et l'infrastructure, mon option SISR. Et ses effets se voient déjà sur le terrain&nbsp;: prix du matériel, budgets, consommation électrique.</p>
+            </article>
+            <article class="card reveal" data-i="3" data-part="V-04">
+                <span class="cert-pill">4 axes suivis</span>
                 <ul class="veille-axes">
-                    <li>Nouveaux modèles de langage et leurs capacités (2026)</li>
-                    <li>Intégration de l'IA dans l'administration système</li>
-                    <li>Protocole MCP et agents IA</li>
-                    <li>Éthique et régulation de l'IA en Europe</li>
+                    <li><strong>Mémoire et stockage&nbsp;:</strong> pénurie de RAM, de SSD et de disques durs, mémoire HBM</li>
+                    <li><strong>Datacenters&nbsp;:</strong> projets en France, raccordement au réseau électrique</li>
+                    <li><strong>Énergie&nbsp;:</strong> consommation des datacenters, efficacité</li>
+                    <li><strong>Sur le terrain&nbsp;:</strong> prix des PC, renouvellement du parc, reconditionné</li>
                 </ul>
-                <p class="veille-source">Sources : blogs Anthropic / OpenAI, certifications IA suivies en parallèle (voir page Certifications).</p>
-            </section>
-
-            <section class="card reveal" data-i="2" data-part="V-03">
-                <span class="cert-pill">Sujet 2</span>
-                <h2>Cybersécurité</h2>
-                <p>Menaces, vulnérabilités, durcissement : le cœur défensif du métier. Chaque faille documentée ici est une faille que je saurai reconnaître en production — de préférence avant qu'elle ne me reconnaisse.</p>
-                <hr class="card-divider">
-                <ul class="veille-axes">
-                    <li>Alertes et bulletins de sécurité (CERT-FR, ANSSI)</li>
-                    <li>Failles et vulnérabilités critiques (CVE)</li>
-                    <li>Durcissement (hardening) des systèmes</li>
-                    <li>Risques : phishing, ransomware</li>
-                </ul>
-                <p class="veille-source">Sources : cert.ssi.gouv.fr, bulletins ANSSI, alertes CVE hebdomadaires.</p>
-            </section>
-
-            <section class="card reveal" data-i="3" data-part="V-04">
-                <span class="cert-pill">Sujet 3</span>
-                <h2>Réseaux et infrastructures</h2>
-                <p>Protocoles, virtualisation, infrastructures hybrides : le terrain bouge sous les câbles. Je suis ce qui change pour ne jamais administrer avec dix ans de retard.</p>
-                <hr class="card-divider">
-                <ul class="veille-axes">
-                    <li>Évolutions des protocoles et normes réseau</li>
-                    <li>Virtualisation et infrastructures hybrides</li>
-                    <li>Supervision et administration réseau</li>
-                </ul>
-                <p class="veille-source">En lien direct avec mon projet Centreon — la veille nourrit la pratique, et inversement.</p>
-            </section>
-
-            <section class="card reveal" data-i="4" data-part="V-05">
-                <span class="cert-pill">Méthode</span>
-                <h2>Mes outils de veille</h2>
-                <ul class="veille-axes">
-                    <li><strong>Agrégateurs RSS :</strong> Feedly</li>
-                    <li><strong>Alertes :</strong> Google Alerts</li>
-                    <li><strong>Sources :</strong> CERT-FR, ANSSI</li>
-                    <li><strong>Réseaux :</strong> LinkedIn, X (Twitter)</li>
-                    <li><strong>Communautés :</strong> Reddit (r/sysadmin, r/cybersecurity)</li>
-                </ul>
-                <p class="veille-source">Rythme : un passage rapide chaque matin, une synthèse plus posée le week-end.</p>
-            </section>
+            </article>
         </div>
+        </section>
+
+        <section>
+        <h2 class="section-title" data-step="02" data-pl="check|Chaque article : une date, une source."><span class="st-text">Journal de veille</span></h2>
+        <p class="page-intro" style="margin-bottom:1.5rem">Les articles que j'ai retenus, du plus récent au plus ancien. Pour chacun&nbsp;: un résumé, et ce que j'en retiens pour le métier.</p>
+        <ul class="timeline">
+            <li class="reveal current" data-i="1">
+                <span class="when">30 oct. 2026 · JeChange</span>
+                <div class="title"><a href="https://www.jechange.fr/telecom/internet/news/kit-32-go-ram-119-euros-414-euros-penurie-ia-mises-a-niveau" target="_blank" rel="noopener">Un kit de RAM de 32 Go passe de 119 € à 414 € en un an</a></div>
+                <div class="desc">Le kit DDR5 de 32 Go a pris 248&nbsp;% en un an. Les datacenters IA absorbent près de 70&nbsp;% des livraisons de mémoire, et les fabricants passent leurs lignes sur la mémoire HBM des puces IA.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> dimensionner au juste besoin (16 Go suffisent en bureautique) et regarder l'occasion avant le neuf.</div>
+            </li>
+            <li class="reveal" data-i="2">
+                <span class="when">30 oct. 2026 · Materiel-Gamer</span>
+                <div class="title"><a href="https://www.materiel-gamer.com/ssd-lindice-reste-calme-a-06-en-30-jours-mais-le-1-to-215-euros-et-le-2-to-400-euros-montent-de-41-et-31-ce-que-pesent-les-115-go-de-modern-warfare-4/" target="_blank" rel="noopener">SSD : 215 € le 1 To en prix médian</a></div>
+                <div class="desc">Prix médians relevés en France le 29 octobre 2026&nbsp;: 135 € le SSD de 500 Go, 215 € le 1 To (+4,1&nbsp;% en 30 jours), 400 € le 2 To (+10,3&nbsp;% en 3 mois).</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> le stockage devient un vrai poste de budget. Avant d'en racheter, on nettoie et on optimise l'existant (quotas, déduplication).</div>
+            </li>
+            <li class="reveal" data-i="3">
+                <span class="when">2 oct. 2026 · Next</span>
+                <div class="title"><a href="https://next.ink/briefs/le-brief-du-2-octobre-2026/" target="_blank" rel="noopener">Les Raspberry Pi 4 et 5 de 2 Go augmentent encore</a></div>
+                <div class="desc">+12,50 $ par modèle&nbsp;: 66 € pour le Pi 4 et 76 € pour le Pi 5 en version 2 Go. Eben Upton, patron de Raspberry Pi, parle d'une hausse du prix de la mémoire devenue «&nbsp;insoutenable&nbsp;».</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> même le petit matériel de labo est touché, il faut le prévoir dans le budget.</div>
+            </li>
+            <li class="reveal" data-i="4">
+                <span class="when">23 sept. 2026 · Tech-insider</span>
+                <div class="title"><a href="https://tech-insider.org/fr/wd-red-vs-ironwolf-vs-toshiba-n300-2026/" target="_blank" rel="noopener">Disques durs pour NAS : 243 € les 4 To chez LDLC</a></div>
+                <div class="desc">Mi-septembre 2026&nbsp;: WD Red Plus 4 To à 242,95 €, 8 To à 499,95 €. En février 2026, le même 4 To se trouvait entre 95 et 110 €.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> le stockage NAS a plus que doublé. J'en tiens compte dans l'ordre des achats de mon home lab (projet P-02).</div>
+            </li>
+            <li class="reveal" data-i="5">
+                <span class="when">17 sept. 2026 · Institut Quorum</span>
+                <div class="title"><a href="https://www.institut-quorum.fr/article-data-centers-reseau-electrique" target="_blank" rel="noopener">Data centers : 18 GW réservés sur le réseau électrique</a></div>
+                <div class="desc">En mai 2026, environ 80 projets de data centers avaient réservé 18 GW auprès de RTE, contre 5 GW fin 2024. Ils consomment environ 10 TWh en 2026, soit 2&nbsp;% de l'électricité française. Localement, les débats portent sur l'eau, le foncier agricole et le bruit.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> l'infrastructure IA devient aussi une question d'énergie et d'aménagement du territoire.</div>
+            </li>
+            <li class="reveal" data-i="6">
+                <span class="when">10 juin 2026 · ChannelNews</span>
+                <div class="title"><a href="https://www.channelnews.fr/gartner-prevoit-un-bond-de-26-de-la-consommation-electrique-des-datacenters-en-2026-157174" target="_blank" rel="noopener">Gartner : +26 % d'électricité pour les datacenters en 2026</a></div>
+                <div class="desc">565 TWh dans le monde en 2026, contre 447 TWh en 2025. Les serveurs optimisés pour l'IA pèsent 31&nbsp;% de cette consommation, et le total dépasserait 1&nbsp;200 TWh en 2030.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> l'efficacité énergétique (refroidissement, consommation des serveurs) devient un critère de choix.</div>
+            </li>
+            <li class="reveal" data-i="7">
+                <span class="when">19 janv. 2026 · Developpez.com</span>
+                <div class="title"><a href="https://hardware.developpez.com/actu/379321/En-2026-les-centres-de-donnees-IA-capteront-70-pourcent-des-puces-memoire-produites-et-la-penurie-de-RAM-devrait-durer-jusqu-en-2029-car-la-production-de-2028-qui-n-est-pas-encore-fabriquee-est-deja-vendue/" target="_blank" rel="noopener">Les datacenters IA captent jusqu'à 70 % de la mémoire produite</a></div>
+                <div class="desc">Trois fabricants (Samsung, SK hynix, Micron) produisent plus de 90&nbsp;% de la mémoire mondiale. Samsung et SK hynix augmentent la DRAM pour serveurs de 60 à 70&nbsp;% au 1er trimestre 2026, et la pénurie devrait durer au moins jusqu'en 2029.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> un marché aussi concentré n'offre pas d'alternative, et la hausse touche aussi les serveurs d'entreprise.</div>
+            </li>
+            <li class="reveal" data-i="8">
+                <span class="when">29 déc. 2025 · Le Monde Informatique</span>
+                <div class="title"><a href="https://www.lemondeinformatique.fr/actualites/lire-hausse-du-prix-des-pc-suite-a-la-penurie-mondiale-de-memoire-en-2026-98901.html" target="_blank" rel="noopener">Les prix des PC augmentent à cause de la pénurie de mémoire</a></div>
+                <div class="desc">Lenovo, Dell, HP, Acer et Asus annoncent des hausses de 15 à 20&nbsp;%. Pour IDC, le prix moyen d'un PC augmente jusqu'à 9&nbsp;% en 2026, en pleine fin de support de Windows 10.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> renouveler un parc coûte plus cher. On prolonge la durée de vie des postes et on planifie les achats.</div>
+            </li>
+            <li class="reveal" data-i="9">
+                <span class="when">4 déc. 2025 · iPhoneSoft</span>
+                <div class="title"><a href="https://iphonesoft.fr/2025/12/04/crise-memoire-micron-annonce-marque-crucial-disparaitre" target="_blank" rel="noopener">Micron arrête Crucial, sa marque grand public</a></div>
+                <div class="desc">Plus de barrettes de RAM ni de SSD Crucial après février 2026&nbsp;: Micron sert en priorité les datacenters. C'est le point de départ de ma veille.</div>
+                <div class="desc" style="margin-top:.45rem"><strong>Ce que j'en retiens&nbsp;:</strong> quand un des trois grands fabricants quitte le grand public, les particuliers et les PME passent après l'IA.</div>
+            </li>
+        </ul>
+        </section>
+
+        <section>
+        <h2 class="section-title" data-step="03" data-pl="happy|Le résumé, en trois cases."><span class="st-text">Synthèse</span></h2>
+        <div class="grid">
+            <article class="card reveal" data-i="1" data-part="V-05">
+                <span class="cert-pill">Le constat</span>
+                <h3 style="margin-top:.8rem">L'IA passe en priorité</h3>
+                <p>Trois fabricants produisent la quasi-totalité de la mémoire mondiale, et jusqu'à 70&nbsp;% de leur production 2026 part dans les datacenters IA. Micron a même arrêté sa marque grand public. Les particuliers et les entreprises passent après.</p>
+            </article>
+            <article class="card reveal" data-i="2" data-part="V-06">
+                <span class="cert-pill">Les effets</span>
+                <h3 style="margin-top:.8rem">Tout le matériel augmente</h3>
+                <p>RAM, SSD, disques durs, PC, même les Raspberry Pi&nbsp;: de +15&nbsp;% pour les PC à +248&nbsp;% pour un kit de RAM. Et les datacenters font grimper la demande d'électricité&nbsp;: +26&nbsp;% dans le monde en 2026, 18 GW réservés en France.</p>
+            </article>
+            <article class="card reveal" data-i="3" data-part="V-07">
+                <span class="cert-pill">Pour un admin SISR</span>
+                <h3 style="margin-top:.8rem">Gérer mieux, acheter moins</h3>
+                <ul class="veille-axes">
+                    <li>Tenir l'inventaire à jour et faire durer le parc</li>
+                    <li>Dimensionner au juste besoin, penser au reconditionné</li>
+                    <li>Anticiper les achats&nbsp;: prix et délais bougent vite</li>
+                    <li>Optimiser le stockage avant d'en racheter</li>
+                    <li>Suivre la consommation électrique des serveurs</li>
+                </ul>
+            </article>
+        </div>
+        <p class="page-intro" style="margin-top:1.5rem"><strong>Mon avis&nbsp;:</strong> ce n'est pas une crise de quelques mois, puisque les analystes parlent de 2028 ou 2029. Le métier d'admin va demander plus de sobriété&nbsp;: faire durer, mesurer, optimiser. C'est exactement la compétence «&nbsp;gérer le patrimoine informatique&nbsp;» du BTS.</p>
+        </section>
+
+        <section>
+        <h2 class="section-title" data-step="04"><span class="st-text">Ma méthode</span></h2>
+        <div class="grid">
+            <article class="card reveal" data-i="1" data-part="V-08">
+                <span class="cert-pill">Outils</span>
+                <ul class="veille-axes">
+                    <li><strong>Agrégateur RSS&nbsp;:</strong> Feedly, un dossier par axe</li>
+                    <li><strong>Alertes&nbsp;:</strong> Google Alerts sur «&nbsp;pénurie mémoire&nbsp;», «&nbsp;prix SSD&nbsp;», «&nbsp;data center France&nbsp;», «&nbsp;HBM&nbsp;»</li>
+                    <li><strong>Réseaux&nbsp;:</strong> LinkedIn, X</li>
+                    <li><strong>Communautés&nbsp;:</strong> Reddit (r/homelab, r/sysadmin, r/hardware)</li>
+                </ul>
+            </article>
+            <article class="card reveal" data-i="2" data-part="V-09">
+                <span class="cert-pill">Sources</span>
+                <ul class="veille-axes">
+                    <li><strong>Presse IT&nbsp;:</strong> Le Monde Informatique, Next, Developpez.com, ChannelNews</li>
+                    <li><strong>Prix du matériel&nbsp;:</strong> Materiel-Gamer, comparateurs de prix</li>
+                    <li><strong>Études&nbsp;:</strong> Gartner, IDC, données publiques de RTE</li>
+                </ul>
+                <p class="veille-source">Règle&nbsp;: aucun chiffre dans le journal sans sa source.</p>
+            </article>
+            <article class="card reveal" data-i="3" data-part="V-10">
+                <span class="cert-pill">Rythme</span>
+                <p style="margin-top:.8rem">Un passage rapide chaque matin, une synthèse plus posée le week-end. Chaque article retenu entre dans le journal avec sa date, sa source et ce que j'en retiens.</p>
+                <hr class="card-divider">
+                <p class="veille-source">À côté de mon sujet, je suis les alertes du CERT-FR et de l'ANSSI, utiles pour l'épreuve E7 (cybersécurité).</p>
+            </article>
+        </div>
+        </section>
     </main>
 
     <footer>

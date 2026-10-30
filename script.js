@@ -163,12 +163,12 @@
   /* ---- Flux terminal générique (data-feed) ---- */
   $$('[data-feed]').forEach(feed => {
     const lines = [
-      '[CVE-2026-3148] severity HIGH — patch dispo',
-      '[ANSSI] nouveau bulletin de sécurité',
-      '[RSS] LLM : nouveau modèle annoncé',
-      '[r/sysadmin] retour d\u2019xp supervision',
-      '[CERT-FR] alerte ransomware en cours',
-      '[RSS] protocole MCP : mise à jour'
+      '[30/10] RAM DDR5 32 Go : 119 € → 414 € en un an',
+      '[30/10] SSD 1 To : 215 € de prix médian',
+      '[02/10] Raspberry Pi 5 2 Go : passe à 76 €',
+      '[23/09] Disque NAS 4 To : 243 € chez LDLC',
+      '[17/09] Data centers : 18 GW réservés chez RTE',
+      '[10/06] Gartner : +26 % d\u2019électricité pour les datacenters'
     ];
     const caret = '<span class="caret" aria-hidden="true"></span>';
     if (reduced) { feed.innerHTML = lines[0] + caret; return; }
@@ -1427,7 +1427,7 @@
     { page: 'projet.html', sel: '.archi', mood: 'focus',
       text: 'Le schéma suit une donnée de supervision, de l’hôte jusqu’à l’interface web.' },
     { page: 'veille.html', sel: '.stand--watch', mood: 'focus',
-      text: 'La veille : cybersécurité, réseaux et IA, suivis chaque matin — CERT-FR, ANSSI, flux RSS.' },
+      text: 'La veille : l’IA et les infrastructures. Pénurie de mémoire, datacenters, énergie, dans un journal daté et sourcé.' },
     { page: 'certifs.html', sel: '.certs-summary', mood: 'star',
       text: '13 certifications, dont 12 du parcours Anthropic. AI Fluency : 10/10.' },
     { page: 'contact.html', sel: '#contactForm', mood: 'happy',
