@@ -1,7 +1,7 @@
 # Portfolio — Shabdpreet Singh
 
-Portfolio personnel d'un étudiant **BTS SIO option SISR** en alternance chez **ALLIANC3**.
-Vitrine de mon parcours, de mes compétences réseau & infrastructure, de mes projets et de mes certifications — pensé pour les recruteurs et l'évaluation BTS (épreuves E4 / E6).
+Portfolio personnel d'un étudiant **BTS SIO option SISR** (2e année, **Schola Nova**) en alternance chez **ALLIANC3**.
+Vitrine de mon parcours, de mes compétences réseau & infrastructure, de mes projets et de mes certifications — pensé pour les recruteurs et l'évaluation BTS (session 2027, épreuves E5 / E6 / E7).
 
 🔗 **En ligne :** [shab14.github.io/Mon-Portfolio](https://shab14.github.io/Mon-Portfolio)
 
@@ -41,7 +41,7 @@ La figurine du kit : même grammaire que le site (aplats, lignes de panneau, omb
 | Hero (accueil) | debout sur son socle (le panneau SYSTÈMES) : suit le curseur, pointe les boutons survolés, réagit au clic, change d'appui, s'endort après 20 s |
 | Compagnon (toutes les pages) | le bouton « remonter » devient son socle : il atterrit, commente les sections, décolle au clic |
 | À propos | passe la tête au-dessus du cadre photo (coucou-caché au clic) |
-| Épreuves | contrôle qualité : il tamponne l'épreuve E4 « LIVRÉE » |
+| Épreuves | contrôle qualité : il tamponne l'épreuve E5 « EN COURS » (à repasser en « LIVRÉE » quand le tableau de synthèse est rempli) |
 | Projets | P-02 : accroupi, il serre les boulons (clé à cliquet, étincelles) · P-03 : silhouette en pointillés (slot réservé) · sa tête voyage dans le schéma Centreon |
 | Veille | en sentinelle sur la console, main en visière |
 | Certifications | il brandit la médaille, puis la garde épinglée sur tout le site |
@@ -71,7 +71,7 @@ Règle d'or : **un seul SH-14 à l'écran**. Les apparitions « station » et le
 | Page | Description |
 |------|-------------|
 | `index.html` | Accueil — hero, supervision, présentation |
-| `epreuve.html` | Épreuves E4 / E6 |
+| `epreuve.html` | Épreuves E5 / E6 / E7 (session 2027, numérotation de l'arrêté du 8 juillet 2024) |
 | `projet.html` | Projets (dont projet Centreon) |
 | `veille.html` | Veille technologique |
 | `certifs.html` | Certifications (Anthropic Academy, PIX…) |
@@ -136,8 +136,8 @@ Toute modification poussée sur `main` est publiée automatiquement.
 
 ## 👤 À propos
 
-**Shabdpreet Singh** — BTS SIO SISR en alternance chez ALLIANC3 (Paris).
-Spécialisé en supervision, réseaux et infrastructure. Ouvert aux opportunités 2026.
+**Shabdpreet Singh** — BTS SIO SISR, 2e année à Schola Nova (Paris), en alternance chez ALLIANC3.
+Spécialisé en supervision, réseaux et infrastructure. Ouvert aux opportunités pour la rentrée 2027.
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/shabdpreet-singh-401012376/)
 - 🐙 [GitHub](https://github.com/shab14)

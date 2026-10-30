@@ -1185,15 +1185,20 @@
     return pl;
   }
 
-  /* ---- STAMP : page épreuves, contrôle qualité de l'épreuve livrée ----
-     Il lève le tampon, frappe, l'encre « LIVRÉE » reste sur la carte. */
+  /* ---- STAMP : page épreuves, contrôle qualité de l'épreuve E5 ----
+     Il lève le tampon, frappe, l'encre « EN COURS » reste sur la carte.
+     → repasser à « LIVRÉE » quand le tableau de synthèse est rempli. */
   function stampPilote(host) {
     const pl = new Pilote(host, { stamp: true, bubble: true, interactive: true, scan: false, station: true });
     const card = host.closest('.card');
     const mark = document.createElement('span');
     mark.className = 'qc-stamp';
     mark.setAttribute('aria-hidden', 'true');
-    mark.innerHTML = '<b>LIVRÉE</b><i>E4 · QC OK</i>';
+    mark.innerHTML = '<b>EN COURS</b><i>E5 · 2027</i>';
+    /* « EN COURS » est plus large que « LIVRÉE » (+12 px) : on décale l'encre
+       de 6 px vers la gauche pour que le bord droit reste au même endroit,
+       à moitié sous la jambe du pilote. À retirer en repassant à « LIVRÉE ». */
+    mark.style.translate = 'calc(-50% - 6px) -50%';
     host.appendChild(mark);
     let first = true;
     const stamp = () => {
@@ -1204,7 +1209,7 @@
       if (reduced) {
         mark.classList.add('is-on');
         pl.mood('check', 1800);
-        if (say) pl.say('E4 : livrée. Tamponnée.', 2200);
+        if (say) pl.say('E5 : en cours. Contrôlée.', 2200);
         pl.busy = false;
         return;
       }
@@ -1217,7 +1222,7 @@
           if (card) { card.classList.remove('is-stamped'); void card.offsetWidth; card.classList.add('is-stamped'); }
           pl.mood('check', 1800);
         }],
-        [1100, () => { pl.pose('stand'); if (say) pl.say('E4 : livrée. Tamponnée.', 2200); }],
+        [1100, () => { pl.pose('stand'); if (say) pl.say('E5 : en cours. Contrôlée.', 2200); }],
         [1400, () => { pl.busy = false; }],
       ]);
     };

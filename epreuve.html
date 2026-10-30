@@ -25,7 +25,7 @@
     })(document.documentElement);
     </script>
     <title>Mes Épreuves | Shabdpreet Singh</title>
-    <meta name="description" content="Épreuves professionnelles du BTS SIO SISR de Shabdpreet Singh : E4 (tableau de synthèse des réalisations) et E6 cybersécurité.">
+    <meta name="description" content="Épreuves du BTS SIO SISR de Shabdpreet Singh, session 2027 : E5 support et mise à disposition de services informatiques, E6 administration des systèmes et des réseaux, E7 cybersécurité.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -76,10 +76,10 @@
         </div>
     </nav>
 
-    <main id="main" data-pl-hello="check|E4 livrée. E6 en build, je surveille.">
-        <span class="page-eyebrow"><span class="dot"></span> BTS SIO — épreuves professionnelles</span>
+    <main id="main" data-pl-hello="focus|E5 en cours. E6 et E7 en build, je surveille.">
+        <span class="page-eyebrow"><span class="dot"></span> BTS SIO SISR — session 2027</span>
         <h1 data-tw>Mes Épreuves</h1>
-        <p class="page-intro">Les épreuves professionnelles du BTS SIO, documentées au fil des deux ans. Chaque version livrée est vérifiable, pièces à l'appui.</p>
+        <p class="page-intro">Les épreuves du BTS SIO option SISR, session 2027 — numérotées E5, E6 et E7 depuis la session 2025 (arrêté du 8 juillet 2024). Documentées au fil des deux ans&nbsp;: chaque version livrée est vérifiable, pièces à l'appui.</p>
 
         <div class="term reveal" aria-hidden="true" style="margin-bottom:2.5rem">
             <div class="term-head">
@@ -87,26 +87,34 @@
                 <span class="term-title">console — état des épreuves</span>
             </div>
             <div class="term-body">
-                <p class="term-line"><span class="prompt">$</span>epreuves --status</p>
-                <p class="term-line out">[<span class="ok2">UP</span>]      E4 — support et services informatiques</p>
-                <p class="term-line out">[<span class="warn2">PENDING</span>] E6 — cybersécurité des services</p>
-                <p class="term-line comment"># 1 / 2 livrées · suite au fil de la formation</p>
+                <p class="term-line"><span class="prompt">$</span>epreuves --status --session 2027</p>
+                <p class="term-line out">[<span class="warn2">BUILD</span>]   E5 — support et mise à disposition de services informatiques</p>
+                <p class="term-line out">[<span class="warn2">PENDING</span>] E6 — administration des systèmes et des réseaux</p>
+                <p class="term-line out">[<span class="warn2">PENDING</span>] E7 — cybersécurité des services informatiques</p>
+                <p class="term-line comment"># 2e année · tableau de synthèse en cours de remplissage</p>
             </div>
         </div>
 
-        <section class="card has-inspector reveal" data-i="1" data-part="E-04">
-            <span class="epreuve-status done"><span class="status-led"></span>Document disponible</span>
-            <h2>E4 — Support et mise à disposition de services informatiques</h2>
-            <p>L'épreuve s'appuie sur le tableau de synthèse des réalisations professionnelles menées en formation et en entreprise : incidents traités, services déployés, compétences mobilisées. Chaque ticket fermé chez ALLIANC3 devient une ligne de ce tableau — le terrain remplit le dossier.</p>
-            <a href="./fichiers/Tableau_synthese_E4_BTS_SIO.xlsx" class="btn btn-outline" download>Télécharger le tableau de synthèse E4 <span class="arr">↓</span></a>
+        <section class="card has-inspector reveal" data-i="1" data-part="E-05">
+            <span class="epreuve-status pending"><span class="status-led warn"></span>En cours</span>
+            <h2>E5 — Support et mise à disposition de services informatiques</h2>
+            <p>Épreuve orale de 40 minutes, appuyée sur ce portfolio et sur le tableau de synthèse des réalisations professionnelles menées en formation et en entreprise : incidents traités, services déployés, compétences mobilisées. Chaque ticket fermé chez ALLIANC3 devient une ligne de ce tableau — le terrain remplit le dossier.</p>
+            <a href="./fichiers/Tableau_synthese_E4_BTS_SIO.xlsx" class="btn btn-outline" download>Télécharger le tableau de synthèse (en cours) <span class="arr">↓</span></a>
             <div class="pl-inspect" data-pilote="stamp" aria-hidden="true"></div>
         </section>
 
         <section class="card is-placeholder reveal" data-i="2" data-part="E-06">
             <span class="epreuve-status pending"><span class="status-led warn"></span>À venir</span>
-            <h2>E6 — Cybersécurité des services informatiques</h2>
-            <p>Le volet cybersécurité : compétences validées sur des situations professionnelles réelles. Statut actuel : en build — les documents seront déployés ici au fil de la formation, versionnés comme le reste.</p>
+            <h2>E6 — Administration des systèmes et des réseaux</h2>
+            <p>L'épreuve de l'option SISR, pratique et orale, sur les réalisations de mon dossier professionnel. Les documents arrivent ici au fil de la 2e année, versionnés comme le reste.</p>
             <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
+        </section>
+
+        <section class="card is-placeholder reveal" data-i="3" data-part="E-07">
+            <span class="epreuve-status pending"><span class="status-led warn"></span>Écrit — 4 h</span>
+            <h2>E7 — Cybersécurité des services informatiques</h2>
+            <p>Épreuve écrite de 4 heures en fin de formation. Pas de dossier à déposer&nbsp;: elle se prépare en cours et par la veille sécurité au quotidien — bulletins CERT-FR, ANSSI, CVE.</p>
+            <a href="./veille.html" class="btn btn-outline">Voir ma veille cybersécurité <span class="arr">→</span></a>
         </section>
     </main>
 
