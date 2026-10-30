@@ -25,7 +25,7 @@
     })(document.documentElement);
     </script>
     <title>Mes Projets | Shabdpreet Singh</title>
-    <meta name="description" content="Projets techniques de Shabdpreet Singh : supervision réseau avec Centreon (AlmaLinux, Engine, Broker, MariaDB) et réalisations à venir.">
+    <meta name="description" content="Projets techniques de Shabdpreet Singh : supervision réseau avec Centreon (AlmaLinux, Engine, Broker, MariaDB) et home lab en cours (serveur Linux, NAS en RAID 1, DNS filtrant, IA locale).">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -77,7 +77,7 @@
     </nav>
 
     <main id="main" data-pl-hello="focus|P-02 en chantier. Je suis dessus.">
-        <span class="page-eyebrow"><span class="dot"></span> 1 projet livré · 2 en préparation</span>
+        <span class="page-eyebrow"><span class="dot"></span> 1 projet livré · 1 en build · 1 emplacement réservé</span>
         <h1 data-tw>Mes Projets</h1>
         <p class="page-intro">Les réalisations techniques de ma formation et de mon alternance. Règle maison : chaque projet est documenté comme si quelqu'un d'autre devait le reprendre demain matin — parce qu'en infra, c'est exactement ce qui finit par arriver.</p>
 
@@ -99,11 +99,22 @@
                 <a href="./fichiers/Projet_Centreon.docx" class="btn btn-outline" download>Télécharger la documentation <span class="arr">↓</span></a>
             </div>
 
-            <div class="card project-card is-placeholder reveal" data-i="2" data-part="P-02">
-                <div class="pl-work" data-pilote="work" aria-hidden="true"></div>
-                <h3>Prochain projet</h3>
-                <p>Slot réservé. Un projet réseau ou sécurité arrive au fil de la formation — la supervision est déjà provisionnée, il ne manque que le service.</p>
-                <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
+            <div class="card project-card reveal" data-i="2" data-part="P-02">
+                <div class="project-card-head">
+                    <div class="project-badge homelab-badge"><span class="badge-letter">H</span></div>
+                    <span class="project-status is-build"><span class="status-led warn"></span>En build</span>
+                </div>
+                <span class="project-tag">Projet perso</span>
+                <h3>Home lab dans ma chambre</h3>
+                <p>Le meilleur labo, c'est celui qui tourne chez soi. Je monte un vrai petit SI dans ma chambre&nbsp;: un serveur Linux (Docker, puis Proxmox) pour mes labos SISR et mes agents IA, un NAS en RAID 1 pour les fichiers et les sauvegardes, un DNS filtrant qui bloque pubs et traqueurs, et du streaming maison. Câblage, adressage IP, services&nbsp;: tout est pensé comme une petite infra d'entreprise, et documenté phase par phase.</p>
+                <div class="project-stack">
+                    <span>Docker</span><span>Proxmox</span><span>NAS RAID 1</span><span>AdGuard Home</span><span>Jellyfin</span><span>Ollama</span>
+                </div>
+                <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>homelab --status &nbsp;<span class="warn2">● phase 0/4 · plan et budget</span></div>
+                <div class="project-foot">
+                    <a href="#zoom-homelab" class="btn btn-outline">Voir l'architecture <span class="arr">↓</span></a>
+                    <div class="pl-work" data-pilote="work" aria-hidden="true"></div>
+                </div>
             </div>
 
             <div class="card project-card is-placeholder reveal" data-i="3" data-part="P-03">
@@ -139,6 +150,38 @@
         <div class="zoom-actions reveal" data-i="1">
             <a href="./fichiers/Doc_Technique_Portfolio.pdf" class="btn btn-primary" target="_blank" rel="noopener">Comment j'ai fabriqué ce portfolio <span class="arr">→</span></a>
             <span class="zoom-ref">MAKING-OF — 25 PAGES</span>
+        </div>
+        </section>
+
+        <section id="zoom-homelab">
+        <h2 class="section-title" data-step="03" data-pl="focus|Câblé comme en entreprise. En plus petit."><span class="st-text">Zoom — architecture du home lab</span></h2>
+        <p class="page-intro" style="margin-bottom:1.5rem">La box reste au salon. Tout le reste vit dans ma chambre, derrière un switch 2,5&nbsp;Gb/s relié par deux câbles Ethernet. Ce qui doit tourner en continu (fichiers, films, DNS filtrant) va sur le NAS, qui consomme le moins&nbsp;; la tour sert aux labos SISR et à l'IA locale. Les pointillés suivent les câbles.</p>
+        <div class="archi reveal" aria-hidden="true">
+            <svg viewBox="0 0 760 220" role="img" aria-label="Schéma d'architecture du home lab">
+                <defs>
+                    <marker id="arrow-hl" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                        <path class="flow-head" d="M0,0 L6,3 L0,6 Z"/>
+                    </marker>
+                </defs>
+                <g class="hl-node"><rect x="6" y="78" width="118" height="64"/><text class="t" x="65" y="106">Box</text><text class="s" x="65" y="124">salon · internet</text></g>
+                <g class="hl-node"><rect x="168" y="78" width="132" height="64"/><text class="t" x="234" y="106">Switch</text><text class="s" x="234" y="124">2,5 Gbit/s · chambre</text></g>
+                <g class="hl-node"><rect x="356" y="6" width="160" height="64"/><text class="t" x="436" y="34">NAS</text><text class="s" x="436" y="52">RAID 1 · 24 h/24</text></g>
+                <g class="hl-node"><rect x="356" y="78" width="160" height="64"/><text class="t" x="436" y="106">Tour</text><text class="s" x="436" y="124">Linux · Docker · Proxmox</text></g>
+                <g class="hl-node"><rect x="356" y="150" width="160" height="64"/><text class="t" x="436" y="178">PC</text><text class="s" x="436" y="196">administration</text></g>
+                <g class="hl-node is-service"><rect x="580" y="6" width="174" height="64"/><text class="t" x="667" y="34">Services 24/7</text><text class="s" x="667" y="52">Jellyfin · AdGuard Home</text></g>
+                <g class="hl-node is-service"><rect x="580" y="78" width="174" height="64"/><text class="t" x="667" y="106">IA locale</text><text class="s" x="667" y="124">Ollama · n8n</text></g>
+                <g class="hl-node is-service"><rect x="580" y="150" width="174" height="64"/><text class="t" x="667" y="178">Labos SISR</text><text class="s" x="667" y="196">AD · réseau · VM</text></g>
+                <path class="flow" d="M124,110 L168,110" marker-end="url(#arrow-hl)"/>
+                <path class="flow" d="M300,110 C328,110 328,38 356,38" marker-end="url(#arrow-hl)"/>
+                <path class="flow" d="M300,110 L356,110" marker-end="url(#arrow-hl)"/>
+                <path class="flow" d="M300,110 C328,110 328,182 356,182" marker-end="url(#arrow-hl)"/>
+                <path class="flow" d="M516,38 L580,38" marker-end="url(#arrow-hl)"/>
+                <path class="flow" d="M516,110 L580,110" marker-end="url(#arrow-hl)"/>
+                <path class="flow" d="M516,110 C548,110 548,182 580,182" marker-end="url(#arrow-hl)"/>
+            </svg>
+        </div>
+        <div class="zoom-actions reveal" data-i="1">
+            <span class="zoom-ref">ARCHITECTURE CIBLE — PHASE 0 / 4</span>
         </div>
         </section>
     </main>

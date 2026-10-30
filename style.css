@@ -1585,6 +1585,38 @@ h3 {
     line-height: 1;
 }
 .centreon-badge { background: #F26522; } /* couleur de marque Centreon, à plat, confinée au badge */
+/* v5.1 — P-02 Home lab : projet en build. Badge bleu « structure » du kit,
+   statut ambre, et SH-14 qui serre les boulons en pied de carte. */
+.homelab-badge { background: var(--blue-plate); }
+.project-status.is-build { border-color: var(--warn-ink); color: var(--warn-ink); }
+.project-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.8rem 1rem;
+    margin-top: auto;
+    padding-top: 1.1rem;
+}
+.project-foot .pl-work {
+    margin: 0 0 -0.35rem auto;
+    flex: none;
+    /* bulle à gauche du pilote : il est collé au bord droit de la carte */
+    --say-l: auto;
+    --say-r: 86%;
+    --say-o: 100% 100%;
+    --tip-l: auto;
+    --tip-r: 12px;
+    --tip-clip: polygon(0 0, 100% 0, 100% 100%);
+}
+#zoom-homelab { scroll-margin-top: 96px; }
+/* Schéma du home lab : mêmes briques que le schéma Centreon, sous une autre
+   classe pour que la tête du pilote ne voyage que dans un seul schéma
+   (règle d'or : un seul SH-14 à l'écran). Services = logiciels, en pointillés. */
+.archi .hl-node rect { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.5; }
+.archi .hl-node.is-service rect { fill: var(--surface); stroke-dasharray: 5 4; }
+.archi .hl-node .t { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; fill: var(--ink); text-anchor: middle; }
+.archi .hl-node .s { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--text-mute); text-anchor: middle; }
 .project-tag { margin-bottom: 0.8rem; align-self: flex-start; }
 .project-status { border-color: var(--ok-ink); color: var(--ok-ink); background: transparent; margin-top: 0.4rem; }
 .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.9rem 0 0.2rem; }
