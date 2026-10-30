@@ -1401,7 +1401,7 @@
   })();
 
   /* ============================================================
-     v5 — VISITE GUIDÉE (pensée pour l'oral) : 12 étapes, ~1 min,
+     v5 — VISITE GUIDÉE (pensée pour l'oral) : 14 étapes, ~1 min,
      à travers les six pages. Un bandeau-console en bas de l'écran
      tape le commentaire, des repères de calage rouges encadrent le
      point montré, et le SH-14 visible le regarde. L'étape en cours
@@ -1411,11 +1411,13 @@
      ============================================================ */
   const TOUR = [
     { page: 'index.html', sel: '.hero h1', mood: 'happy',
-      text: 'Visite express du kit : 12 étapes, à peine une minute. Je te montre l’essentiel.' },
+      text: 'Visite express du kit : 14 étapes, à peine plus d’une minute. Je te montre l’essentiel.' },
     { page: 'index.html', sel: '#statusPanel', mood: 'focus',
       text: 'Ce panneau est vivant : il vérifie vraiment les fichiers du site — code HTTP, taille, latence, dernier commit.' },
     { page: 'index.html', sel: '.about-intro', mood: 'happy',
-      text: 'Shabdpreet Singh, 19 ans : 2e année de BTS SIO option SISR à Schola Nova, en alternance chez ALLIANC3.' },
+      text: 'Shabdpreet Singh, 19 ans : 2e année de BTS SIO option SISR, en alternance chez ALLIANC3 depuis 2025.' },
+    { page: 'index.html', sel: '.school-bloc', mood: 'check',
+      text: 'Son école depuis la rentrée 2026 : Schola Nova, à Paris 19e. La 1re année, c’était à l’IAAG.' },
     { page: 'index.html', sel: '.radar-wrap', mood: 'focus',
       text: 'Ses domaines : réseau, systèmes, sécurité, support et scripting — le support en tête.' },
     { page: 'epreuve.html', sel: '.card[data-part="E-05"]', mood: 'focus',
@@ -1423,9 +1425,11 @@
     { page: 'epreuve.html', sel: '.card[data-part="E-06"]', mood: 'loading',
       text: 'E6, systèmes et réseaux, puis E7, cybersécurité : en préparation pour la session 2027.' },
     { page: 'projet.html', sel: '.card[data-part="P-01"]', mood: 'happy',
-      text: 'Projet phare : la supervision Centreon sur AlmaLinux, de l’installation à la documentation complète.' },
+      text: 'Projet livré : la supervision Centreon sur AlmaLinux, de l’installation à la documentation complète.' },
     { page: 'projet.html', sel: '.archi', mood: 'focus',
       text: 'Le schéma suit une donnée de supervision, de l’hôte jusqu’à l’interface web.' },
+    { page: 'projet.html', sel: '#zoom-homelab .archi', mood: 'loading',
+      text: 'En build : son home lab. Serveur Linux, NAS en RAID 1, DNS filtrant et IA locale, monté phase par phase.' },
     { page: 'veille.html', sel: '.stand--watch', mood: 'focus',
       text: 'La veille : l’IA et les infrastructures. Pénurie de mémoire, datacenters, énergie, dans un journal daté et sourcé.' },
     { page: 'certifs.html', sel: '.certs-summary', mood: 'star',

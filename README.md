@@ -17,7 +17,7 @@ Un site **100% vanilla** (HTML / CSS / JS, sans framework), construit sur une di
 - 🎞️ Mouvement : titres `STEP` qui se déroulent au scroll, profondeur du hero au scroll, transitions de page « volet », micro-interactions (boutons, tags, radar, logo)
 - 📊 Visualisations : radar de compétences (balayage + légende liée), schéma d'architecture Centreon, jauge et anneaux de score
 - ⌨️ Palette de commandes (`Ctrl/Cmd + K` ou `/`)
-- 🧭 **Visite guidée** (bouton sous les CTA de l'accueil, ou « visite » dans la palette) : 12 étapes, environ 1 min, à travers les six pages — pensée pour l'oral. `←` `→` étape précédente / suivante, `espace` pause, `Échap` pour quitter ; elle reprend toute seule après chaque changement de page
+- 🧭 **Visite guidée** (bouton sous les CTA de l'accueil, ou « visite » dans la palette) : 14 étapes, environ 1 min, à travers les six pages — pensée pour l'oral. `←` `→` étape précédente / suivante, `espace` pause, `Échap` pour quitter ; elle reprend toute seule après chaque changement de page
 - 🧩 **Notice de visite** : chaque page vue allume un carré rouge sur son lien dans le menu et fait avancer le compteur en pied de page ; les six pages vues, SH-14 gagne l'**antenne V dorée** et la garde partout (stockage local uniquement)
 - 🛠️ **Hangar SH-14** (`hangar.html`, lien en pied de page) : le making-of du robot — banc d'essai interactif (poses, visière, actions), **vue éclatée** façon notice Bandai, fiche technique mesurée en direct
 - 📬 Page **Contact** avec formulaire (envoi par mail) et infos de disponibilité
