@@ -761,7 +761,8 @@
     './fichiers/icon-192.png', './fichiers/allianc3-logo.png', './fichiers/allianc3-mark.png',
     './fichiers/schola-nova-logo.png',
     './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
-    './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.docx'
+    './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.docx',
+    './fichiers/Projet_Home_Lab.docx'
   ];
 
   (function registerKit() {
