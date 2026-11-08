@@ -62,8 +62,8 @@
      ============================================================ */
   /* Marques de mission (cuisse gauche) : 1 carré plein par projet
      livré, un carré vide par projet en préparation.
-     → à mettre à jour quand P-02 / P-03 sont livrés. */
-  const MISSIONS = { done: 1, total: 3 };
+     → à mettre à jour quand P-02 est livré. */
+  const MISSIONS = { done: 2, total: 3 };
   const poly = (pts, c) => `<polygon${c ? ` class="${c}"` : ''} points="${pts}"/>`;
   const rect = (x, y, w, h, c) => `<rect${c ? ` class="${c}"` : ''} x="${x}" y="${y}" width="${w}" height="${h}"/>`;
   const line = (x1, y1, x2, y2, c) => `<line${c ? ` class="${c}"` : ''} x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;

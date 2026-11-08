@@ -15,7 +15,7 @@ Un site **100% vanilla** (HTML / CSS / JS, sans framework), construit sur une di
 - 🤖 **Le pilote SH-14** : la mascotte du kit, dessinée en SVG et animée — voir plus bas
 - 🖥️ Hero animé : le panneau `SYSTÈMES` arrive, le pilote s'assemble dessus pièce par pièce, s'allume, allume les services un par un, puis te salue
 - 🎞️ Mouvement : titres `STEP` qui se déroulent au scroll, profondeur du hero au scroll, transitions de page « volet », micro-interactions (boutons, tags, radar, logo)
-- 📊 Visualisations : radar de compétences (balayage + légende liée), schéma d'architecture Centreon, jauge et anneaux de score
+- 📊 Visualisations : radar de compétences (balayage + légende liée), schémas d'architecture (Centreon, home lab, réseau du nouveau bureau), jauge et anneaux de score
 - ⌨️ Palette de commandes (`Ctrl/Cmd + K` ou `/`)
 - 🧭 **Visite guidée** (bouton sous les CTA de l'accueil, ou « visite » dans la palette) : 14 étapes, environ 1 min, à travers les six pages — pensée pour l'oral. `←` `→` étape précédente / suivante, `espace` pause, `Échap` pour quitter ; elle reprend toute seule après chaque changement de page
 - 🧩 **Notice de visite** : chaque page vue allume un carré rouge sur son lien dans le menu et fait avancer le compteur en pied de page ; les six pages vues, SH-14 gagne l'**antenne V dorée** et la garde partout (stockage local uniquement)
@@ -42,7 +42,7 @@ La figurine du kit : même grammaire que le site (aplats, lignes de panneau, omb
 | Compagnon (toutes les pages) | le bouton « remonter » devient son socle : il atterrit, commente les sections, décolle au clic |
 | À propos | passe la tête au-dessus du cadre photo (coucou-caché au clic) |
 | Épreuves | contrôle qualité : il tamponne l'épreuve E5 « EN COURS » (à repasser en « LIVRÉE » quand le tableau de synthèse est rempli) |
-| Projets | P-02 : accroupi, il serre les boulons (clé à cliquet, étincelles) · P-03 : silhouette en pointillés (slot réservé) · sa tête voyage dans le schéma Centreon |
+| Projets | P-02 : accroupi, il serre les boulons (clé à cliquet, étincelles) · sa tête voyage dans le schéma Centreon |
 | Veille | en sentinelle sur la console, main en visière |
 | Certifications | il brandit la médaille, puis la garde épinglée sur tout le site |
 | Contact | accueille, regarde le champ en cours de saisie, célèbre l'envoi |
@@ -72,7 +72,7 @@ Règle d'or : **un seul SH-14 à l'écran**. Les apparitions « station » et le
 |------|-------------|
 | `index.html` | Accueil — hero, supervision, présentation |
 | `epreuve.html` | Épreuves E5 / E6 / E7 (session 2027, numérotation de l'arrêté du 8 juillet 2024) |
-| `projet.html` | Projets (dont projet Centreon) |
+| `projet.html` | Projets : Centreon, home lab, réseau du nouveau bureau (Allianc3) |
 | `veille.html` | Veille technologique |
 | `certifs.html` | Certifications (Anthropic Academy, PIX…) |
 | `contact.html` | Contact — formulaire & disponibilité |

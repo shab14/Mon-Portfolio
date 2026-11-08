@@ -1588,6 +1588,9 @@ h3 {
 /* v5.1 — P-02 Home lab : projet en build. Badge bleu « structure » du kit,
    statut ambre, et SH-14 qui serre les boulons en pied de carte. */
 .homelab-badge { background: var(--blue-plate); }
+/* P-03 Réseau du nouveau bureau : projet entreprise en production. Badge rouge
+   du kit (le bleu Allianc3 se confondrait avec le badge du home lab). */
+.reseau-badge { background: var(--red); }
 .project-status.is-build { border-color: var(--warn-ink); color: var(--warn-ink); }
 .project-foot {
     display: flex;
@@ -1609,12 +1612,15 @@ h3 {
     --tip-r: 12px;
     --tip-clip: polygon(0 0, 100% 0, 100% 100%);
 }
-#zoom-homelab { scroll-margin-top: 96px; }
-/* Schéma du home lab : mêmes briques que le schéma Centreon, sous une autre
-   classe pour que la tête du pilote ne voyage que dans un seul schéma
-   (règle d'or : un seul SH-14 à l'écran). Services = logiciels, en pointillés. */
+#zoom-centreon, #zoom-homelab, #zoom-reseau { scroll-margin-top: 96px; }
+/* Schémas du home lab et du réseau : mêmes briques que le schéma Centreon, sous
+   une autre classe pour que la tête du pilote ne voyage que dans un seul schéma
+   (règle d'or : un seul SH-14 à l'écran). Services et Wi-Fi = logiques, en
+   pointillés. is-core = la pièce maîtresse (bleu « structure » du kit). */
 .archi .hl-node rect { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.5; }
 .archi .hl-node.is-service rect { fill: var(--surface); stroke-dasharray: 5 4; }
+.archi .hl-node.is-core rect { stroke: var(--blue); stroke-width: 2.5; }
+.archi .hl-node.is-core .t { fill: var(--blue); }
 .archi .hl-node .t { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; fill: var(--ink); text-anchor: middle; }
 .archi .hl-node .s { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--text-mute); text-anchor: middle; }
 .project-tag { margin-bottom: 0.8rem; align-self: flex-start; }
@@ -1917,6 +1923,23 @@ h3 {
 @media (max-width: 600px) {
     .zoom-actions .btn { flex: 1 1 100%; }
     .zoom-actions .zoom-ref { margin-left: 0; }
+}
+
+/* Making-of : le mot de la fin de la page projets, après les trois zooms.
+   Remonté d'une demi-section, séparé par une ligne de panneau. */
+.making-of {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: center;
+    margin-top: calc(var(--s-7) - var(--section-gap));
+    padding-top: var(--s-6);
+    border-top: 1.5px solid var(--line-soft);
+}
+.making-of .zoom-ref { margin-left: auto; }
+@media (max-width: 600px) {
+    .making-of .btn { flex: 1 1 100%; }
+    .making-of .zoom-ref { margin-left: 0; }
 }
 
 /* ============================================================

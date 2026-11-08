@@ -25,7 +25,7 @@
     })(document.documentElement);
     </script>
     <title>Mes Projets | Shabdpreet Singh</title>
-    <meta name="description" content="Projets techniques de Shabdpreet Singh : supervision réseau avec Centreon (AlmaLinux, Engine, Broker, MariaDB) et home lab en cours (serveur Linux, NAS en RAID 1, DNS filtrant, IA locale).">
+    <meta name="description" content="Projets techniques de Shabdpreet Singh : supervision réseau avec Centreon (AlmaLinux, Engine, Broker, MariaDB), home lab en cours (serveur Linux, NAS en RAID 1, DNS filtrant, IA locale) et réseau du nouveau bureau d'Allianc3 (UniFi, VLAN, Wi-Fi invité isolé, vidéosurveillance).">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -77,7 +77,7 @@
     </nav>
 
     <main id="main" data-pl-hello="focus|P-02 en chantier. Je suis dessus.">
-        <span class="page-eyebrow"><span class="dot"></span> 1 projet livré · 1 en build · 1 emplacement réservé</span>
+        <span class="page-eyebrow"><span class="dot"></span> 2 projets livrés · 1 en build</span>
         <h1 data-tw>Mes Projets</h1>
         <p class="page-intro">Les réalisations techniques de ma formation et de mon alternance. Règle maison : chaque projet est documenté comme si quelqu'un d'autre devait le reprendre demain matin — parce qu'en infra, c'est exactement ce qui finit par arriver.</p>
 
@@ -96,7 +96,10 @@
                     <span>AlmaLinux</span><span>Centreon Engine</span><span>Broker</span><span>MariaDB</span>
                 </div>
                 <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>systemctl status centreon &nbsp;<span class="ok2">● active (running)</span></div>
-                <a href="./fichiers/Projet_Centreon.docx" class="btn btn-outline" download>Télécharger la documentation <span class="arr">↓</span></a>
+                <div class="project-foot">
+                    <a href="./fichiers/Projet_Centreon.docx" class="btn btn-outline" download>Télécharger la documentation <span class="arr">↓</span></a>
+                    <a href="#zoom-centreon" class="btn btn-outline">Voir l'architecture <span class="arr">↓</span></a>
+                </div>
             </div>
 
             <div class="card project-card reveal" data-i="2" data-part="P-02">
@@ -118,16 +121,27 @@
                 </div>
             </div>
 
-            <div class="card project-card is-placeholder reveal" data-i="3" data-part="P-03">
-                <div class="pl-ghostslot" data-pilote="ghost" aria-hidden="true"></div>
-                <h3>Prochain projet</h3>
-                <p>Emplacement provisionné pour une future réalisation. En infra, on appelle ça de la capacité de réserve — la preuve qu'on pense à demain.</p>
-                <div class="placeholder-progress"><div class="bar"><i></i></div> en préparation</div>
+            <div class="card project-card reveal" data-i="3" data-part="P-03">
+                <div class="project-card-head">
+                    <div class="project-badge reseau-badge"><span class="badge-letter">R</span></div>
+                    <span class="project-status"><span class="status-led"></span>En service</span>
+                </div>
+                <span class="project-tag">Projet entreprise</span>
+                <h3>Réseau du nouveau bureau</h3>
+                <p>Le Wi-Fi des visiteurs ne doit jamais croiser celui de l'équipe. Pour les nouveaux locaux d'Allianc3, on a monté le réseau avec mes superviseurs&nbsp;: une passerelle UniFi qui crée les VLAN, trois bornes Wi-Fi&nbsp;7, un Wi-Fi interne, un Wi-Fi invité isolé et trois caméras de vidéosurveillance. Ma part, en binôme avec le responsable IT&nbsp;: fixer et brancher bornes et caméras, créer les réseaux et les deux Wi-Fi, optimiser la radio avec WiFi Doctor.</p>
+                <div class="project-stack">
+                    <span>UniFi UCG Ultra</span><span>U7 Pro</span><span>VLAN</span><span>DHCP</span><span>Reolink</span><span>WiFi Doctor</span>
+                </div>
+                <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>ping passerelle &nbsp;<span class="ok2">● 4/4 reçus · 0&nbsp;%&nbsp;perte</span></div>
+                <div class="project-foot">
+                    <a href="./fichiers/Projet_Reseau_Nouveau_Bureau.docx" class="btn btn-outline" download>Télécharger la documentation <span class="arr">↓</span></a>
+                    <a href="#zoom-reseau" class="btn btn-outline">Voir l'architecture <span class="arr">↓</span></a>
+                </div>
             </div>
         </div>
         </section>
 
-        <section>
+        <section id="zoom-centreon">
         <h2 class="section-title" data-step="02" data-pl="focus|Suis les pointillés : la donnée ne ment jamais."><span class="st-text">Zoom — architecture Centreon</span></h2>
         <p class="page-intro" style="margin-bottom:1.5rem">Le trajet d'une donnée de supervision, de la sonde sur l'hôte jusqu'au graphique dans l'interface web. Les pointillés suivent le flux — comme une alerte qui remonte la chaîne à trois heures du matin.</p>
         <div class="archi reveal" aria-hidden="true">
@@ -149,8 +163,7 @@
             </svg>
         </div>
         <div class="zoom-actions reveal" data-i="1">
-            <a href="./fichiers/Doc_Technique_Portfolio.pdf" class="btn btn-primary" target="_blank" rel="noopener">Comment j'ai fabriqué ce portfolio <span class="arr">→</span></a>
-            <span class="zoom-ref">MAKING-OF — 25 PAGES</span>
+            <span class="zoom-ref">CHAÎNE DE SUPERVISION — 5 BRIQUES</span>
         </div>
         </section>
 
@@ -185,6 +198,41 @@
             <span class="zoom-ref">ARCHITECTURE CIBLE — PHASE 0 / 4</span>
         </div>
         </section>
+
+        <section id="zoom-reseau">
+        <h2 class="section-title" data-step="04" data-pl="check|Deux Wi-Fi, deux VLAN. Personne ne se croise."><span class="st-text">Zoom — réseau du nouveau bureau</span></h2>
+        <p class="page-intro" style="margin-bottom:1.5rem">La passerelle UniFi, encadrée en bleu, est le cœur du bureau&nbsp;: c'est elle qui crée les réseaux. Les trois bornes, reliées en Ethernet, diffusent deux Wi-Fi&nbsp;: celui de l'équipe sur le réseau interne, et celui des invités dans le VLAN&nbsp;2, isolé — il ne voit qu'Internet. Les flux des caméras ne sont ouverts qu'aux personnes autorisées.</p>
+        <div class="archi reveal" aria-hidden="true">
+            <svg viewBox="0 0 760 220" role="img" aria-label="Schéma du réseau du nouveau bureau">
+                <defs>
+                    <marker id="arrow-net" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                        <path class="flow-head" d="M0,0 L6,3 L0,6 Z"/>
+                    </marker>
+                </defs>
+                <g class="hl-node"><rect x="6" y="78" width="118" height="64"/><text class="t" x="65" y="106">Box Free Pro</text><text class="s" x="65" y="124">accès internet</text></g>
+                <g class="hl-node is-core"><rect x="168" y="78" width="132" height="64"/><text class="t" x="234" y="106">Passerelle</text><text class="s" x="234" y="124">UCG Ultra · VLAN</text></g>
+                <g class="hl-node"><rect x="356" y="6" width="160" height="64"/><text class="t" x="436" y="34">Caméras</text><text class="s" x="436" y="52">3 × Reolink · interne</text></g>
+                <g class="hl-node"><rect x="356" y="78" width="160" height="64"/><text class="t" x="436" y="106">Bornes Wi-Fi</text><text class="s" x="436" y="124">3 × U7 Pro · Ethernet</text></g>
+                <g class="hl-node is-service"><rect x="580" y="6" width="174" height="64"/><text class="t" x="667" y="34">Flux vidéo</text><text class="s" x="667" y="52">appli Reolink · restreint</text></g>
+                <g class="hl-node is-service"><rect x="580" y="78" width="174" height="64"/><text class="t" x="667" y="106">Wi-Fi interne</text><text class="s" x="667" y="124">VLAN natif · équipe</text></g>
+                <g class="hl-node is-service"><rect x="580" y="150" width="174" height="64"/><text class="t" x="667" y="178">Wi-Fi invité</text><text class="s" x="667" y="196">VLAN 2 · isolé · internet</text></g>
+                <path class="flow" d="M124,110 L168,110" marker-end="url(#arrow-net)"/>
+                <path class="flow" d="M300,110 C328,110 328,38 356,38" marker-end="url(#arrow-net)"/>
+                <path class="flow" d="M300,110 L356,110" marker-end="url(#arrow-net)"/>
+                <path class="flow" d="M516,38 L580,38" marker-end="url(#arrow-net)"/>
+                <path class="flow" d="M516,110 L580,110" marker-end="url(#arrow-net)"/>
+                <path class="flow" d="M516,110 C548,110 548,182 580,182" marker-end="url(#arrow-net)"/>
+            </svg>
+        </div>
+        <div class="zoom-actions reveal" data-i="1">
+            <span class="zoom-ref">EN SERVICE DEPUIS MARS 2026 — FICHE EN COURS</span>
+        </div>
+        </section>
+
+        <div class="making-of reveal">
+            <a href="./fichiers/Doc_Technique_Portfolio.pdf" class="btn btn-primary" target="_blank" rel="noopener">Comment j'ai fabriqué ce portfolio <span class="arr">→</span></a>
+            <span class="zoom-ref">MAKING-OF — 25 PAGES</span>
+        </div>
     </main>
 
     <footer>
