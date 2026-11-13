@@ -76,7 +76,7 @@
         </div>
     </nav>
 
-    <main id="main" data-pl-hello="focus|P-02 en chantier. Je suis dessus.">
+    <main id="main" data-pl-hello="check|Deux livrés, un en chantier. Je contrôle.">
         <span class="page-eyebrow"><span class="dot"></span> 2 projets livrés · 1 en build</span>
         <h1 data-tw>Mes Projets</h1>
         <p class="page-intro">Les réalisations techniques de ma formation et de mon alternance. Règle maison : chaque projet est documenté comme si quelqu'un d'autre devait le reprendre demain matin — parce qu'en infra, c'est exactement ce qui finit par arriver.</p>
@@ -84,7 +84,7 @@
         <section>
         <h2 class="section-title" data-step="01"><span class="st-text">Réalisations</span></h2>
         <div class="grid">
-            <div class="card project-card reveal" data-i="1" data-part="P-01">
+            <div class="card project-card reveal" data-i="1" data-part="P-01" data-stamp="P-01 · 2025">
                 <div class="project-card-head">
                     <div class="project-badge centreon-badge"><span class="badge-letter">C</span></div>
                     <span class="project-status"><span class="status-led"></span>Opérationnel</span>
@@ -93,21 +93,22 @@
                 <h3>Supervision avec Centreon</h3>
                 <p>Une infrastructure qu'on ne surveille pas, c'est une panne qu'on découvre trop tard. Mise en place complète de Centreon sur AlmaLinux : installation, configuration des composants (Engine, Broker, MariaDB), puis surveillance d'une infrastructure réseau — du premier <em>dnf install</em> au premier hôte qui passe au vert.</p>
                 <div class="project-stack">
-                    <span>AlmaLinux</span><span>Centreon Engine</span><span>Broker</span><span>MariaDB</span>
+                    <span data-say="AlmaLinux 8 : la base. Gratuit, stable, compatible RHEL.">AlmaLinux</span><span data-say="Engine : il lance les sondes et collecte les états.">Centreon Engine</span><span data-say="Broker : il transporte les données vers la base.">Broker</span><span data-say="MariaDB : tout l’historique de supervision est là.">MariaDB</span>
                 </div>
                 <div class="ref-skills">
                   <span class="ref-skills-k">Compétences du référentiel</span>
                   <ul class="ref-chips" aria-label="Compétences du référentiel">
-                    <li data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Installer, tester et déployer une solution d’infrastructure réseau</span></li>
-                    <li data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Exploiter, dépanner et superviser une solution d’infrastructure réseau</span></li>
-                    <li data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Gérer le patrimoine informatique</span></li>
-                    <li data-bloc="B3"><b title="Bloc 3 — Cybersécurité des services informatiques (E7)">B3</b><span>Garantir la disponibilité, l’intégrité et la confidentialité des services</span></li>
+                    <li tabindex="0" data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Installer, tester et déployer une solution d’infrastructure réseau</span></li>
+                    <li tabindex="0" data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Exploiter, dépanner et superviser une solution d’infrastructure réseau</span></li>
+                    <li tabindex="0" data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Gérer le patrimoine informatique</span></li>
+                    <li tabindex="0" data-bloc="B3"><b title="Bloc 3 — Cybersécurité des services informatiques (E7)">B3</b><span>Garantir la disponibilité, l’intégrité et la confidentialité des services</span></li>
                   </ul>
                 </div>
                 <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>systemctl status centreon &nbsp;<span class="ok2">● active (running)</span></div>
                 <div class="project-foot">
                     <a href="./fichiers/Projet_Centreon.pdf" class="btn btn-outline" download>Télécharger la documentation <span class="arr">↓</span></a>
                     <a href="#zoom-centreon" class="btn btn-outline">Voir l'architecture <span class="arr">↓</span></a>
+                    <div class="pl-work pl-inspector" data-pilote="inspector" aria-hidden="true"></div>
                 </div>
                 <p class="btn-note">PDF · 36 pages · 5 Mo — aussi en <a href="./fichiers/Projet_Centreon.docx" download>Word (19 Mo)</a>.</p>
             </div>
@@ -121,26 +122,25 @@
                 <h3>Home lab dans ma chambre</h3>
                 <p>Le meilleur labo, c'est celui qui tourne chez soi. Je monte un vrai petit SI dans ma chambre&nbsp;: un serveur Linux (Docker, puis Proxmox) pour mes labos SISR et mes agents IA, un NAS en RAID 1 pour les fichiers et les sauvegardes, un DNS filtrant qui bloque pubs et traqueurs, et du streaming maison. Câblage, adressage IP, services&nbsp;: tout est pensé comme une petite infra d'entreprise, et documenté phase par phase.</p>
                 <div class="project-stack">
-                    <span>Docker</span><span>Proxmox</span><span>NAS RAID 1</span><span>AdGuard Home</span><span>Jellyfin</span><span>Ollama</span>
+                    <span data-say="Docker : un service, un conteneur. Propre.">Docker</span><span data-say="Proxmox : les VM des labos SISR, plus tard.">Proxmox</span><span data-say="RAID 1 : deux disques, une copie. Un meurt, rien ne se perd.">NAS RAID 1</span><span data-say="AdGuard Home : le DNS qui filtre pubs et traqueurs.">AdGuard Home</span><span data-say="Jellyfin : le streaming maison, sans abonnement.">Jellyfin</span><span data-say="Ollama : des modèles d’IA qui tournent en local.">Ollama</span>
                 </div>
                 <div class="ref-skills">
                   <span class="ref-skills-k">Compétences du référentiel</span>
                   <ul class="ref-chips" aria-label="Compétences du référentiel">
-                    <li data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Concevoir une solution d’infrastructure réseau</span></li>
-                    <li data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Travailler en mode projet</span></li>
-                    <li data-bloc="B3"><b title="Bloc 3 — Cybersécurité des services informatiques (E7)">B3</b><span>Sécuriser les équipements et les usages des utilisateurs</span></li>
-                    <li data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Organiser son développement professionnel</span></li>
+                    <li tabindex="0" data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Concevoir une solution d’infrastructure réseau</span></li>
+                    <li tabindex="0" data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Travailler en mode projet</span></li>
+                    <li tabindex="0" data-bloc="B3"><b title="Bloc 3 — Cybersécurité des services informatiques (E7)">B3</b><span>Sécuriser les équipements et les usages des utilisateurs</span></li>
+                    <li tabindex="0" data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Organiser son développement professionnel</span></li>
                   </ul>
                 </div>
                 <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>homelab --status &nbsp;<span class="warn2">● phase 0/4 · plan et budget</span></div>
                 <div class="project-foot">
                     <a href="./fichiers/Projet_Home_Lab.docx" class="btn btn-outline" download>Télécharger la documentation <span class="arr">↓</span></a>
                     <a href="#zoom-homelab" class="btn btn-outline">Voir l'architecture <span class="arr">↓</span></a>
-                    <div class="pl-work" data-pilote="work" aria-hidden="true"></div>
                 </div>
             </div>
 
-            <div class="card project-card reveal" data-i="3" data-part="P-03">
+            <div class="card project-card reveal" data-i="3" data-part="P-03" data-stamp="P-03 · 2026">
                 <div class="project-card-head">
                     <div class="project-badge reseau-badge"><span class="badge-letter">R</span></div>
                     <span class="project-status"><span class="status-led"></span>En service</span>
@@ -149,15 +149,15 @@
                 <h3>Réseau du nouveau bureau</h3>
                 <p>Le Wi-Fi des visiteurs ne doit jamais croiser celui de l'équipe. Pour les nouveaux locaux d'Allianc3, on a monté le réseau avec mes superviseurs&nbsp;: une passerelle UniFi qui crée les VLAN, trois bornes Wi-Fi&nbsp;7, un Wi-Fi interne, un Wi-Fi invité isolé et trois caméras de vidéosurveillance. Ma part, en binôme avec le responsable IT&nbsp;: fixer et brancher bornes et caméras, créer les réseaux et les deux Wi-Fi, optimiser la radio avec WiFi Doctor.</p>
                 <div class="project-stack">
-                    <span>UniFi UCG Ultra</span><span>U7 Pro</span><span>VLAN</span><span>DHCP</span><span>Reolink</span><span>WiFi Doctor</span>
+                    <span data-say="UCG Ultra : la passerelle. C’est elle qui crée les VLAN.">UniFi UCG Ultra</span><span data-say="U7 Pro : trois bornes Wi-Fi 7, reliées en Ethernet.">U7 Pro</span><span data-say="VLAN 2 : les invités, isolés. Ils ne voient qu’Internet.">VLAN</span><span data-say="DHCP : une plage par réseau, servie par la passerelle.">DHCP</span><span data-say="Reolink : trois caméras, flux restreint aux autorisés.">Reolink</span><span data-say="WiFi Doctor : canaux et puissance réglés sur mesure.">WiFi Doctor</span>
                 </div>
                 <div class="ref-skills">
                   <span class="ref-skills-k">Compétences du référentiel</span>
                   <ul class="ref-chips" aria-label="Compétences du référentiel">
-                    <li data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Concevoir une solution d’infrastructure réseau</span></li>
-                    <li data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Installer, tester et déployer une solution d’infrastructure réseau</span></li>
-                    <li data-bloc="B3"><b title="Bloc 3 — Cybersécurité des services informatiques (E7)">B3</b><span>Assurer la cybersécurité d’une infrastructure réseau</span></li>
-                    <li data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Mettre à disposition des utilisateurs un service informatique</span></li>
+                    <li tabindex="0" data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Concevoir une solution d’infrastructure réseau</span></li>
+                    <li tabindex="0" data-bloc="B2"><b title="Bloc 2 — Administration des systèmes et des réseaux (E6)">B2</b><span>Installer, tester et déployer une solution d’infrastructure réseau</span></li>
+                    <li tabindex="0" data-bloc="B3"><b title="Bloc 3 — Cybersécurité des services informatiques (E7)">B3</b><span>Assurer la cybersécurité d’une infrastructure réseau</span></li>
+                    <li tabindex="0" data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Mettre à disposition des utilisateurs un service informatique</span></li>
                   </ul>
                 </div>
                 <div class="term-strip" aria-hidden="true"><span class="prompt">$</span>ping passerelle &nbsp;<span class="ok2">● 4/4 reçus · 0&nbsp;%&nbsp;perte</span></div>
@@ -173,17 +173,17 @@
         <h2 class="section-title" data-step="02" data-pl="focus|Suis les pointillés : la donnée ne ment jamais."><span class="st-text">Zoom — architecture Centreon</span></h2>
         <p class="page-intro" style="margin-bottom:1.5rem">Le trajet d'une donnée de supervision, de la sonde sur l'hôte jusqu'au graphique dans l'interface web. Les pointillés suivent le flux — comme une alerte qui remonte la chaîne à trois heures du matin.</p>
         <div class="archi reveal" data-live aria-hidden="true">
-            <svg viewBox="0 0 760 140" role="img" aria-label="Schéma d'architecture Centreon">
+            <svg viewBox="0 0 760 140" role="img" aria-label="Schéma d'architecture Centreon" data-routes="host>engine>broker>db>web">
                 <defs>
                     <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                         <path class="flow-head" d="M0,0 L6,3 L0,6 Z"/>
                     </marker>
                 </defs>
-                <g class="node"><rect x="10" y="38" width="120" height="64" rx="0"/><text class="t" x="70" y="66">AlmaLinux</text><text class="s" x="70" y="84">hôte</text></g>
-                <g class="node"><rect x="170" y="38" width="120" height="64" rx="0"/><text class="t" x="230" y="66">Engine</text><text class="s" x="230" y="84">collecte</text></g>
-                <g class="node"><rect x="330" y="38" width="120" height="64" rx="0"/><text class="t" x="390" y="66">Broker</text><text class="s" x="390" y="84">transport</text></g>
-                <g class="node"><rect x="490" y="38" width="120" height="64" rx="0"/><text class="t" x="550" y="66">MariaDB</text><text class="s" x="550" y="84">stockage</text></g>
-                <g class="node"><rect x="650" y="38" width="100" height="64" rx="0"/><text class="t" x="700" y="66">Web UI</text><text class="s" x="700" y="84">supervision</text></g>
+                <g class="node" data-n="host"><rect x="10" y="38" width="120" height="64" rx="0"/><text class="t" x="70" y="66">AlmaLinux</text><text class="s" x="70" y="84">hôte</text></g>
+                <g class="node" data-n="engine"><rect x="170" y="38" width="120" height="64" rx="0"/><text class="t" x="230" y="66">Engine</text><text class="s" x="230" y="84">collecte</text></g>
+                <g class="node" data-n="broker"><rect x="330" y="38" width="120" height="64" rx="0"/><text class="t" x="390" y="66">Broker</text><text class="s" x="390" y="84">transport</text></g>
+                <g class="node" data-n="db"><rect x="490" y="38" width="120" height="64" rx="0"/><text class="t" x="550" y="66">MariaDB</text><text class="s" x="550" y="84">stockage</text></g>
+                <g class="node" data-n="web"><rect x="650" y="38" width="100" height="64" rx="0"/><text class="t" x="700" y="66">Web UI</text><text class="s" x="700" y="84">supervision</text></g>
                 <path class="flow" d="M130,70 L170,70" marker-end="url(#arrow)"/>
                 <path class="flow" d="M290,70 L330,70" marker-end="url(#arrow)"/>
                 <path class="flow" d="M450,70 L490,70" marker-end="url(#arrow)"/>
@@ -199,20 +199,20 @@
         <h2 class="section-title" data-step="03" data-pl="focus|Câblé comme en entreprise. En plus petit."><span class="st-text">Zoom — architecture du home lab</span></h2>
         <p class="page-intro" style="margin-bottom:1.5rem">La box reste au salon. Tout le reste vit dans ma chambre, derrière un switch 2,5&nbsp;Gb/s relié par deux câbles Ethernet. Ce qui doit tourner en continu (fichiers, films, DNS filtrant) va sur le NAS, qui consomme le moins&nbsp;; la tour sert aux labos SISR et à l'IA locale. Les pointillés suivent les câbles.</p>
         <div class="archi reveal" data-live aria-hidden="true">
-            <svg viewBox="0 0 760 220" role="img" aria-label="Schéma d'architecture du home lab">
+            <svg viewBox="0 0 760 220" role="img" aria-label="Schéma d'architecture du home lab" data-routes="box>switch>nas>svc|pc>switch>tour>lab|box>switch>tour>ia">
                 <defs>
                     <marker id="arrow-hl" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                         <path class="flow-head" d="M0,0 L6,3 L0,6 Z"/>
                     </marker>
                 </defs>
-                <g class="hl-node"><rect x="6" y="78" width="118" height="64"/><text class="t" x="65" y="106">Box</text><text class="s" x="65" y="124">salon · internet</text></g>
-                <g class="hl-node"><rect x="168" y="78" width="132" height="64"/><text class="t" x="234" y="106">Switch</text><text class="s" x="234" y="124">2,5 Gbit/s · chambre</text></g>
-                <g class="hl-node"><rect x="356" y="6" width="160" height="64"/><text class="t" x="436" y="34">NAS</text><text class="s" x="436" y="52">RAID 1 · 24 h/24</text></g>
-                <g class="hl-node"><rect x="356" y="78" width="160" height="64"/><text class="t" x="436" y="106">Tour</text><text class="s" x="436" y="124">Linux · Docker · Proxmox</text></g>
-                <g class="hl-node"><rect x="356" y="150" width="160" height="64"/><text class="t" x="436" y="178">PC</text><text class="s" x="436" y="196">administration</text></g>
-                <g class="hl-node is-service"><rect x="580" y="6" width="174" height="64"/><text class="t" x="667" y="34">Services 24/7</text><text class="s" x="667" y="52">Jellyfin · AdGuard Home</text></g>
-                <g class="hl-node is-service"><rect x="580" y="78" width="174" height="64"/><text class="t" x="667" y="106">IA locale</text><text class="s" x="667" y="124">Ollama · n8n</text></g>
-                <g class="hl-node is-service"><rect x="580" y="150" width="174" height="64"/><text class="t" x="667" y="178">Labos SISR</text><text class="s" x="667" y="196">AD · réseau · VM</text></g>
+                <g class="hl-node" data-n="box"><rect x="6" y="78" width="118" height="64"/><text class="t" x="65" y="106">Box</text><text class="s" x="65" y="124">salon · internet</text></g>
+                <g class="hl-node" data-n="switch"><rect x="168" y="78" width="132" height="64"/><text class="t" x="234" y="106">Switch</text><text class="s" x="234" y="124">2,5 Gbit/s · chambre</text></g>
+                <g class="hl-node" data-n="nas"><rect x="356" y="6" width="160" height="64"/><text class="t" x="436" y="34">NAS</text><text class="s" x="436" y="52">RAID 1 · 24 h/24</text></g>
+                <g class="hl-node" data-n="tour"><rect x="356" y="78" width="160" height="64"/><text class="t" x="436" y="106">Tour</text><text class="s" x="436" y="124">Linux · Docker · Proxmox</text></g>
+                <g class="hl-node" data-n="pc"><rect x="356" y="150" width="160" height="64"/><text class="t" x="436" y="178">PC</text><text class="s" x="436" y="196">administration</text></g>
+                <g class="hl-node is-service" data-n="svc"><rect x="580" y="6" width="174" height="64"/><text class="t" x="667" y="34">Services 24/7</text><text class="s" x="667" y="52">Jellyfin · AdGuard Home</text></g>
+                <g class="hl-node is-service" data-n="ia"><rect x="580" y="78" width="174" height="64"/><text class="t" x="667" y="106">IA locale</text><text class="s" x="667" y="124">Ollama · n8n</text></g>
+                <g class="hl-node is-service" data-n="lab"><rect x="580" y="150" width="174" height="64"/><text class="t" x="667" y="178">Labos SISR</text><text class="s" x="667" y="196">AD · réseau · VM</text></g>
                 <path class="flow" d="M124,110 L168,110" marker-end="url(#arrow-hl)"/>
                 <path class="flow" d="M300,110 C328,110 328,38 356,38" marker-end="url(#arrow-hl)"/>
                 <path class="flow" d="M300,110 L356,110" marker-end="url(#arrow-hl)"/>
@@ -228,22 +228,22 @@
         </section>
 
         <section id="zoom-reseau">
-        <h2 class="section-title" data-step="04" data-pl="check|Deux Wi-Fi, deux VLAN. Personne ne se croise."><span class="st-text">Zoom — réseau du nouveau bureau</span></h2>
+        <h2 class="section-title" data-step="04" data-pl="check|Regarde le paquet invité : il s’arrête à la passerelle."><span class="st-text">Zoom — réseau du nouveau bureau</span></h2>
         <p class="page-intro" style="margin-bottom:1.5rem">La passerelle UniFi, encadrée en bleu, est le cœur du bureau&nbsp;: c'est elle qui crée les réseaux. Les trois bornes, reliées en Ethernet, diffusent deux Wi-Fi&nbsp;: celui de l'équipe sur le réseau interne, et celui des invités dans le VLAN&nbsp;2, isolé — il ne voit qu'Internet. Les flux des caméras ne sont ouverts qu'aux personnes autorisées.</p>
         <div class="archi reveal" data-live aria-hidden="true">
-            <svg viewBox="0 0 760 220" role="img" aria-label="Schéma du réseau du nouveau bureau">
+            <svg viewBox="0 0 760 220" role="img" aria-label="Schéma du réseau du nouveau bureau" data-routes="box>gw>ap>wlan|guest>ap>gw!|gw>cam>video">
                 <defs>
                     <marker id="arrow-net" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                         <path class="flow-head" d="M0,0 L6,3 L0,6 Z"/>
                     </marker>
                 </defs>
-                <g class="hl-node"><rect x="6" y="78" width="118" height="64"/><text class="t" x="65" y="106">Box Free Pro</text><text class="s" x="65" y="124">accès internet</text></g>
-                <g class="hl-node is-core"><rect x="168" y="78" width="132" height="64"/><text class="t" x="234" y="106">Passerelle</text><text class="s" x="234" y="124">UCG Ultra · VLAN</text></g>
-                <g class="hl-node"><rect x="356" y="6" width="160" height="64"/><text class="t" x="436" y="34">Caméras</text><text class="s" x="436" y="52">3 × Reolink · interne</text></g>
-                <g class="hl-node"><rect x="356" y="78" width="160" height="64"/><text class="t" x="436" y="106">Bornes Wi-Fi</text><text class="s" x="436" y="124">3 × U7 Pro · Ethernet</text></g>
-                <g class="hl-node is-service"><rect x="580" y="6" width="174" height="64"/><text class="t" x="667" y="34">Flux vidéo</text><text class="s" x="667" y="52">appli Reolink · restreint</text></g>
-                <g class="hl-node is-service"><rect x="580" y="78" width="174" height="64"/><text class="t" x="667" y="106">Wi-Fi interne</text><text class="s" x="667" y="124">VLAN natif · équipe</text></g>
-                <g class="hl-node is-service"><rect x="580" y="150" width="174" height="64"/><text class="t" x="667" y="178">Wi-Fi invité</text><text class="s" x="667" y="196">VLAN 2 · isolé · internet</text></g>
+                <g class="hl-node" data-n="box"><rect x="6" y="78" width="118" height="64"/><text class="t" x="65" y="106">Box Free Pro</text><text class="s" x="65" y="124">accès internet</text></g>
+                <g class="hl-node is-core" data-n="gw"><rect x="168" y="78" width="132" height="64"/><text class="t" x="234" y="106">Passerelle</text><text class="s" x="234" y="124">UCG Ultra · VLAN</text></g>
+                <g class="hl-node" data-n="cam"><rect x="356" y="6" width="160" height="64"/><text class="t" x="436" y="34">Caméras</text><text class="s" x="436" y="52">3 × Reolink · interne</text></g>
+                <g class="hl-node" data-n="ap"><rect x="356" y="78" width="160" height="64"/><text class="t" x="436" y="106">Bornes Wi-Fi</text><text class="s" x="436" y="124">3 × U7 Pro · Ethernet</text></g>
+                <g class="hl-node is-service" data-n="video"><rect x="580" y="6" width="174" height="64"/><text class="t" x="667" y="34">Flux vidéo</text><text class="s" x="667" y="52">appli Reolink · restreint</text></g>
+                <g class="hl-node is-service" data-n="wlan"><rect x="580" y="78" width="174" height="64"/><text class="t" x="667" y="106">Wi-Fi interne</text><text class="s" x="667" y="124">VLAN natif · équipe</text></g>
+                <g class="hl-node is-service" data-n="guest"><rect x="580" y="150" width="174" height="64"/><text class="t" x="667" y="178">Wi-Fi invité</text><text class="s" x="667" y="196">VLAN 2 · isolé · internet</text></g>
                 <path class="flow" d="M124,110 L168,110" marker-end="url(#arrow-net)"/>
                 <path class="flow" d="M300,110 C328,110 328,38 356,38" marker-end="url(#arrow-net)"/>
                 <path class="flow" d="M300,110 L356,110" marker-end="url(#arrow-net)"/>
@@ -261,7 +261,7 @@
             <a href="./fichiers/Doc_Technique_Portfolio.pdf" class="btn btn-primary" target="_blank" rel="noopener">Comment j'ai fabriqué ce portfolio <span class="arr">→</span></a>
             <span class="zoom-ref">MAKING-OF — 25 PAGES</span>
             <ul class="ref-chips ref-chips--inline" aria-label="Compétence du référentiel mobilisée">
-                <li data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Développer la présence en ligne de l’organisation</span></li>
+                <li tabindex="0" data-bloc="B1"><b title="Bloc 1 — Support et mise à disposition de services informatiques (E5)">B1</b><span>Développer la présence en ligne de l’organisation</span></li>
             </ul>
         </div>
     </main>

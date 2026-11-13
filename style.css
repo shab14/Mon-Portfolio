@@ -1684,6 +1684,11 @@ h3 {
 .ref-chips li[data-bloc="B3"] { --bloc: var(--gold-ink); }
 [data-theme="dark"] .ref-chips li[data-bloc="B3"] b { color: var(--panel-bg); }   /* or clair : texte sombre */
 .ref-chips--inline { width: 100%; justify-content: center; margin-top: 0.4rem; }
+.ref-chips li { cursor: pointer; transition: border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.ref-chips li:hover, .ref-chips li:focus-visible { border-color: var(--bloc); outline: none; }
+.ref-chips li:focus-visible { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--bloc); }
+.ref-chips li.is-lit { animation: chip-lit .9s var(--ease-out); }
+@keyframes chip-lit { 0% { box-shadow: 0 0 0 0 var(--bloc); } 40% { box-shadow: 3px 3px 0 var(--bloc); } 100% { box-shadow: 0 0 0 0 transparent; } }
 .card.is-placeholder .ref-chips li { color: var(--text-soft); }
 .card.is-placeholder .ref-chips li b { opacity: 0.75; }
 
@@ -1954,9 +1959,13 @@ h3 {
 .archi.is-live .flow { animation-play-state: running; }
 @keyframes flow { to { stroke-dashoffset: -24; } }
 .archi .flow-head { fill: var(--red); }
-.archi .node.is-current rect { fill: var(--red); stroke: var(--red); }
-.archi .node.is-current .t { fill: #fff; }
-.archi .node.is-current .s { fill: rgba(255,255,255,0.75); }
+.archi .node.is-current rect, .archi .hl-node.is-current rect { fill: var(--red); stroke: var(--red); }
+.archi .node.is-current .t, .archi .hl-node.is-current .t { fill: #fff; }
+.archi .node.is-current .s, .archi .hl-node.is-current .s { fill: rgba(255,255,255,0.75); }
+/* v6 : brique qui refuse le paquet invité (isolation VLAN) */
+.archi .hl-node.is-blocked rect { stroke: var(--red); stroke-width: 2.5; stroke-dasharray: none; animation: node-refuse .36s var(--ease-snap); }
+.archi .hl-node.is-blocked .t { fill: var(--red); }
+@keyframes node-refuse { 0%, 100% { transform: translate(0, 0); } 30% { transform: translate(-3px, 0); } 65% { transform: translate(3px, 0); } }
 
 /* Rangée d'actions sous un zoom (doc, lien) */
 .zoom-actions {
@@ -3567,6 +3576,13 @@ html.shutter-in main { animation-delay: .3s; }
     100% { scale: 1;   opacity: 1; }
 }
 .card.is-stamped { animation: card-thump .26s var(--ease-out); }
+/* v6 : tampon « LIVRÉ » sur les cartes projet, posé par l'inspecteur */
+.project-card > .qc-stamp--card { left: auto; right: 1.1rem; top: 3.6rem; z-index: 1; translate: 0 0; rotate: -8deg; }
+.pl-inspector .pl-stamp { opacity: 0; transition: opacity .12s; }          /* le tampon ne sort que pour tamponner */
+.pl-inspector[data-pose^="stamp"] .pl-stamp { opacity: 1; }
+.pl-inspector.is-flight { transition: translate .9s var(--ease-out); z-index: 5; }
+.pl-inspector .pl-sparks { opacity: 0; }
+.pl-inspector.is-working[data-pose="work"] .pl-sparks { animation: pl-sparks 2.6s steps(1, end) infinite; }
 @keyframes card-thump { 0%, 100% { translate: 0 0; } 35% { translate: 0 2px; } }
 @media (max-width: 760px) {
     .card.has-inspector { padding-right: 1.25rem; min-height: 0; }
@@ -3607,6 +3623,11 @@ html.shutter-in main { animation-delay: .3s; }
 .pl-packet .pp-v { fill: #17181C; }
 .pl-packet .pp-e { fill: #6F9BFF; }
 .pl-packet .pp-r { fill: var(--red); }
+.pl-packet.is-guest .pp-e { fill: var(--gold); }                       /* paquet invité : visière or */
+.pl-packet .pp-x { stroke: var(--red); stroke-width: 3; stroke-linecap: square; opacity: 0; transition: opacity .12s; }
+.pl-packet-in.is-blocked .pp-x { opacity: 1; }
+.pl-packet-in.is-blocked { animation: pp-refuse .42s var(--ease-snap); }
+@keyframes pp-refuse { 0% { transform: translate(0, 0); } 35% { transform: translate(-6px, -4px) rotate(-8deg); } 70% { transform: translate(4px, 0) rotate(4deg); } 100% { transform: translate(0, 0); } }
 [data-theme="dark"] .pl-packet .pp-h { fill: #E6E4DD; stroke: #0E0F12; }
 [data-theme="dark"] .pl-packet .pp-s { fill: #BDBAB2; }
 

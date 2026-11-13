@@ -674,6 +674,15 @@
     });
   })();
 
+  /* ---- v6 : téléchargements et liens externes → le pilote réagit (kit:download / kit:ext) ---- */
+  document.addEventListener('click', (e) => {
+    if (e.button !== 0) return;
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    if (a.hasAttribute('download')) emit('kit:download', { href: a.getAttribute('href') || '' });
+    else if (a.target === '_blank' && a.origin !== location.origin) emit('kit:ext', { href: a.href });
+  });
+
   /* ============================================================
      Filtre certifications (chips provider + recherche live)
      Progressive enhancement : sans JS, toutes les cartes restent.

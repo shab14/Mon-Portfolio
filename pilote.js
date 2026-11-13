@@ -16,6 +16,7 @@
      kit:feed (flux de veille)  kit:filter (filtre des certifs)
      kit:check (supervision live)  kit:net (réseau coupé / rétabli, mode oral)
      kit:notice (notice de visite, antenne V)  kit:tour (visite guidée)
+     kit:download / kit:ext (v6 : fichiers téléchargés, liens externes)
    Un seul personnage : les apparitions « station » (hero, portrait,
    chantier, veille, contact, médaille, tampon, banc du hangar) et le
    dock ne se montrent jamais en même temps — il va de l'une à l'autre.
@@ -1035,21 +1036,144 @@
     return pl;
   }
 
-  /* ---- WORK : slot P-02 en chantier, il serre les boulons ---- */
-  function workPilote(host) {
-    const pl = new Pilote(host, { wrench: true, mood: 'focus', pose: 'work', scan: false, bubble: true, interactive: true, station: true });
-    const card = host.closest('.card') || host;
-    if (finePointer) {
-      card.addEventListener('pointerenter', () => {
-        host.classList.add('is-paused-work');
-        pl.mood('open').lookAt(window.innerWidth / 2, window.innerHeight / 2);
-      });
-      card.addEventListener('pointerleave', () => {
-        host.classList.remove('is-paused-work');
-        pl.mood('focus').release();
-      });
+  /* ---- INSPECTOR (v6) : contrôle qualité des projets ----
+     Un seul robot pour les trois cartes. Il démarre sur P-01, tamponne
+     « LIVRÉ », vole jusqu'à P-03, tamponne, puis s'installe sur le chantier
+     P-02, clé en main (étincelles). Chaque étape attend que sa carte soit à
+     l'écran : sur mobile il suit l'ordre des cartes (P-01, P-02, P-03) et
+     finit debout sur la dernière. Le vol est un FLIP : l'hôte change de
+     carte dans le DOM, puis se déplace de l'ancienne position à la nouvelle. */
+  const INSPECT_LINES = {
+    'P-01': 'Centreon : 5 briques, toutes vertes. Livré.',
+    'P-03': 'Deux VLAN, zéro croisement. Testé, livré.',
+    'P-02': 'P-02 : en chantier. Je suis dessus.',
+  };
+  function inspectorPilote(host) {
+    const pl = new Pilote(host, { wrench: true, stamp: true, mood: 'focus', scan: false, bubble: true, interactive: true, station: true });
+    const cards = $$('.project-card');
+    const byPart = (k) => cards.find(c => c.dataset.part === k);
+    const narrow = window.innerWidth < 900;
+    const order = (narrow ? ['P-01', 'P-02', 'P-03'] : ['P-01', 'P-03', 'P-02']).map(byPart).filter(Boolean);
+    const slotOf = (card) => card.querySelector('.project-foot');
+    const cardOf = () => host.closest('.project-card');
+    const vis = new Map();
+    let step = 0, moving = false, working = false;
+
+    const markOf = (card) => {
+      let mark = card.querySelector(':scope > .qc-stamp');
+      if (!mark) {
+        mark = document.createElement('span');
+        mark.className = 'qc-stamp qc-stamp--card';
+        mark.setAttribute('aria-hidden', 'true');
+        mark.innerHTML = '<b>LIVRÉ</b><i>' + (card.dataset.stamp || '') + '</i>';
+        card.appendChild(mark);
+      }
+      return mark;
+    };
+    const stampCard = (card, then) => {
+      const mark = markOf(card);
+      if (reduced) { mark.classList.add('is-on'); pl.mood('check', 1800); if (then) then(); return; }
+      pl.busy = true;
+      pl.pose('stamp-up').mood('focus');
+      pl.play([
+        [560, () => pl.pose('stamp-down')],
+        [720, () => {
+          mark.classList.remove('is-thump'); void mark.offsetWidth; mark.classList.add('is-on', 'is-thump');
+          card.classList.remove('is-stamped'); void card.offsetWidth; card.classList.add('is-stamped');
+          pl.mood('check', 1800);
+        }],
+        [1100, () => pl.pose('stand')],
+        [1300, () => { pl.busy = false; if (then) then(); }],
+      ]);
+    };
+    const setWorking = (on) => {
+      working = on;
+      host.classList.toggle('is-working', on);
+      pl.basePose = on ? 'work' : 'stand';
+      pl.baseMood = on ? 'focus' : null;
+      pl.pose(pl.basePose).mood(pl.baseMood);
+    };
+    const flyTo = (card, then) => {
+      const slot = slotOf(card);
+      if (!slot) { then(); return; }
+      if (reduced) { slot.appendChild(host); pl._box = null; then(); return; }
+      moving = true;
+      pl.hush(); pl.unaim();
+      if (working) setWorking(false);
+      const a = host.getBoundingClientRect();
+      slot.appendChild(host);
+      const b = host.getBoundingClientRect();
+      host.classList.remove('is-flight');
+      host.style.translate = `${(a.left - b.left).toFixed(1)}px ${(a.top - b.top).toFixed(1)}px`;
+      void host.offsetWidth;
+      pl.prep(true);
+      setTimeout(() => { pl.prep(false); pl.fly(true); host.classList.add('is-flight'); host.style.translate = '0 0'; }, 160);
+      setTimeout(() => {
+        pl.fly(false); pl.land(true);
+        host.classList.remove('is-flight'); host.style.removeProperty('translate');
+        pl._box = null; moving = false;
+        then();
+      }, 1080);
+    };
+    const next = () => {
+      if (moving || pl.busy) return;
+      const card = order[step];
+      if (!card || !vis.get(card)) return;            // on attend que la carte soit à l'écran
+      const act = () => {
+        const part = card.dataset.part;
+        if (part === 'P-02') {
+          setWorking(true);
+          pl.say(INSPECT_LINES[part], 2200);
+          step++;
+          setTimeout(next, 2600);
+        } else {
+          stampCard(card, () => {
+            pl.say(INSPECT_LINES[part], 2200);
+            step++;
+            setTimeout(next, 1600);
+          });
+        }
+      };
+      if (cardOf() === card) setTimeout(act, step === 0 && !reduced ? 500 : 0);
+      else flyTo(card, act);
+    };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((ents) => {
+        ents.forEach(en => vis.set(en.target, en.isIntersecting));
+        if (ents.some(en => en.isIntersecting)) next();
+      }, { threshold: 0.45 }).observe(order[0]);
+      order.forEach(c => c !== order[0] && new IntersectionObserver((ents) => {
+        ents.forEach(en => vis.set(en.target, en.isIntersecting));
+        next();
+      }, { threshold: 0.45 }).observe(c));
+    } else { order.forEach(c => vis.set(c, true)); next(); }
+    /* mouvement réduit : tout est posé d'emblée (tampons visibles, lui sur le chantier) */
+    if (reduced) {
+      order.forEach(c => { if (c.dataset.part !== 'P-02') markOf(c).classList.add('is-on'); });
+      const p02 = byPart('P-02');
+      if (p02 && slotOf(p02)) { slotOf(p02).appendChild(host); setWorking(true); }
+      step = order.length;
     }
-    host.addEventListener('click', () => pl.mood('happy', 1600).say('Bientôt livré. Promis.', 2000));
+
+    /* au chantier : survol = il lève le nez de la clé ; clic = promesse */
+    cards.forEach(card => {
+      if (finePointer) {
+        card.addEventListener('pointerenter', () => {
+          if (cardOf() !== card || moving) return;
+          if (working) { host.classList.add('is-paused-work'); pl.mood('open').lookAt(window.innerWidth / 2, window.innerHeight / 2); }
+        });
+        card.addEventListener('pointerleave', () => {
+          if (cardOf() !== card) return;
+          host.classList.remove('is-paused-work');
+          if (!pl.busy) pl.mood(pl.baseMood).release();
+        });
+      }
+    });
+    host.addEventListener('click', () => {
+      if (moving || pl.busy) return;
+      if (working) pl.mood('happy', 1600).say('Bientôt livré. Promis.', 2000);
+      else { pl.mood('check', 1600).say('Contrôle qualité : conforme.', 2000); pl.hop(); }
+    });
     return pl;
   }
 
@@ -1065,6 +1189,18 @@
     let hovered = false;
     host.addEventListener('pointerenter', () => { hovered = true; });
     host.addEventListener('pointerleave', () => { hovered = false; });
+    /* v6 : la jauge « tension élevée » le fait réagir ; il suit le journal du regard */
+    const gauge = document.querySelector('.gauge-card');
+    if (gauge) onReveal(gauge, () => setTimeout(() => {
+      if (reduced || hovered || pl.busy || !pl.visible) return;
+      host.classList.remove('is-watching');
+      pl.lookAtEl(gauge).mood('focus', 2400).say('RAM ×3,5 en un an. Je garde mes barrettes.', 2400);
+      setTimeout(() => { if (!hovered) { pl.release(); host.classList.add('is-watching'); } }, 2600);
+    }, 900), { threshold: 0.5 });
+    if (finePointer) $$('.timeline li').forEach(li => {
+      li.addEventListener('pointerenter', () => { if (hovered || pl.busy || !pl.visible) return; host.classList.remove('is-watching'); pl.lookAtEl(li); });
+      li.addEventListener('pointerleave', () => { if (hovered || pl.busy) return; pl.release(); host.classList.add('is-watching'); });
+    });
     const term = host.parentElement && host.parentElement.querySelector('.term');
     document.addEventListener('kit:feed', (e) => {
       if (reduced || hovered || !pl.visible || document.hidden) return;
@@ -1233,19 +1369,26 @@
     return pl;
   }
 
-  /* ---- PAQUET : schéma Centreon (projets), une donnée qui voyage ----
-     La tête du pilote saute de brique en brique, comme une donnée
-     qui remonte la chaîne : chaque brique s'allume quand il s'y pose,
-     jusqu'à l'interface web. Puis il repart de l'hôte. */
+  /* ---- PAQUET : une donnée qui voyage dans les schémas (projets) ----
+     La tête du pilote saute de brique en brique le long des routes
+     déclarées sur le <svg> (data-routes="a>b>c|d>e!") : chaque brique
+     s'allume quand il s'y pose. Une route terminée par « ! » est bloquée :
+     le paquet (invité, visière or) s'arrête net sur la dernière brique,
+     croix rouge — c'est l'isolation du VLAN invité, montrée plutôt que dite. */
   function initPackets() {
     if (reduced) return;
-    $$('.archi:not(.is-placeholder) svg').forEach((svg) => {
-      const nodes = $$('.node', svg);
-      if (nodes.length < 2) return;
-      const xs = nodes.map((n) => {
+    $$('.archi svg[data-routes]').forEach((svg) => {
+      const nodes = {};
+      $$('[data-n]', svg).forEach(n => { nodes[n.dataset.n] = n; });
+      const routes = (svg.dataset.routes || '').split('|').map(s => s.trim()).filter(Boolean).map(r => ({
+        blocked: /!$/.test(r),
+        steps: r.replace(/!$/, '').split('>').map(s => nodes[s.trim()]).filter(Boolean),
+      })).filter(r => r.steps.length > 1);
+      if (!routes.length) return;
+      const pos = (n) => {
         const r = n.querySelector('rect');
-        return r ? parseFloat(r.getAttribute('x')) + parseFloat(r.getAttribute('width')) / 2 : 0;
-      });
+        return [parseFloat(r.getAttribute('x')) + parseFloat(r.getAttribute('width')) / 2, parseFloat(r.getAttribute('y')) - 11];
+      };
       const NS = 'http://www.w3.org/2000/svg';
       const g = document.createElementNS(NS, 'g');
       g.setAttribute('class', 'pl-packet');
@@ -1253,36 +1396,44 @@
         '<g class="pl-packet-in">' +
         poly('-11,-5 -8,-9 8,-9 11,-5 11,4 8,8 -8,8 -11,4', 'pp-h') + poly('3.6,-9 8,-9 11,-5 11,4 8,8 3.6,8', 'pp-s') +
         poly('-8.6,-3.6 8.6,-3.6 8.6,1 5.6,4.2 -5.6,4.2 -8.6,1', 'pp-v') + rect(-3.6, -1.9, 7.2, 1.8, 'pp-e') +
-        rect(-1.6, -9.8, 3.2, 1.4, 'pp-r') + '</g>';
+        rect(-1.6, -9.8, 3.2, 1.4, 'pp-r') +
+        grp('pp-x', line(-7, -14, 7, 0) + line(7, -14, -7, 0)) + '</g>';
       svg.appendChild(g);                          /* au-dessus des briques : il se pose dessus */
       const inner = g.firstChild;
-      let i = 0, t = 0, live = false;
-      const at = (k) => { g.style.transform = `translate(${xs[k]}px, 27px)`; };
+      let ri = 0, i = 0, t = 0, live = false;
+      const route = () => routes[ri % routes.length];
+      const at = (n) => { const [x, y] = pos(n); g.style.transform = `translate(${x}px, ${y}px)`; };
       const hop = () => { inner.classList.remove('is-hop'); void inner.getBoundingClientRect(); inner.classList.add('is-hop'); };
-      const light = (k) => nodes.forEach((n, j) => n.classList.toggle('is-current', j === k));
+      const light = (n) => Object.values(nodes).forEach(m => m.classList.toggle('is-current', m === n));
+      const unblock = () => { Object.values(nodes).forEach(m => m.classList.remove('is-blocked')); inner.classList.remove('is-blocked'); };
       const step = () => {
         clearTimeout(t);
         if (!live) return;
-        light(i);
-        const last = i === nodes.length - 1;
+        const R = route();
+        const n = R.steps[i];
+        const last = i === R.steps.length - 1;
+        if (last && R.blocked) { light(null); n.classList.add('is-blocked'); inner.classList.add('is-blocked'); }
+        else light(n);
         t = setTimeout(() => {
           if (!live) return;
-          if (last) {                               /* il s'éclipse, repart de l'hôte */
+          if (last) {                               /* il s'éclipse, repart sur la route suivante */
             g.classList.add('is-out');
             t = setTimeout(() => {
-              light(-1);
-              g.classList.add('is-reset'); i = 0; at(0);
+              light(null); unblock();
+              ri++; i = 0;
+              g.classList.add('is-reset'); g.classList.toggle('is-guest', route().blocked); at(route().steps[0]);
               void g.getBoundingClientRect();
               g.classList.remove('is-reset', 'is-out');
               t = setTimeout(step, 700);
             }, 260);
           } else {
-            light(-1); i++; at(i); hop();
+            light(null); i++; at(R.steps[i]); hop();
             t = setTimeout(step, 520);
           }
-        }, last ? 1500 : 650);
+        }, last ? (R.blocked ? 1300 : 1500) : 650);
       };
-      at(0);
+      g.classList.toggle('is-guest', route().blocked);
+      at(route().steps[0]);
       const wrap = svg.closest('.archi') || svg;
       if ('IntersectionObserver' in window) {
         new IntersectionObserver((ents) => {
@@ -1290,7 +1441,7 @@
             const was = live;
             live = en.isIntersecting;
             if (live && !was) t = setTimeout(step, 700);
-            if (!live) { clearTimeout(t); light(-1); }
+            if (!live) { clearTimeout(t); light(null); unblock(); }
           });
         }, { threshold: 0.4 }).observe(wrap);
       } else { live = true; step(); }
@@ -1557,7 +1708,7 @@
   const POSES = ['stand', 'wave', 'salute', 'point', 'victory', 'celebrate', 'lookout', 'scratch', 'crouch',
                  'watch', 'wipe', 'stretch', 'work', 'stamp-up', 'stamp-down'];
 
-  const PRESETS = { hero: heroPilote, peek: peekPilote, work: workPilote, watch: watchPilote,
+  const PRESETS = { hero: heroPilote, peek: peekPilote, inspector: inspectorPilote, watch: watchPilote,
                     hello: helloPilote, lost: lostPilote, badge: badgePilote, stamp: stampPilote, hangar: hangarPilote };
 
   /* ============================================================
@@ -1821,6 +1972,74 @@
       p.hop();
     }
   });
+
+  /* ---- v6 : il commente ce que tu survoles (data-say sur les tags techno) ---- */
+  let sayAt = 0;
+  const sayFrom = (el) => {
+    const p = speaker();
+    if (!p || p.busy || !el.dataset.say) return;
+    const now = Date.now();
+    if (now - sayAt < 1200) return;
+    sayAt = now;
+    p.lookAtEl(el).mood('open', 1800).say(el.dataset.say, 1800);
+    clearTimeout(p._sayT);
+    p._sayT = setTimeout(() => { if (!p.busy) p.release(); }, 2000);
+  };
+  if (finePointer) {
+    document.addEventListener('pointerover', (e) => {
+      const el = e.target.closest('[data-say]');
+      if (el && !(e.relatedTarget && el.contains(e.relatedTarget))) sayFrom(el);
+    });
+  } else {
+    document.addEventListener('click', (e) => { const el = e.target.closest('[data-say]'); if (el) sayFrom(el); });
+  }
+
+  /* ---- v6 : compétences du référentiel — il pointe la chip et explique le bloc ---- */
+  const BLOCS = {
+    B1: ['open',  'Bloc 1 — support et services. C’est l’oral E5, avec ce portfolio.'],
+    B2: ['check', 'Bloc 2 — systèmes et réseaux. L’épreuve E6, celle de l’option SISR.'],
+    B3: ['focus', 'Bloc 3 — cybersécurité. L’épreuve E7, l’écrit de 4 heures.'],
+  };
+  const explainChip = (li) => {
+    li.classList.remove('is-lit'); void li.offsetWidth; li.classList.add('is-lit');
+    const b = BLOCS[li.dataset.bloc];
+    const p = speaker();
+    if (!b || !p) return;
+    p.hush();
+    if (!p.busy && p.o.variant !== 'peek') p.aimAt(li);
+    p.mood(b[0], 2600).say(b[1], 2400);
+    clearTimeout(p._chipT);
+    p._chipT = setTimeout(() => { if (!p.busy) p.release(); }, 2800);
+  };
+  document.addEventListener('click', (e) => { const li = e.target.closest('.ref-chips li'); if (li) explainChip(li); });
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.ref-chips li')) { e.preventDefault(); explainChip(e.target); }
+  });
+
+  /* ---- v6 : téléchargements et liens externes — il te tend le fichier ---- */
+  const FILE_LINES = [
+    [/CV_/i,            'check', 'CV : une page. Bonne lecture.'],
+    [/Centreon/i,       'happy', 'Doc Centreon : 36 pages, du dnf install au premier hôte vert.'],
+    [/Home_Lab/i,       'open',  'Home lab : plan, budget, phases. Tout est écrit.'],
+    [/Reseau/i,         'check', 'Réseau du bureau : la fiche complète, tests inclus.'],
+    [/Tableau/i,        'focus', 'Le tableau de synthèse. Il se remplit ticket après ticket.'],
+    [/Doc_Technique/i,  'wink',  'Le making-of : 25 pages sur ma fabrication.'],
+  ];
+  const EXT_LINES = [
+    [/linkedin/i,   'wink',  'On se retrouve sur LinkedIn.'],
+    [/github/i,     'check', 'Le code est public. Tout est là.'],
+    [/scholanova/i, 'happy', 'Schola Nova. Salue-les de ma part.'],
+  ];
+  const handOver = (table, href, fallback) => {
+    const p = speaker();
+    if (!p) return;
+    const hit = table.find(([re]) => re.test(href)) || [null, ...fallback];
+    p.hush();
+    p.mood(hit[1], 2400).say(hit[2], 2400);
+    if (!p.busy && p.o.variant !== 'peek' && !p.o.noArmR) p.pose('point', 1800);
+  };
+  document.addEventListener('kit:download', (e) => handOver(FILE_LINES, (e.detail && e.detail.href) || '', ['check', 'Fichier envoyé. Bonne lecture.']));
+  document.addEventListener('kit:ext', (e) => handOver(EXT_LINES, (e.detail && e.detail.href) || '', ['open', 'Lien externe. Je garde la porte ouverte.']));
 
   /* palette ⌘K → « Appeler le pilote » : le plus proche répond */
   document.addEventListener('kit:call', () => {

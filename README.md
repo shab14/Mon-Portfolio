@@ -42,7 +42,7 @@ La figurine du kit : même grammaire que le site (aplats, lignes de panneau, omb
 | Compagnon (toutes les pages) | le bouton « remonter » devient son socle : il atterrit, commente les sections, décolle au clic |
 | À propos | passe la tête au-dessus du cadre photo (coucou-caché au clic) |
 | Épreuves | contrôle qualité : il tamponne l'épreuve E5 « EN COURS » (à repasser en « LIVRÉE » quand le tableau de synthèse est rempli) |
-| Projets | P-02 : accroupi, il serre les boulons (clé à cliquet, étincelles) · sa tête voyage dans le schéma Centreon |
+| Projets | inspecteur : il tamponne « LIVRÉ » sur P-01 et P-03, puis s'installe sur le chantier P-02 (clé à cliquet, étincelles) · il commente les technos survolées · sa tête voyage dans les trois schémas (le paquet invité est bloqué à la passerelle) |
 | Veille | en sentinelle sur la console, main en visière |
 | Certifications | il brandit la médaille, puis la garde épinglée sur tout le site |
 | Contact | accueille, regarde le champ en cours de saisie, célèbre l'envoi |
@@ -54,7 +54,7 @@ La figurine du kit : même grammaire que le site (aplats, lignes de panneau, omb
 **Le réutiliser** (tout est déclaratif) :
 
 ```html
-<div data-pilote="hero|peek|work|watch|hello|lost|badge|stamp|hangar"></div>   <!-- une apparition -->
+<div data-pilote="hero|peek|inspector|watch|hello|lost|badge|stamp|hangar"></div>   <!-- une apparition -->
 <h2 data-pl="happy|Texte de la bulle">…</h2>                       <!-- réaction du compagnon -->
 <main data-pl-hello="check|Phrase d'arrivée sur la page">          <!-- salut à l'arrivée -->
 ```
