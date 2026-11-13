@@ -1638,6 +1638,55 @@ h3 {
 }
 .btn-note { margin-top: 0.7rem; font-size: 0.82rem; color: var(--text-mute); }
 
+/* ---- Compétences du référentiel BTS SIO (chips B1 / B2 / B3) ----
+   Le jury E5/E6 cherche ce mapping : on le rend lisible sur chaque projet
+   et sur chaque épreuve. Couleur = bloc : B1 bleu (structure), B2 rouge
+   (action), B3 or (collector). */
+.ref-skills { margin: 0.9rem 0 0.1rem; }
+.ref-skills-k {
+    display: block;
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    margin-bottom: 0.4rem;
+}
+.ref-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.ref-chips li {
+    display: inline-flex;
+    align-items: stretch;
+    max-width: 100%;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    line-height: 1.25;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    --bloc: var(--ink);
+}
+.ref-chips li b {
+    display: flex;
+    align-items: center;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    padding: 0.3rem 0.42rem;
+    color: #fff;
+    background: var(--bloc);
+    cursor: help;
+}
+.ref-chips li span { padding: 0.3rem 0.55rem 0.26rem; }
+.ref-chips li[data-bloc="B1"] { --bloc: var(--blue-plate); }
+.ref-chips li[data-bloc="B2"] { --bloc: var(--red); }
+.ref-chips li[data-bloc="B3"] { --bloc: var(--gold-ink); }
+[data-theme="dark"] .ref-chips li[data-bloc="B3"] b { color: var(--panel-bg); }   /* or clair : texte sombre */
+.ref-chips--inline { width: 100%; justify-content: center; margin-top: 0.4rem; }
+.card.is-placeholder .ref-chips li { color: var(--text-soft); }
+.card.is-placeholder .ref-chips li b { opacity: 0.75; }
+
 /* ============================================================
    Certifications
    ============================================================ */
