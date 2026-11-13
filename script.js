@@ -523,6 +523,17 @@
     update();
   })();
 
+  /* ---- Schémas d'architecture : sur petit écran ils défilent horizontalement ;
+     on le dit (étiquette « faire défiler ») jusqu'au premier défilement. ---- */
+  (function archiScroll() {
+    const archis = $$('.archi');
+    if (!archis.length) return;
+    const update = () => archis.forEach(a => a.classList.toggle('can-scroll', a.scrollWidth > a.clientWidth + 4));
+    update();
+    window.addEventListener('resize', update, { passive: true });
+    archis.forEach(a => a.addEventListener('scroll', () => a.classList.add('scrolled'), { passive: true, once: true }));
+  })();
+
   /* ============================================================
      Animations continues hors écran → en pause (radar, flux…)
      ============================================================ */

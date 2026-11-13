@@ -1586,7 +1586,8 @@
       if (!present || pl.busy) return;
       const [m, txt] = parse(spec);
       if (m) pl.mood(m, 2600);
-      if (txt && wide()) pl.say(txt, 2400);
+      /* v6 : il parle aussi sur mobile (bulle plus courte dans le temps) */
+      if (txt) pl.say(txt, wide() ? 2400 : 2000);
       else pl.blink();
     };
 
@@ -1673,6 +1674,22 @@
       stationHosts.forEach(el => sio.observe(el));
     }
 
+    /* v6 — tactile : un tap sur le robot le fait parler, un tap sur la base « TOP » remonte.
+       (écouteur en capture : il passe avant le défilement de script.js) */
+    const DOCK_LINES = [
+      ['happy', 'SH-14, compagnon de lecture. « TOP » pour remonter.'],
+      ['check', 'Je surveille la page. Tout est vert.'],
+      ['wink', 'Six pages à monter. Regarde le pied de page.'],
+    ];
+    let dli = 0;
+    if (!finePointer) btn.addEventListener('click', (e) => {
+      if (!present || !e.target.closest('.dock-pilot')) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (pl.busy) return;
+      const [m, t] = DOCK_LINES[dli++ % DOCK_LINES.length];
+      pl.mood(m, 2200).say(t, 2200);
+      pl.hop();
+    }, true);
     btn.addEventListener('click', () => {
       if (reduced || !present) return;
       pl.hush();
@@ -1708,7 +1725,7 @@
         setTimeout(() => {
           if (!present || pl.busy) return;
           pl.mood('happy', 2600).wave(1600);
-          if (wide()) pl.say('Fin du kit. Merci de l’avoir monté avec moi.', 2600);
+          pl.say(wide() ? 'Fin du kit. Merci de l’avoir monté avec moi.' : 'Fin du kit. Merci !', 2600);
         }, 350);
       }, { threshold: 0.5 });
       fio.observe(foot);

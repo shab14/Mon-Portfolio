@@ -1927,8 +1927,26 @@ h3 {
 .gauge-label p { color: var(--text-soft); font-size: 0.95rem; }
 
 /* Schéma d'architecture (flux) */
-.archi { padding: 1.6rem; margin-bottom: var(--s-5); overflow-x: auto; }
+.archi { position: relative; padding: 1.6rem; margin-bottom: var(--s-5); overflow-x: auto; scrollbar-width: thin; }
 .archi svg { width: 100%; min-width: 540px; height: auto; display: block; }
+/* petit écran : le schéma dépasse → étiquette « faire défiler », jusqu'au 1er défilement */
+.archi.can-scroll:not(.scrolled)::after {
+    content: '↔  faire défiler';
+    position: sticky;
+    left: 0;
+    display: block;
+    width: max-content;
+    margin: 0.7rem 0 -0.4rem auto;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red-ink);
+    border: 1px solid var(--red-ink);
+    padding: 0.3rem 0.5rem 0.24rem;
+    pointer-events: none;
+}
 .archi .node rect { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.5; rx: 0; }
 .archi .node .t { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; fill: var(--ink); text-anchor: middle; }
 .archi .node .s { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--text-mute); text-anchor: middle; }
@@ -3367,6 +3385,7 @@ html.shutter-in main { animation-delay: .3s; }
 }
 .scroll-top.dock:hover .dock-base i { border-bottom-color: #fff; transform: translateY(-2px); }
 .dock-pilot .pl-say { max-width: 210px; }
+@media (max-width: 900px) { .dock-pilot .pl-say { max-width: min(210px, 58vw); font-size: 0.66rem; } }
 /* le robot fait partie du bouton (cliquable)… mais jamais quand le dock est rangé */
 .scroll-top.dock:not(.show) .pl-body { pointer-events: none; }
 .dock-pilot {
