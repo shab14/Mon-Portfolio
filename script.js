@@ -1661,7 +1661,9 @@
         `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
       if (status) {
-        status.textContent = 'Votre messagerie va s\u2019ouvrir avec le message pré-rempli ✓';
+        /* honnête : sans client mail configuré, le mailto ne fait rien de visible */
+        status.innerHTML = 'Votre messagerie devrait s’ouvrir avec le message pré-rempli. ' +
+          'Si rien ne se passe, écrivez directement à <a href="mailto:' + TO + '">' + TO + '</a>.';
         status.className = 'form-status ok';
       }
       emit('kit:sent');

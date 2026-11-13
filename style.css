@@ -1883,7 +1883,8 @@ h3 {
 .archi .node rect { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.5; rx: 0; }
 .archi .node .t { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; fill: var(--ink); text-anchor: middle; }
 .archi .node .s { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--text-mute); text-anchor: middle; }
-.archi .flow { fill: none; stroke: var(--red); stroke-width: 2; stroke-dasharray: 6 6; animation: flow 1.1s linear infinite; }
+.archi .flow { fill: none; stroke: var(--red); stroke-width: 2; stroke-dasharray: 6 6; animation: flow 1.1s linear infinite; animation-play-state: paused; }
+.archi.is-live .flow { animation-play-state: running; }
 @keyframes flow { to { stroke-dashoffset: -24; } }
 .archi .flow-head { fill: var(--red); }
 .archi .node.is-current rect { fill: var(--red); stroke: var(--red); }
@@ -2947,14 +2948,6 @@ html.shutter-in main { animation-delay: .3s; }
 [data-theme="dark"] .pl-svg .pl-flames { filter: drop-shadow(0 0 4px var(--gold)); }
 
 /* ---- Fantôme (slot réservé) : contour pointillé façon notice ---- */
-.pl--ghost .pl-svg { filter: none; }
-.pl--ghost .pl-body { fill: none; stroke: var(--text-mute); stroke-width: 2.2; stroke-dasharray: 4.5 3.5; }
-.pl--ghost .pl-svg .k, .pl--ghost .pl-svg .s, .pl--ghost .pl-svg .r, .pl--ghost .pl-svg .b,
-.pl--ghost .pl-svg .y, .pl--ghost .pl-svg .v { fill: none; }
-.pl--ghost .pl-face, .pl--ghost .pl-flames, .pl--ghost .pl-glint, .pl--ghost .pl-decal,
-.pl--ghost .t, .pl--ghost .h, .pl--ghost .m, .pl--ghost .pl-hz, .pl--ghost .pl-zz,
-.pl--ghost .pl-boom { display: none; }
-.pl--ghost .pl-idle { animation: none; }
 
 /* ---- Bulle HUD (il parle peu, et seulement quand ça a du sens) ---- */
 .pl-say {
@@ -3096,10 +3089,8 @@ html.shutter-in main { animation-delay: .3s; }
 .pl.is-alarm .pl-beacon { animation-duration: .5s; }
 
 /* ---- Petites apparitions : les détails fins disparaissent (netteté) ---- */
-.dock-pilot .pl-fine, .pl-ghostslot .pl-fine, .pl-work .pl-fine, .pl-peek .pl-fine { display: none; }
+.dock-pilot .pl-fine, .pl-work .pl-fine, .pl-peek .pl-fine { display: none; }
 .dock-pilot .pl-scanl { display: none; }
-.pl--ghost .pl-dx, .pl--ghost .pl-badge, .pl--ghost .pl-stamp, .pl--ghost .pl-scanl,
-.pl--ghost .pl-bloom, .pl--ghost .pl-heat { display: none; }
 
 /* ---- LED unit, face BOX ART : les nouveaux voyants rayonnent aussi ---- */
 [data-theme="dark"] .pl-svg .pl-bloom { opacity: .34; }
@@ -3252,8 +3243,6 @@ html.shutter-in main { animation-delay: .3s; }
 [data-theme="dark"] .pl-svg .pl-vcam { filter: drop-shadow(0 0 2.5px var(--red)); }
 
 /* ---- Silhouette pointillée, petites apparitions : pas de pièces v5 ---- */
-.pl--ghost .pl-vern, .pl--ghost .pl-bflames, .pl--ghost .pl-dust, .pl--ghost .pl-vfin,
-.pl--ghost .pl-finger, .pl--ghost .pl-wscr, .pl--ghost .pl-ff { display: none !important; }
 .dock-pilot .pl-wscr { display: none; }
 
 /* ============================================================
@@ -3401,7 +3390,6 @@ html.shutter-in main { animation-delay: .3s; }
     --tip-l: 12px;
     --tip-clip: polygon(0 0, 100% 0, 0 100%);
 }
-.pl-ghostslot { width: 58px; margin-bottom: 1rem; }
 
 /* ---- Veille : en sentinelle sur la console du flux, main en visière ---- */
 .stand { position: relative; }

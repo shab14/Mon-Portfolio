@@ -7,7 +7,7 @@
    de page, 404, sprite du dino runner.
 
    Côté HTML c'est déclaratif :
-     <div data-pilote="hero|peek|work|ghost|watch|hello|lost|badge|stamp|hangar">
+     <div data-pilote="hero|peek|work|watch|hello|lost|badge|stamp|hangar">
    Réactions de section (compagnon) :
      data-pl="humeur|texte"   sur un titre ou un bloc
      data-pl-hello="humeur|texte"  sur <main> (arrivée sur la page)
@@ -1053,12 +1053,6 @@
     return pl;
   }
 
-  /* ---- GHOST : slot P-03, la silhouette en pointillés (pièce à venir) ---- */
-  function ghostPilote(host) {
-    host.classList.add('pl--ghost');
-    return new Pilote(host, { scan: false });
-  }
-
   /* ---- WATCH : page veille, en sentinelle, la main en visière ---- */
   function watchPilote(host) {
     const pl = new Pilote(host, { pose: 'lookout', frontR: true, bubble: true, scan: false, interactive: true, station: true });
@@ -1563,7 +1557,7 @@
   const POSES = ['stand', 'wave', 'salute', 'point', 'victory', 'celebrate', 'lookout', 'scratch', 'crouch',
                  'watch', 'wipe', 'stretch', 'work', 'stamp-up', 'stamp-down'];
 
-  const PRESETS = { hero: heroPilote, peek: peekPilote, work: workPilote, ghost: ghostPilote, watch: watchPilote,
+  const PRESETS = { hero: heroPilote, peek: peekPilote, work: workPilote, watch: watchPilote,
                     hello: helloPilote, lost: lostPilote, badge: badgePilote, stamp: stampPilote, hangar: hangarPilote };
 
   /* ============================================================
@@ -1750,13 +1744,12 @@
      ============================================================ */
   document.addEventListener('kit:incident', () => all.forEach(p => { if (p.visible) p.alert(2500); }));
   /* bascule KIT ↔ BOX ART : chaque LED unit visible se coupe et redémarre */
-  document.addEventListener('kit:theme', () => all.forEach(p => { if (p.visible && !p.host.classList.contains('pl--ghost')) p.powerCycle(); }));
+  document.addEventListener('kit:theme', () => all.forEach(p => { if (p.visible) p.powerCycle(); }));
   /* le robot qui répond : la station visible la plus proche, sinon le dock */
   const speaker = () => {
     const dock = Pilote.dock;
     const dockOn = dock && dock.isPresent && dock.isPresent();
-    return all.find(p => p.visible && p !== dock && !p.host.classList.contains('pl--ghost') &&
-                         !p.host.classList.contains('is-away')) || (dockOn ? dock : null);
+    return all.find(p => p.visible && p !== dock && !p.host.classList.contains('is-away')) || (dockOn ? dock : null);
   };
   /* réseau et mode oral (script.js) : il annonce ce qui se passe */
   document.addEventListener('kit:net', (e) => {

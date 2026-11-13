@@ -54,7 +54,7 @@ La figurine du kit : même grammaire que le site (aplats, lignes de panneau, omb
 **Le réutiliser** (tout est déclaratif) :
 
 ```html
-<div data-pilote="hero|peek|work|ghost|watch|hello|lost|badge|stamp|hangar"></div>   <!-- une apparition -->
+<div data-pilote="hero|peek|work|watch|hello|lost|badge|stamp|hangar"></div>   <!-- une apparition -->
 <h2 data-pl="happy|Texte de la bulle">…</h2>                       <!-- réaction du compagnon -->
 <main data-pl-hello="check|Phrase d'arrivée sur la page">          <!-- salut à l'arrivée -->
 ```
