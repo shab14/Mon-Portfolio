@@ -752,7 +752,7 @@
      · bandeau « HORS LIGNE » quand le réseau tombe, « RÉTABLI »
        quand il revient (le pilote le dit aussi : kit:net) ;
      · « mode oral » : embarque TOUT d'un coup (pages, docs,
-       polices), même le gros docx Centreon, avant l'examen.
+       polices), même la doc Centreon (PDF, 5 Mo), avant l'examen.
      ============================================================ */
   const KIT_FILES = [
     './', './index.html', './epreuve.html', './projet.html', './veille.html', './certifs.html',
@@ -761,7 +761,7 @@
     './fichiers/icon-192.png', './fichiers/allianc3-logo.png', './fichiers/allianc3-mark.png',
     './fichiers/schola-nova-logo.png',
     './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
-    './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.docx',
+    './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.pdf',
     './fichiers/Projet_Home_Lab.docx', './fichiers/Projet_Reseau_Nouveau_Bureau.docx'
   ];
 
