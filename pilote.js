@@ -1882,19 +1882,61 @@
       fio.observe(foot);
     }
 
-    /* scroll très rapide : il s'accroche, propulseurs allumés */
+    /* scroll : il se penche dans le sens du défilement (v6) ; très rapide → il s'accroche,
+       propulseurs allumés */
     if (!reduced) {
-      let lastY = window.scrollY, lastT = performance.now(), cool = 0;
+      let lastY = window.scrollY, lastT = performance.now(), cool = 0, leanT = 0;
+      const lean = (deg) => {
+        h.style.setProperty('--lean', deg.toFixed(1) + 'deg');
+        clearTimeout(leanT);
+        if (deg) leanT = setTimeout(() => lean(0), 240);
+      };
       window.addEventListener('scroll', () => {
         const now = performance.now(), y = window.scrollY;
-        const v = Math.abs(y - lastY) / Math.max(1, now - lastT);   // px / ms
+        const sv = (y - lastY) / Math.max(1, now - lastT);           // px / ms, signé
+        const v = Math.abs(sv);
         lastY = y; lastT = now;
-        if (v > 3.2 && present && !pl.busy && now > cool) {
+        if (!present || pl.busy) return;
+        lean(clamp(-sv * 2.6, -9, 9));
+        if (v > 3.2 && now > cool) {
           cool = now + 2200;
           pl.mood('surprise', 700).fly(true);
           setTimeout(() => pl.fly(false), 600);
         }
       }, { passive: true });
+
+      /* v6 : chaque titre STEP qui passe au milieu de l'écran = une réception sur la base */
+      const steps = $$('.section-title[data-step]');
+      if (steps.length && 'IntersectionObserver' in window) {
+        let lastLand = 0;
+        const lio = new IntersectionObserver((ents) => {
+          if (!ents.some(en => en.isIntersecting)) return;
+          const now = performance.now();
+          if (!present || pl.busy || now - lastLand < 1200) return;
+          lastLand = now;
+          pl.land();
+          btn.classList.remove('is-impact'); void btn.offsetWidth; btn.classList.add('is-impact');
+        }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+        steps.forEach(s => lio.observe(s));
+      }
+
+      /* v6 : timeline — il hoche la tête à chaque étape qui arrive ; l'étape en cours, il la salue */
+      const lis = $$('.timeline li');
+      if (lis.length && 'IntersectionObserver' in window) {
+        let lastNod = 0;
+        const tio = new IntersectionObserver((ents) => {
+          ents.forEach(en => {
+            if (!en.isIntersecting) return;
+            tio.unobserve(en.target);
+            const now = performance.now();
+            if (!present || pl.busy || now - lastNod < 700) return;
+            lastNod = now;
+            if (en.target.classList.contains('current')) { pl.pose('salute', 1300); pl.mood('happy', 1300); }
+            else { pl.look(0, 0.7); pl.blink(); setTimeout(() => { if (!pl.busy) pl.release(); }, 480); }
+          });
+        }, { rootMargin: '0px 0px -40% 0px', threshold: 0.6 });
+        lis.forEach(li => tio.observe(li));
+      }
     }
 
     /* événements du site */

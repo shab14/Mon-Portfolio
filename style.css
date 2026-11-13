@@ -3421,6 +3421,10 @@ html.shutter-in main { animation-delay: .3s; }
     100% { translate: 0 0; }
 }
 .dock-pilot.is-landing .pl-svg { animation: dock-land .72s var(--ease-snap); }
+/* v6 : il se penche dans le sens du défilement (pivot : les pieds) */
+.dock-pilot .pl-svg { rotate: var(--lean, 0deg); transform-origin: 50% 100%; transition: rotate .22s var(--ease-out); }
+.scroll-top.dock.is-impact { animation: dock-impact .3s var(--ease-out); }
+@keyframes dock-impact { 0%, 100% { translate: 0 0; } 40% { translate: 0 2px; } }
 .dock-pilot.is-launch .pl-svg {
     translate: 0 -120vh;
     transition: translate 1s cubic-bezier(.55, 0, .85, .2);
