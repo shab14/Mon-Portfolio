@@ -49,7 +49,10 @@ La figurine du kit : même grammaire que le site (aplats, lignes de panneau, omb
 | Hangar | sur son banc d'essai : toutes les poses, expressions et actions à déclencher, vue éclatée (pièces A à H) |
 | 404 | il lui manque son bras droit (contour pointillé façon notice) |
 | Transitions de page | son casque est frappé sur le volet |
-| Secrets | coureur du mini-jeu (`jeux` dans la palette), mode alerte (code Konami), « Appeler le pilote » dans la palette |
+| Secrets | coureur du mini-jeu « helpdesk » (`jeux` dans la palette, il saute les tickets INC), mode alerte (code Konami), « Appeler le pilote » dans la palette, taper `sh14` au clavier, chasse aux 3 pièces cachées (accueil, hangar, mentions légales) → liseré or |
+| Projets (v6) | inspecteur : tampon « LIVRÉ » sur P-01 et P-03, chantier P-02, tags commentés, chips du référentiel expliquées, paquet invité bloqué à la passerelle |
+| Compagnon (v6) | se penche dans le défilement, atterrit à chaque STEP, salue l'étape en cours, commente le radar, parle aussi sur mobile (tap sur le robot) |
+| Accueil / Hangar (v6) | maintenance : clé sortie, un réglage, étincelles · hangar : usure réglable (sortie d'usine / terrain / vétéran) |
 
 **Le réutiliser** (tout est déclaratif) :
 

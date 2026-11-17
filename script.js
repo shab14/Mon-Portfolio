@@ -916,8 +916,32 @@
       setTimeout(() => emit('kit:notice', { done: notice.steps.length, total: NOTICE.length, left: left[1] }), onHome ? 7600 : 2600);
     }
   }
+  /* ---- v6 : chasse aux pièces — trois boulons cachés (accueil, hangar, mentions
+     légales). Les trois trouvés → liseré or sur la visière de SH-14, partout.
+     Stockage local uniquement (clé kit-bolts). ---- */
+  const BOLTS = ['index', 'hangar', 'legal'];
+  const readBolts = () => { try { const b = JSON.parse(localStorage.getItem('kit-bolts') || '[]'); return Array.isArray(b) ? b.filter(k => BOLTS.includes(k)) : []; } catch (e) { return []; } };
+  const renderBolts = (found) => {
+    document.documentElement.classList.toggle('pl-gold', found.length === BOLTS.length);
+    $$('[data-bolt]').forEach(b => b.classList.toggle('is-found', found.includes(b.dataset.bolt)));
+    $$('[data-spec="gold"]').forEach(el => { el.textContent = found.length === BOLTS.length ? 'Monté — trois pièces trouvées' : `${found.length}/3 pièces trouvées (elles sont cachées sur le site)`; });
+  };
+  renderBolts(readBolts());
+  $$('[data-bolt]').forEach(b => b.addEventListener('click', () => {
+    const found = readBolts();
+    if (found.includes(b.dataset.bolt)) { emit('kit:bolt', { again: true }); return; }
+    found.push(b.dataset.bolt);
+    try { localStorage.setItem('kit-bolts', JSON.stringify(found)); } catch (e) { /* bloqué : la chasse ne persiste pas */ }
+    renderBolts(found);
+    const done = found.length === BOLTS.length;
+    netToast(done ? 'Pièces 3/3 · liseré or monté sur SH-14' : `Pièce cachée ${found.length}/3 trouvée`, 'ok', done ? 5200 : 2800);
+    emit('kit:bolt', { n: found.length, done });
+  }));
+
   const resetNotice = () => {
     writeNotice({ steps: isNoticeStep(here) ? [here] : [], vfin: false });
+    try { localStorage.removeItem('kit-bolts'); } catch (e) { /* idem */ }
+    renderBolts([]);
     document.documentElement.classList.remove('pl-vfin-on');
     renderNotice(readNotice());
     netToast('Notice remise à zéro · l’antenne V est rangée', 'warn', 3600);
@@ -1119,7 +1143,7 @@
         '<button class="secret-close" type="button" aria-label="Fermer">✕</button>' +
         '<div class="dino-wrap">' +
           '<div class="dino-hud"><span class="dino-title">dino://no-signal</span>' +
-          '<span class="dino-score">score <b id="dinoScore">0</b> · record <b id="dinoBest">0</b></span></div>' +
+          '<span class="dino-score">incidents résolus <b id="dinoScore">0</b> · record <b id="dinoBest">0</b></span></div>' +
           '<canvas id="dinoCanvas" width="720" height="220" aria-label="Mini-jeu dino runner"></canvas>' +
           '<p class="dino-hint"><kbd>espace</kbd> / <kbd>↑</kbd> / clic pour sauter · <kbd>esc</kbd> pour quitter</p>' +
         '</div>';
@@ -1142,7 +1166,7 @@
         shade: dark ? '#BDBAB2' : '#E2DFD4', red: accent, gold: '#C9A227', led: '#6F9BFF'
       };
       const runner = window.Pilote && window.Pilote.drawRunner;
-      if (runner) { const d = document.querySelector('.dino-title'); if (d) d.textContent = 'sh-14://no-signal'; }
+      if (runner) { const d = document.querySelector('.dino-title'); if (d) d.textContent = 'sh-14://helpdesk'; }
 
       const W = cvs.width, H = cvs.height, GROUND = H - 40;
       let best = 0;
@@ -1184,21 +1208,24 @@
           ctx.fillStyle = '#fff';
           ctx.fillRect(dino.x + dino.w - 12, dino.y + 8, 6, 6);
         }
-        // obstacles (cactus = barres)
-        ctx.fillStyle = ink;
-        obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+        // obstacles : des tickets d'incident (INC) qui arrivent sans prévenir
+        obstacles.forEach(o => {
+          ctx.fillStyle = ink; ctx.fillRect(o.x, o.y, o.w, o.h);
+          ctx.fillStyle = accent; ctx.fillRect(o.x, o.y, o.w, 6);
+          if (o.w >= 20) { ctx.fillStyle = '#fff'; ctx.font = '700 8px ui-monospace, monospace'; ctx.fillText('INC', o.x + 2, o.y + 15); }
+        });
         // texte état
         ctx.fillStyle = muted;
         ctx.font = '600 14px ui-monospace, monospace';
         if (!started) {
           ctx.textAlign = 'center';
-          ctx.fillText('appuie sur espace pour démarrer', W / 2, H / 2 - 6);
+          ctx.fillText('espace : saute les tickets, résous les incidents', W / 2, H / 2 - 6);
           ctx.textAlign = 'left';
         } else if (over) {
           ctx.textAlign = 'center';
           ctx.fillStyle = ink;
           ctx.font = '700 22px ui-monospace, monospace';
-          ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
+          ctx.fillText('TICKET EN RETARD', W / 2, H / 2 - 10);
           ctx.fillStyle = muted;
           ctx.font = '600 13px ui-monospace, monospace';
           ctx.fillText('espace pour rejouer', W / 2, H / 2 + 14);

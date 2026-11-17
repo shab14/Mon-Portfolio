@@ -89,7 +89,7 @@
                     <div class="hg-stage">
                         <div class="pl-hangar" data-pilote="hangar" aria-hidden="true"></div>
                     </div>
-                    <div class="hg-plinth" aria-hidden="true"><span>Banc d’essai</span><span>Échelle 1:1 · SVG</span></div>
+                    <div class="hg-plinth"><span aria-hidden="true">Banc d’essai</span><button class="kit-bolt" type="button" data-bolt="hangar" aria-label="Pièce cachée 2 sur 3"><svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="3.5,0.8 8.5,0.8 11.2,6 8.5,11.2 3.5,11.2 0.8,6"/><rect x="4" y="4" width="4" height="4"/></svg></button><span aria-hidden="true">Échelle 1:1 · SVG</span></div>
                     <figcaption class="sr-only">SH-14 debout sur son banc d’essai. Les commandes à côté changent sa pose et son expression, déclenchent ses actions ou le démontent en vue éclatée.</figcaption>
                 </figure>
 
@@ -145,6 +145,16 @@
                             <button type="button" class="hg-chip hg-chip--act" data-hg-act="incident">Incident</button>
                             <button type="button" class="hg-chip hg-chip--act" data-hg-act="power">LED unit</button>
                             <button type="button" class="hg-chip hg-chip--act" data-hg-act="say">Parler</button>
+                            <button type="button" class="hg-chip hg-chip--act" data-hg-act="maint">Maintenance</button>
+                        </div>
+                    </div>
+
+                    <div class="hg-group" role="group" aria-labelledby="hg-g4">
+                        <h3 class="hg-label" id="hg-g4">Usure <span>sh14 wear</span></h3>
+                        <div class="hg-chips">
+                            <button type="button" class="hg-chip" data-hg-wear="0" aria-pressed="false">Sortie d’usine</button>
+                            <button type="button" class="hg-chip" data-hg-wear="1" aria-pressed="true">Terrain</button>
+                            <button type="button" class="hg-chip" data-hg-wear="2" aria-pressed="false">Vétéran</button>
                         </div>
                     </div>
 
@@ -177,6 +187,7 @@
                 <div><dt>Mouvement</dt><dd>Servo : ça part net, ça s’arrête net. Seule la pièce qui bouge est recalculée</dd></div>
                 <div><dt>Accessibilité</dt><dd>Décoratif (ignoré des lecteurs d’écran) · immobile si « réduire les animations » est activé</dd></div>
                 <div><dt>Antenne V</dt><dd data-spec="vfin">À gagner : visiter les six pages du kit</dd></div>
+                <div><dt>Liseré or</dt><dd data-spec="gold">À gagner : trois pièces cachées sur le site</dd></div>
             </dl>
         </section>
 
@@ -213,14 +224,15 @@
         <section aria-labelledby="hg-t4">
             <h2 class="section-title" data-step="04" id="hg-t4" data-pl="open|On se croise partout. Ou presque."><span class="st-text">Où le croiser</span></h2>
             <ul class="hg-stations reveal">
-                <li><a href="./index.html">Accueil</a><p>Debout sur le panneau SYSTÈMES : il s’assemble, allume les services un par un et pointe les boutons survolés. Plus bas, il passe la tête au-dessus de la photo.</p></li>
+                <li><a href="./index.html">Accueil</a><p>Debout sur le panneau SYSTÈMES : il s’assemble, allume les services un par un et pointe les boutons survolés. Au repos, il entretient son kit : clé sortie, un réglage, des étincelles. Plus bas, il passe la tête au-dessus de la photo.</p></li>
                 <li><a href="./epreuve.html">Épreuves</a><p>Contrôle qualité : il tamponne l’épreuve E5 « en cours ».</p></li>
                 <li><a href="./projet.html">Projets</a><p>Inspecteur : il tamponne « LIVRÉ » sur Centreon et sur le réseau du bureau, puis s’installe sur le chantier P-02, clé en main. Il commente les technos survolées, et sa tête voyage dans les trois schémas — le paquet invité, lui, est bloqué à la passerelle.</p></li>
                 <li><a href="./veille.html">Veille</a><p>En sentinelle, la main en visière : il réagit au flux d’alertes.</p></li>
                 <li><a href="./certifs.html">Certifications</a><p>Il brandit la médaille, puis la garde épinglée sur tout le site.</p></li>
                 <li><a href="./contact.html">Contact</a><p>Il suit ta saisie et fête l’envoi du message.</p></li>
                 <li><a href="./404.html">Page 404</a><p>Il lui manque un bras. Classique.</p></li>
-                <li><span class="hg-st-any">Partout</span><p>Sur le bouton « remonter » quand aucune station n’est à l’écran — et en pixel art dans un mini-jeu caché de la palette (Ctrl K).</p></li>
+                <li><span class="hg-st-any">Partout</span><p>Sur le bouton « remonter » quand aucune station n’est à l’écran : il se penche quand tu défiles, atterrit à chaque étape et salue ce qui est en cours. Tape <kbd>sh14</kbd> au clavier, il répond. Et en pixel art dans le mini-jeu « helpdesk » de la palette (Ctrl K).</p></li>
+                <li><span class="hg-st-any">Caché</span><p>Trois pièces traînent sur le site, discrètes. Les trois trouvées : liseré or sur sa visière.</p></li>
             </ul>
         </section>
 

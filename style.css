@@ -3098,6 +3098,19 @@ html.shutter-in main { animation-delay: .3s; }
 .pl-svg .wp { fill: var(--pl-plastic); }
 .pl-svg .sc { stroke: var(--pl-line); stroke-width: .8; opacity: .42; }
 .pl-svg .so { fill: #0E0F12; opacity: .16; }
+/* v6 — usure réglable au hangar : sortie d'usine (rien) / terrain (défaut) / vétéran */
+.pl.wear-0 .pl-svg .wr, .pl.wear-0 .pl-svg .wp, .pl.wear-0 .pl-svg .sc, .pl.wear-0 .pl-svg .so { display: none; }
+.pl.wear-2 .pl-svg .so { opacity: .42; }
+.pl.wear-2 .pl-svg .sc { stroke-width: 1.4; opacity: .7; }
+.pl.wear-2 .pl-svg .wr { opacity: 1; }
+.pl.wear-2 .pl-ant { rotate: 14deg; transform-box: fill-box; transform-origin: 50% 100%; }
+/* v6 — clé : rangée, elle ne sort que pour travailler */
+.pl-svg .pl-wrench { opacity: 0; transition: opacity .12s; }
+.pl[data-pose="work"] .pl-wrench { opacity: 1; }
+.pl.is-maint[data-pose="work"] .pl-sparks { animation: pl-sparks 2.6s steps(1, end) infinite; }
+/* v6 — liseré or (chasse aux trois pièces) : la visière est cerclée d'or, partout */
+.pl-gold .pl-svg .v { stroke: var(--gold); stroke-width: 2.2; stroke-linejoin: miter; }
+.pl-gold .pl-svg .pl-decal { fill: var(--gold-ink); }
 .pl-svg .sh { fill: #000; opacity: .2; }
 .pl-svg .g  { fill: var(--ok); }
 .pl-svg .pl-gold { fill: var(--gold); }
@@ -4347,6 +4360,22 @@ html.is-touring .net-toast { bottom: 9.2rem; }
     background: repeating-linear-gradient(-45deg, var(--red) 0 10px, var(--panel-bg) 10px 20px);
 }
 .hg-plinth.is-impact { animation: panel-impact .3s var(--ease-out); }
+/* v6 — pièces cachées : un boulon discret, 12 px, cible tactile élargie */
+.kit-bolt {
+    display: inline-grid; place-items: center; vertical-align: middle;
+    width: 24px; height: 24px; margin: -6px 0; padding: 0;
+    background: none; border: 0; cursor: pointer; color: var(--text-mute);
+    opacity: .55; transition: opacity var(--dur-fast), color var(--dur-fast), rotate .3s var(--ease-snap);
+}
+.kit-bolt svg { width: 12px; height: 12px; }
+.kit-bolt polygon { fill: currentColor; }
+.kit-bolt rect { fill: var(--surface); }
+footer .kit-bolt rect, .hg-plinth .kit-bolt rect { fill: var(--panel-bg); }
+footer .kit-bolt, .hg-plinth .kit-bolt { color: rgba(255, 255, 255, 0.5); }
+.kit-bolt:hover, .kit-bolt:focus-visible { opacity: 1; color: var(--gold); rotate: 60deg; outline: none; }
+.kit-bolt:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
+.kit-bolt.is-found { opacity: 1; color: var(--gold); }
+@media (prefers-reduced-motion: reduce) { .kit-bolt { transition: none; } .kit-bolt:hover { rotate: none; } }
 
 /* ---- décollage : il quitte le socle, vol stationnaire, retombe lourd ---- */
 .pl-hangar .pl-svg { transition: translate .42s var(--ease-in), scale .55s var(--ease-snap); }

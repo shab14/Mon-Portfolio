@@ -17,6 +17,7 @@
      kit:check (supervision live)  kit:net (réseau coupé / rétabli, mode oral)
      kit:notice (notice de visite, antenne V)  kit:tour (visite guidée)
      kit:download / kit:ext (v6 : fichiers téléchargés, liens externes)
+     kit:bolt (v6 : chasse aux trois pièces cachées, liseré or)
    Un seul personnage : les apparitions « station » (hero, portrait,
    chantier, veille, contact, médaille, tampon, banc du hangar) et le
    dock ne se montrent jamais en même temps — il va de l'une à l'autre.
@@ -417,9 +418,10 @@
         grp('pl-body', part('head', HEAD(id), 0, false) + part('fists', fists, 0, false)) + '</svg>';
     }
     const vb = o.wrench ? '-4 -4 212 318' : '0 0 200 310';
+    const wrench = o.wrench || o.tool;          /* v6 : tool = clé rangée, sortie pour la maintenance */
     const faL = (ff) => grp('pl-j pl-fa pl-fa-l' + (ff ? ' pl-ff' : ''), ARM.l.fa + (!ff && o.stamp ? STAMP_HAND : ''));
     const faR = (ff) => grp('pl-j pl-fa pl-fa-r' + (ff ? ' pl-ff' : ''),
-      (!ff && o.wrench ? WRENCH_HAND : '') + (!ff && o.badge ? BADGE_HAND : '') + ARM.r.fa);
+      (!ff && wrench ? grp('pl-wrench', WRENCH_HAND) : '') + (!ff && o.badge ? BADGE_HAND : '') + ARM.r.fa);
     const armL = grp('pl-j pl-ua pl-ua-l', ARM.l.ua) + (o.frontL ? '' : faL());
     const armR = o.noArmR ? MISSING_R : grp('pl-j pl-ua pl-ua-r', ARM.r.ua) + (o.frontR ? '' : faR());
     const front = (o.frontL ? faL() : '') + (o.frontR && !o.noArmR ? faR() : '') +
@@ -742,7 +744,7 @@
 
   /* ---- HERO : la figurine sur son socle (le panneau SYSTÈMES) ---- */
   function heroPilote(host) {
-    const pl = new Pilote(host, { bubble: true, interactive: true, station: true, swap: true });
+    const pl = new Pilote(host, { bubble: true, interactive: true, station: true, swap: true, tool: true });
     const stage = host.closest('.hero-stage');
     let seq = true;             // séquence de démarrage en cours
     let idleT = 0, asleep = false, clicks = [], ci = 0, cooling = false;
@@ -966,6 +968,8 @@
       /* v5 : il s'étire, bras tendus, en se penchant d'un côté puis de l'autre */
       () => { pl.pose('stretch', 2300); pl.mood('sleep', 1600); pl.play([[1700, () => pl.mood('happy', 800)]]); },
       () => { pl.pose('salute', 1600); pl.mood('wink', 1600); },
+      /* v6 — battle-worn : il sort sa clé pour un réglage, étincelles, contrôle */
+      () => maintain(pl),
     ];
     if (!reduced) {
       const fidget = () => {
@@ -1477,7 +1481,7 @@
     ['focus', 'Clique « Vue éclatée » : je me démonte sans outil.'],
   ];
   function hangarPilote(host) {
-    const pl = new Pilote(host, { bubble: true, interactive: true, station: true, swap: true });
+    const pl = new Pilote(host, { bubble: true, interactive: true, station: true, swap: true, tool: true });
     const bay = host.closest('.hg-bay') || host.parentElement;
     const plinth = bay && $('.hg-plinth', bay);
     const logEl = $('[data-hg-log]');
@@ -1589,6 +1593,7 @@
       land: () => { pl.land(true); impact(); },
       incident: () => pl.alert(2400),
       power: () => pl.powerCycle(),
+      maint: () => { if (!pl.busy) maintain(pl); return 'réglage à la clé, couple ok'; },
       /* en vue éclatée, la bulle masquerait le casque : la réplique part dans le journal */
       say: () => {
         const [m, t] = BENCH_LINES[li++ % BENCH_LINES.length];
@@ -1598,7 +1603,7 @@
       },
     };
     const ACT_CMD = { wave: 'sh14 wave', hop: 'sh14 hop', takeoff: 'sh14 fly --hover', land: 'sh14 land --hard',
-                      incident: 'sh14 alert', power: 'sh14 led --cycle', say: 'sh14 say' };
+                      incident: 'sh14 alert', power: 'sh14 led --cycle', say: 'sh14 say', maint: 'sh14 maint --torque' };
     $$('[data-hg-act]').forEach((b) => b.addEventListener('click', () => {
       const a = b.dataset.hgAct;
       if (!ACTS[a]) return;
@@ -1644,6 +1649,16 @@
       }
     };
     if (explodeBtn) explodeBtn.addEventListener('click', () => setExploded(!exploded));
+    /* v6 — usure : battle-worn est un choix, pas un accident. Trois états du même kit. */
+    const WEAR = { 0: 'sortie d’usine : aucun éclat', 1: 'terrain : éclats, rayures, graisse', 2: 'vétéran : suie, rayures profondes, antenne tordue' };
+    $$('[data-hg-wear]').forEach((b) => b.addEventListener('click', () => {
+      const w = b.dataset.hgWear;
+      host.classList.remove('wear-0', 'wear-2');
+      if (w !== '1') host.classList.add('wear-' + w);
+      press('[data-hg-wear]', b);
+      log('sh14 wear --level ' + w, WEAR[w]);
+      if (!reduced && !exploded) { pl.mood(w === '0' ? 'star' : w === '2' ? 'dizzy' : 'check', 1400); pl.wobble(); }
+    }));
     $$('[data-hg-part]').forEach((b) => {
       const k = b.dataset.hgPart;
       b.addEventListener('pointerenter', () => focusPart(k));
@@ -1702,6 +1717,20 @@
     vfinSpec();
     document.addEventListener('kit:notice', vfinSpec);
     return pl;
+  }
+
+  /* ---- v6 : maintenance (battle-worn) — la clé sort, il fait un réglage, étincelles, contrôle ---- */
+  function maintain(pl) {
+    if (reduced) { pl.mood('check', 1600); return; }
+    pl.busy = true;
+    pl.unaim(); pl.stance(null);
+    pl.host.classList.add('is-maint');
+    pl.pose('work').mood('focus');
+    pl.play([
+      [1500, () => pl._kick('is-shine', 900)],
+      [2300, () => { pl.host.classList.remove('is-maint'); pl.pose(pl.basePose); pl.mood('check', 1400); }],
+      [2500, () => { pl.say('Réglage terminé. Couple ok.', 1800); pl.busy = false; }],
+    ]);
   }
 
   /* toutes les poses dessinées (style.css) — le banc et la fiche technique les comptent */
@@ -1927,9 +1956,11 @@
         const tio = new IntersectionObserver((ents) => {
           ents.forEach(en => {
             if (!en.isIntersecting) return;
-            tio.unobserve(en.target);
             const now = performance.now();
+            /* pas dispo (rangé, occupé, vient de hocher) : l'étape reste en attente,
+               elle réagira au prochain passage */
             if (!present || pl.busy || now - lastNod < 700) return;
+            tio.unobserve(en.target);
             lastNod = now;
             if (en.target.classList.contains('current')) { pl.pose('salute', 1300); pl.mood('happy', 1300); }
             else { pl.look(0, 0.7); pl.blink(); setTimeout(() => { if (!pl.busy) pl.release(); }, 480); }
@@ -2082,6 +2113,36 @@
   };
   document.addEventListener('kit:download', (e) => handOver(FILE_LINES, (e.detail && e.detail.href) || '', ['check', 'Fichier envoyé. Bonne lecture.']));
   document.addEventListener('kit:ext', (e) => handOver(EXT_LINES, (e.detail && e.detail.href) || '', ['open', 'Lien externe. Je garde la porte ouverte.']));
+
+  /* ---- v6 : chasse aux pièces — les trois trouvées, liseré or sur la visière ---- */
+  document.addEventListener('kit:bolt', (e) => {
+    const d = e.detail || {};
+    const p = speaker();
+    if (!p) return;
+    p.hush();
+    if (d.done) {
+      p.mood('star', 3000).say('Trois pièces sur trois ! Liseré or monté.', 3000);
+      if (!p.busy && p.o.variant !== 'peek') { p.pose('celebrate', 2400); p.hop(); }
+    } else if (d.again) p.mood('wink', 1600).say('Celle-là, tu l’as déjà.', 1600);
+    else { p.mood('surprise', 1800).say(`Pièce ${d.n}/3. Il en reste ${3 - d.n}.`, 2000); p.hop(); }
+  });
+
+  /* ---- v6 : taper « sh14 » n'importe où (hors champ de saisie) → il salue ---- */
+  {
+    let buf = '';
+    window.addEventListener('keydown', (e) => {
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName || '') || e.target.isContentEditable) return;
+      if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+      buf = (buf + e.key.toLowerCase()).slice(-6);
+      if (!/sh-?14$/.test(buf)) return;
+      buf = '';
+      const p = speaker();
+      if (!p) return;
+      p.hush();
+      p.mood('happy', 2200).say('On m’appelle ? SH-14, en ligne.', 2200);
+      if (!p.busy && p.o.variant !== 'peek' && !p.o.noArmR) p.pose('salute', 1600); else p.hop();
+    });
+  }
 
   /* palette ⌘K → « Appeler le pilote » : le plus proche répond */
   document.addEventListener('kit:call', () => {
