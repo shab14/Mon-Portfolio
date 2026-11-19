@@ -281,7 +281,7 @@
   const logEl = $('#statusLog');
   const uptimeEl = $('#uptime');
   // Avec le pilote sur son socle : il s'assemble, s'allume, PUIS allume les services
-  const heroPilot = !!$('[data-pilote="hero"]');
+  const heroPilot = !!$('[data-pilote="hero"], .sh14-video');
   const svcStart = heroPilot ? 1850 : 600;
   const svcStep  = heroPilot ? 300 : 260;
 
@@ -490,6 +490,51 @@
         el.classList.remove('is-in');
       }, 210);
     }, 2300);
+  })();
+
+  /* ============================================================
+     Hero — SH-14 en 3D : vidéo WebM transparente (VP9 + alpha)
+     - Safari / iOS ne lisent pas l'alpha VP9, mouvement réduit,
+       vidéo en erreur : image fixe transparente (même cadrage).
+     - Elle repart de zéro quand le hero joue son entrée : les pièces
+       s'emboîtent pendant que le panneau arrive.
+     - En pause hors écran et onglet caché (batterie, CPU).
+     ============================================================ */
+  (function sh14Video() {
+    const box = $('.sh14-video');
+    const video = box && $('video', box);
+    if (!video) return;
+    const ua = navigator.userAgent;
+    const webkitOnly = /iP(hone|ad|od)/.test(ua) ||
+      (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ||
+      (/Safari/.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|Edg|OPR|Android/.test(ua));
+    const still = () => { box.classList.add('is-still'); video.pause(); };
+    if (reduced || webkitOnly || !video.canPlayType('video/webm')) { still(); return; }
+
+    const source = $('source', video);
+    if (source) source.addEventListener('error', still);
+    video.addEventListener('error', still);
+    let onScreen = true;
+    const sync = () => {
+      if (box.classList.contains('is-still')) return;
+      if (onScreen && !document.hidden) video.play().catch(still);
+      else video.pause();
+    };
+    video.preload = 'auto';
+    const stage = box.closest('.hero-stage');
+    const start = () => { try { video.currentTime = 0; } catch (e) {} sync(); };
+    if (!stage || stage.classList.contains('played')) start();
+    else {
+      video.load();
+      const mo = new MutationObserver(() => {
+        if (stage.classList.contains('played')) { mo.disconnect(); start(); }
+      });
+      mo.observe(stage, { attributes: true, attributeFilter: ['class'] });
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; sync(); }, { threshold: 0.05 }).observe(box);
+    }
+    document.addEventListener('visibilitychange', sync);
   })();
 
   /* ============================================================

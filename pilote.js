@@ -1838,7 +1838,10 @@
       sync(!on);
     }).observe(btn, { attributes: true, attributeFilter: ['class'] });
 
-    const stationHosts = all.filter(p => p !== pl && p.o.station).map(p => p.host);
+    /* + stations sans Pilote SVG (ex. la vidéo 3D du hero, [data-pl-station]) :
+       tant qu'elles sont à l'écran, le dock reste rangé — un seul SH-14 visible */
+    const stationHosts = all.filter(p => p !== pl && p.o.station).map(p => p.host)
+      .concat($$('[data-pl-station]'));
     if (stationHosts.length && 'IntersectionObserver' in window) {
       const sio = new IntersectionObserver((ents) => {
         ents.forEach(en => {

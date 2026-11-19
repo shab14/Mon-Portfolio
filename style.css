@@ -3338,7 +3338,57 @@ html.shutter-in main { animation-delay: .3s; }
    MISE EN SCÈNE DU PILOTE — chaque apparition a un socle
    ============================================================ */
 
-/* ---- Hero : la figurine debout sur son socle (le panneau SYSTÈMES) ----
+/* ---- Hero : SH-14 en 3D (vidéo WebM transparente) sur son socle ----
+   Rendue par le moteur 3D depuis pilote.js : vue éclatée -> emboîtement des
+   pièces A..H -> visière -> turntable -> salut -> décollage. Fond alpha :
+   la plaque rouge hachurée et l'ombre du panneau restent celles du site.
+   Le sol de la vidéo est sur sa dernière ligne : elle « pose » sur le panneau. */
+.hero { --sh-h: calc(var(--pl-h, 300px) * 1.34); }
+.sh14-video {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% - var(--stand, var(--pl-h, 300px)) - 3px);
+    width: calc(var(--sh-h) * 0.8);
+    aspect-ratio: 4 / 5;
+    margin: 0;
+    translate: -36% 0;               /* même aplomb que l'ancienne figurine */
+    z-index: 2;
+    pointer-events: none;
+}
+.sh14-video-media,
+.sh14-video-still {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: 50% 100%;
+}
+.sh14-video-still { visibility: hidden; }
+.sh14-video.is-still .sh14-video-media { display: none; }
+.sh14-video.is-still .sh14-video-still { visibility: visible; }
+/* apparition : la figurine se pose avec le panneau (même courbe que le hero) */
+.js .hero-stage .sh14-video { opacity: 0; transform: translateY(16px); }
+.hero-stage.played .sh14-video {
+    opacity: 1;
+    transform: none;
+    transition: opacity .5s var(--ease-out) .3s, transform .6s var(--ease-out) .3s;
+}
+/* BOX ART : la vidéo garde ses aplats, un léger halo détache le plastique du fond sombre */
+[data-theme="dark"] .sh14-video-media,
+[data-theme="dark"] .sh14-video-still { filter: drop-shadow(0 0 18px rgba(111, 155, 255, 0.10)); }
+@media (max-width: 900px) {
+    /* une colonne : la plaque de secours (panel-stage::before) couvre toute
+       la vidéo, vue éclatée comprise */
+    .hero { --stand: var(--sh-h); }
+    .hero .panel-stage { padding-top: calc(var(--sh-h) - 3px); }
+    .sh14-video { left: 50%; translate: -50% 0; }
+}
+@media (max-width: 600px) {
+    .hero { --sh-h: calc(var(--pl-h, 260px) * 1.3); }
+}
+
+/* ---- Hero (ancien) : la figurine SVG debout sur son socle (le panneau SYSTÈMES) ----
    Le panneau arrive, les pièces s'emboîtent dessus, la visière
    s'allume, puis il allume les services un par un. */
 .hero { --pl-h: clamp(260px, 25vw, 350px); }
