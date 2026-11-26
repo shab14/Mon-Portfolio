@@ -1782,6 +1782,7 @@ h3 {
 }
 [data-theme="dark"] .cert-badge { background: #2E3038; }
 .cert-card[data-provider="pix"] .cert-badge { background: var(--blue-plate); }
+.cert-card[data-provider="cisco"] .cert-badge { background: var(--blue-plate); }
 .cert-card h3 { margin: 0; font-size: 1.02rem; line-height: 1.3; }
 .cert-card .cert-pill { align-self: flex-start; margin-bottom: 0.8rem; }
 .cert-meta {

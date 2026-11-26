@@ -842,7 +842,8 @@
     './fichiers/certifs/model-context-protocol-advanced.pdf',
     './fichiers/certifs/ai-capabilities-limitations.pdf',
     './fichiers/certifs/ai-fluency-students.pdf',
-    './fichiers/certifs/ai-fluency-educators.pdf'
+    './fichiers/certifs/ai-fluency-educators.pdf',
+    './fichiers/certifs/cisco-introduction-cybersecurity.pdf'
   ];
 
   (function registerKit() {
@@ -1541,7 +1542,7 @@
     { page: 'veille.html', sel: '.stand--watch', mood: 'focus',
       text: 'La veille : l’IA et les infrastructures. Pénurie de mémoire, datacenters, énergie, dans un journal daté et sourcé.' },
     { page: 'certifs.html', sel: '.certs-summary', mood: 'star',
-      text: '13 certifications, dont 12 du parcours Anthropic. AI Fluency : 10/10.' },
+      text: '14 certifications : 12 du parcours Anthropic, une Cisco en cybersécurité. AI Fluency : 10/10.' },
     { page: 'contact.html', sel: '#contactForm', mood: 'happy',
       text: 'Pour le contacter : ce formulaire ou l’email. Réponse en moins de 24 h.' },
     { page: 'contact.html', sel: '.contact-avail', mood: 'wink',

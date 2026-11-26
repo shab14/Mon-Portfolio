@@ -1301,7 +1301,7 @@
         if (then) then();
       }, 2700);
     };
-    onReveal(host, () => setTimeout(() => cheer('13 badges au compteur. Celle-là, je la garde.', () => {
+    onReveal(host, () => setTimeout(() => cheer('14 badges au compteur. Celle-là, je la garde.', () => {
       document.documentElement.classList.add('pl-decorated');
       try { localStorage.setItem('pl-medal', '1'); } catch (e) {}
       pl.mood('happy', 1400).blink();
