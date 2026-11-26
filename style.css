@@ -4735,3 +4735,7 @@ footer .kit-bolt, .hg-plinth .kit-bolt { color: rgba(255, 255, 255, 0.5); }
 @media print {
     .hg-console, .hg-legend, .hg-bay { display: none !important; }
 }
+
+/* Certifications : bouton « Voir le certificat », calé en bas de carte */
+.cert-card .cert-meta { margin-bottom: 1rem; }
+.cert-pdf { margin-top: auto; align-self: flex-start; }

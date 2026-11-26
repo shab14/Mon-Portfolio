@@ -1288,7 +1288,7 @@
      à partir de là, il la porte sur tout le site (localStorage). */
   function badgePilote(host) {
     const pl = new Pilote(host, { badge: true, bubble: true, interactive: true, scan: false, station: true });
-    const grid = document.querySelector('.cert-filter + .grid');
+    const grid = document.querySelector('.cert-filter ~ .grid');
     const lines = ['Collection en cours.', 'AI Fluency : 10/10.', 'Prochain badge : en approche.'];
     let li = 0;
     const cheer = (txt, then) => {

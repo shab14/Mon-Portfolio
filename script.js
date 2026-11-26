@@ -735,7 +735,10 @@
   (function certFilter() {
     const bar = $('.cert-filter');
     if (!bar) return;
-    const grid = bar.nextElementSibling;
+    /* la grille n'est pas forcément la voisine directe (un titre de section les sépare) */
+    const first = $('.cert-card');
+    if (!first) return;
+    const grid = first.parentElement;
     const cards = $$('.cert-card', grid);
     const chips = $$('.chip:not(.cert-sort)', bar);
     const sortBtn = $('.cert-sort', bar);
@@ -827,7 +830,19 @@
     './fichiers/schola-nova-logo.png',
     './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
     './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.pdf',
-    './fichiers/Projet_Home_Lab.docx', './fichiers/Projet_Reseau_Nouveau_Bureau.docx'
+    './fichiers/Projet_Home_Lab.docx', './fichiers/Projet_Reseau_Nouveau_Bureau.docx',
+    './fichiers/certifs/ai-fluency-framework-foundations.pdf',
+    './fichiers/certifs/claude-101.pdf',
+    './fichiers/certifs/claude-code-101.pdf',
+    './fichiers/certifs/claude-code-in-action.pdf',
+    './fichiers/certifs/introduction-claude-cowork.pdf',
+    './fichiers/certifs/introduction-subagents.pdf',
+    './fichiers/certifs/claude-with-the-anthropic-api.pdf',
+    './fichiers/certifs/introduction-model-context-protocol.pdf',
+    './fichiers/certifs/model-context-protocol-advanced.pdf',
+    './fichiers/certifs/ai-capabilities-limitations.pdf',
+    './fichiers/certifs/ai-fluency-students.pdf',
+    './fichiers/certifs/ai-fluency-educators.pdf'
   ];
 
   (function registerKit() {
