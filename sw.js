@@ -19,7 +19,7 @@
    ============================================================ */
 'use strict';
 
-const CACHE = 'sh14-kit-v2';
+const CACHE = 'sh14-kit-v3';
 const NETWORK_TIMEOUT_MS = 4000;   // réseau trop lent : on sert la copie locale
 
 /* Pièces embarquées dès l'installation (légères : ~0,5 Mo) */
@@ -43,7 +43,7 @@ const CORE = [
   './fichiers/allianc3-logo.png',
   './fichiers/allianc3-mark.png',
   './fichiers/CV_Shabdpreet_Singh.pdf',
-  './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
+  './fichiers/Tableau_synthese_E5_BTS_SIO.xlsx',
 ];
 
 self.addEventListener('install', (event) => {

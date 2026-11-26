@@ -288,7 +288,7 @@
   const CHECK_TIMEOUT_MS = 4000;          // au-delà : « timeout »
   const GITHUB_CACHE_MS  = 10 * 60e3;     // API publique limitée à 60 requêtes / h / IP
   const MONITOR_EVERY_MS = 20000;         // un check toutes les 20 s, panneau visible
-  const OFFLINE_CACHE    = 'sh14-kit-v2'; // même nom que dans sw.js
+  const OFFLINE_CACHE    = 'sh14-kit-v3'; // même nom que dans sw.js
   const PILL = { up: 'UP', cache: 'CACHE', down: 'DOWN', api: 'API' };
 
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -828,7 +828,7 @@
     './style.css', './script.js', './pilote.js', './favicon.svg', './site.webmanifest',
     './fichiers/icon-192.png', './fichiers/allianc3-logo.png', './fichiers/allianc3-mark.png',
     './fichiers/schola-nova-logo.png',
-    './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E4_BTS_SIO.xlsx',
+    './fichiers/CV_Shabdpreet_Singh.pdf', './fichiers/Tableau_synthese_E5_BTS_SIO.xlsx',
     './fichiers/Doc_Technique_Portfolio.pdf', './fichiers/Projet_Centreon.pdf',
     './fichiers/Projet_Home_Lab.docx', './fichiers/Projet_Reseau_Nouveau_Bureau.docx',
     './fichiers/certifs/ai-fluency-framework-foundations.pdf',
