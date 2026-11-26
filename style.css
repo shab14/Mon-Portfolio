@@ -1399,6 +1399,12 @@ h3 {
     gap: var(--s-4);
 }
 .competence-bloc { padding: 1.3rem 1.4rem 1.4rem; }
+/* Hard skills : bloc pleine largeur, les familles en colonnes (la liste est longue) */
+.competence-bloc--wide { grid-column: 1 / -1; }
+.competences-grid:has(> .competence-bloc--wide) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) { .competences-grid:has(> .competence-bloc--wide) { grid-template-columns: minmax(0, 1fr); } }
+.skill-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem 1.6rem; }
+.skill-groups .skill-group { min-width: 0; }
 .competence-bloc:hover { --edge: var(--red); transform: translate(-2px, -2px); box-shadow: var(--shadow-hard); }
 .competence-bloc h3 {
     display: flex;
@@ -3756,6 +3762,7 @@ html.shutter-in main { animation-delay: .3s; }
 .skill-tags span:nth-child(2) { --k: 1; } .skill-tags span:nth-child(3) { --k: 2; }
 .skill-tags span:nth-child(4) { --k: 3; } .skill-tags span:nth-child(5) { --k: 4; }
 .skill-tags span:nth-child(6) { --k: 5; } .skill-tags span:nth-child(7) { --k: 6; }
+.skill-tags span:nth-child(8) { --k: 7; } .skill-tags span:nth-child(9) { --k: 8; } .skill-tags span:nth-child(10) { --k: 9; }
 .skill-tags span {
     cursor: default;
     transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
