@@ -4739,3 +4739,6 @@ footer .kit-bolt, .hg-plinth .kit-bolt { color: rgba(255, 255, 255, 0.5); }
 /* Certifications : bouton « Voir le certificat », calé en bas de carte */
 .cert-card .cert-meta { margin-bottom: 1rem; }
 .cert-pdf { margin-top: auto; align-self: flex-start; }
+
+/* Plaque ALLIANC3 : même hauteur de plaque que celle de l'école */
+.company-bloc .school-frame { min-height: 142px; display: grid; place-items: center; }
