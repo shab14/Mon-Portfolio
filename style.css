@@ -1403,9 +1403,37 @@ h3 {
 .competence-bloc--wide { grid-column: 1 / -1; }
 .competences-grid:has(> .competence-bloc--wide) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 600px) { .competences-grid:has(> .competence-bloc--wide) { grid-template-columns: minmax(0, 1fr); } }
-.skill-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem 1.6rem; }
-.skill-groups .skill-group { min-width: 0; }
+/* nomenclature de kit : une famille par rangée, repère numéroté à gauche, pièces à droite,
+   séparées par des lignes de panneau (aucun trou, quelle que soit la longueur des listes) */
+.skill-groups { counter-reset: fam; margin-top: 0.2rem; }
+.skill-group {
+    counter-increment: fam;
+    display: grid;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    gap: 0.5rem 1.2rem;
+    align-items: start;
+    padding: 0.95rem 0;
+    border-top: 1px solid var(--line-soft);
+}
+.skill-group:last-child { padding-bottom: 0; }
+.competence-bloc .skill-group p { display: flex; align-items: baseline; gap: 0.6rem; margin: 0; padding-top: 0.34rem; line-height: 1.35; }
+.competence-bloc .skill-group p::before {
+    content: counter(fam, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--red-ink);
+}
+.competence-bloc .skill-group p strong { color: var(--ink); }
+.skill-group .skill-tags { margin-top: 0; }
+@media (max-width: 700px) {
+    .skill-group { grid-template-columns: minmax(0, 1fr); }
+    .competence-bloc .skill-group p { padding-top: 0; }
+}
 .competence-bloc:hover { --edge: var(--red); transform: translate(-2px, -2px); box-shadow: var(--shadow-hard); }
+/* le grand bloc ne se soulève pas au survol (les étiquettes réagissent déjà une à une) */
+.competence-bloc--wide:hover { transform: none; box-shadow: none; }
 .competence-bloc h3 {
     display: flex;
     align-items: center;
